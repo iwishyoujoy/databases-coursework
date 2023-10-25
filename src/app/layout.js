@@ -5,7 +5,8 @@ import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 import { ChakraProvider } from '@chakra-ui/react'
-import Header from './components/header/header'
+import Header from './components/header/header';
+import Footer from './components/footer/footer';
 
 // export const metadata = {
 //   title: 'Bimbo Shop',
@@ -17,8 +18,13 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <ChakraProvider>
         <body className={inter.className}>
-          <Header />
-          {children}
+          <div className='mainContainer'>
+            <Header />
+            <div className='mainContent'>
+              {children}
+            </div>
+            <Footer />
+          </div>
         </body>
       </ChakraProvider>
     </html>
