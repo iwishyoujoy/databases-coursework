@@ -1,0 +1,93 @@
+.logo{
+    height: 20px;
+    width: 20px;
+}
+
+.leftContainer{
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.7rem;
+}
+
+.logoContainer{
+    font-weight: 500;
+    font-size: 1.3em;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    column-gap: 10px;
+}
+
+.description{
+    width: 300px;
+    font-weight: 300;
+    overflow-wrap: break-word;
+}
+
+.buttonContainer{
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.5rem;
+    align-items: left;
+    justify-content: flex-start;
+}
+
+.middleContainer, .linkContainer, .rightContainer, .infoContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: flex-start;
+}
+
+.header{
+    font-weight: 500;
+    font-size: 1.3em;
+}
+.linkContainer{
+    font-weight: 300;
+    row-gap: 1rem;
+}
+.middleContainer{
+    width: 200px;
+    row-gap: 2rem;
+}
+.rightContainer{
+    width: 350px;
+    row-gap: 2rem;
+}
+.infoContainer{
+    row-gap: 0.5rem;
+}
+
+.blackButton:hover{
+    background-color: black;
+    color: var(--light-pink);
+}
+.linkBigger:hover{
+    font-weight: 600;
+}
+.svg{
+    height: 15px;
+    width: 15px;
+}
+
+.info{
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: flex-start;
+}
+.infoFirstRow{
+    display: flex;
+    flex-direction: row;
+    column-gap: 0.5rem;
+    align-items: center;
+    justify-content: flex-start;
+}
+.actualInfo{
+    font-size: 0.9em;
+    font-weight: 200;
+    color: var(--dark-grey);
+}
+
