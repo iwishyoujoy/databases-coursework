@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Gabarito:wght@400;500;600;700;800;900&display=swap');
+
+:root{
+  --light-background: #fefefe;
+  --light-pink: #fbecef;
+  --bright-pink: #cb889d;
+}
+
+*{
+  font-family: 'Gabarito', sans-serif;
+  color: black;
+}
+
+header{
+  padding: 10px 20px;
+  background-color: var(--light-background);
+  z-index: 999;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+}

@@ -1,0 +1,36 @@
+.logo{
+    height: 40px;
+    width: 40px;
+}
+
+.search, .cart, .account{
+    height: 20px;
+    width: 20px;
+}
+
+.logoContainer{
+    display: flex;
+    flex-direction: row;
+    column-gap: 1rem;
+    align-items: center;
+    justify-content: left;
+}
+
+.logoText{
+    color: var(--bright-pink);
+}
+
+.menuContainer, .accountContainer{
+    display: flex;
+    flex-direction: row;
+    column-gap: 1rem;
+    align-items: center;
+}
+
+.menuContainer{
+    justify-content: left;
+}
+
+.accountContainer{
+    justify-content: right;
+}
