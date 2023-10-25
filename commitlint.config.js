@@ -31,7 +31,7 @@ module.exports = {
                 '\x1b[31mERROR\x1b[0m: Please follow the format \'[chore] subject\'',
               ];
             }
-            
+
 return [
               true, 
               ''
