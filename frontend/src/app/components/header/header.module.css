@@ -1,9 +1,25 @@
+.header{
+    padding: 10px 30px;
+    background-color: var(--light-pink);
+    min-width: 1200px;
+    z-index: 999;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+    column-gap: 518px;
+}
+
 .logo{
     height: 40px;
     width: 40px;
 }
 
-.search, .cart, .account{
+.menuLink{
+    width: 25px;
+}
+.menuLogo{
     height: 20px;
     width: 20px;
 }
@@ -16,31 +32,35 @@
 }
 
 .logoContainer{
-    font-size: 1.3em;
+    width: 165px;
+    font-size: var(--font-size-m);
     font-weight: 500;
-    column-gap: 1rem;
+    column-gap: 15px;
 }
 .leftContainer{
-    column-gap: 3rem;
+    column-gap: 45px;
 }
 
 .logoText{
-    color: var(--bright-pink);
+    color: black;
 }
 
 .menuContainer, .accountContainer{
+    font-size: var(--font-size-s);
     display: flex;
     flex-direction: row;
-    column-gap: 1rem;
+    column-gap: 15px;
     align-items: center;
 }
 
 .menuContainer{
     justify-content: left;
+    width: 225px;
 }
 
 .accountContainer{
     justify-content: right;
+    width: 95px;
 }
 
 .hoverPink:hover{

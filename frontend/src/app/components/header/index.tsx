@@ -1,5 +1,7 @@
-import styles from './header.module.css';
+import React from 'react';
+
 import Image from "next/image";
+import Link from "next/link";
 
 import logo from "@/images/logo.svg";
 import search from "@/images/search.svg";
@@ -8,16 +10,19 @@ import account from "@/images/account.svg";
 
 // import arrowDown from "@/images/arrowDown.svg";
 
-import Link from "next/link";
+import styles from './header.module.css';
 
-export default function Header(){
+export const Header = () => {
+
+    // const response = fetch('https://localhost:3100/api/review/all');
+
     return (
-        <header>
+        <header className={styles.header}>
             <div className={styles.leftContainer}>
-                <div className={styles.logoContainer}>
+                <Link className={styles.logoContainer} href='/'>
                     <Image className={styles.logo} src={logo} alt="Logo picture - heels"/>
                     <div className={styles.logoText}>Bimbo shop</div>
-                </div>
+                </Link>
                 <div className={styles.menuContainer}>
                     <Link className={styles.hoverPink} href="/">Home</Link>
                     <Link className={styles.hoverPink} href="/">Catalog</Link>
@@ -27,14 +32,14 @@ export default function Header(){
                 </div>
             </div>
             <div className={styles.accountContainer}>
-                <Link href="/">
-                    <Image className={styles.search} src={search} alt="Search"/>
+                <Link href="/" className={styles.menuLink}>
+                    <Image className={styles.menuLogo} src={search} alt="Search"/>
                 </Link>
-                <Link href="/">
-                    <Image className={styles.cart} src={cart} alt="Cart"/>
+                <Link href="/" className={styles.menuLink}>
+                    <Image className={styles.menuLogo} src={cart} alt="Cart"/>
                 </Link>
-                <Link href="/">
-                    <Image className={styles.account} src={account} alt="Account"/>
+                <Link href="/account" className={styles.menuLink}>
+                    <Image className={styles.menuLogo} src={account} alt="Account"/>
                 </Link>
             </div>
         </header>

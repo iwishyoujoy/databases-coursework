@@ -1,3 +1,5 @@
+import React from "react";
+
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./footer.module.css";
@@ -9,11 +11,10 @@ import phone from "@/images/phone.svg";
 import fax from "@/images/fax.svg";
 
 import { Button } from '@chakra-ui/react';
-import { Divider } from '@chakra-ui/react';
 
-export default function Footer(){
+export const Footer = () => {
     return (
-        <footer>
+        <footer className={styles.footer}>
             <div className={styles.leftContainer}>
                 <div className={styles.logoContainer}>
                     <Image className={styles.logo} src={logo} alt="Logo picture"/>
@@ -59,7 +60,6 @@ export default function Footer(){
                             Russia, Saint-Petersburg, Kronverksky Avenue, 49
                         </div>
                     </div>
-                    <Divider/>
                     <div className={styles.info}>
                         <div className={styles.infoFirstRow}>
                             <Image className={styles.svg} src={email} alt="Picture of email"/>
@@ -71,7 +71,6 @@ export default function Footer(){
                             bimboshophelp@yandex.ru
                         </div>
                     </div>   
-                    <Divider/>
                     <div className={styles.info}>
                         <div className={styles.infoFirstRow}>
                             <Image className={styles.svg} src={phone} alt="Picture of phone"/>
@@ -83,7 +82,6 @@ export default function Footer(){
                             +79654736529
                         </div>
                     </div>
-                    <Divider/>
                     <div className={styles.info}>
                         <div className={styles.infoFirstRow}>
                             <Image className={styles.svg} src={fax} alt="Picture of fax"/>
