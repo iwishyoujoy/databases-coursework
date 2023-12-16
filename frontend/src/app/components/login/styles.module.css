@@ -1,0 +1,106 @@
+.container{
+    margin-top: 50px;
+    margin-bottom: 50px;
+
+    width: 600px;
+    height: 450px;
+    background-color: var(--light-light-pink);
+    border-radius: var(--border-radius-m);
+
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.leftContainer{
+    flex-basis: 350px;
+
+    display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+    align-items: center;
+    justify-content: flex-start;
+
+    margin-top: 35px;
+}
+
+.rightContainer{
+    flex-basis: 250px;
+}
+
+.title{
+    font-size: var(--font-size-xl);
+    color: var(--bright-pink);
+}
+
+.inputContainer{
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.input{
+    width: 280px;
+    background-color: var(--light-light-pink);
+    border: 1px solid var(--bright-pink);
+    border-radius: var(--border-radius-m);
+    padding: 5px 10px;
+    color: black;
+    font-size: var(--font-size-s);
+}
+
+.input::placeholder{
+    color: var(--medium-pink);
+}
+
+.buttonContainer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    column-gap: 10px;
+}
+
+.button{
+    width: 135px;
+    border-radius: var(--border-radius-m);
+    padding: 5px;
+    border: 1px solid var(--bright-pink);
+}
+
+.signup, .signin:hover{
+    background-color: var(--bright-pink);
+    color: var(--light-light-pink);
+}
+
+.signin, .signup:hover{
+    background-color: var(--light-light-pink);
+    color: var(--bright-pink);
+}
+
+.subtitle, .description {
+    width: 280px;
+    font-weight: var(--font-weight-s);
+    text-align: center;
+    line-height: var(--line-height-s);
+}
+
+.description{
+    margin-top: 10px;
+}
+
+.error{
+    margin-top: -15px;
+    margin-bottom: -29px;
+    color: red;
+}
+
+.background{
+    height: 450px;
+    object-fit: cover;
+    border-top-right-radius: var(--border-radius-m);
+    border-bottom-right-radius: var(--border-radius-m);
+}

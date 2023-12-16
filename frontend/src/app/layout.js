@@ -1,12 +1,11 @@
-'use client'
-
 import { Inter } from 'next/font/google'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 import { ChakraProvider } from '@chakra-ui/react'
-import Header from './components/header/header';
-import Footer from './components/footer/footer';
+import { Header } from './components/header';
+import { Footer } from './components/footer';
+import { StoreProvider } from './redux/storeProvider';
 
 // export const metadata = {
 //   title: 'Bimbo Shop',
@@ -17,15 +16,17 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <ChakraProvider>
-        <body className={inter.className}>
-          <div className='mainContainer'>
-            <Header />
-            <div className='mainContent'>
-              {children}
+        <StoreProvider>
+          <body className={inter.className}>
+            <div className='mainContainer'>
+              <Header />
+              <div className='mainContent'>
+                {children}
+              </div>
+              <Footer />
             </div>
-            <Footer />
-          </div>
-        </body>
+          </body>
+        </StoreProvider>
       </ChakraProvider>
     </html>
   )
