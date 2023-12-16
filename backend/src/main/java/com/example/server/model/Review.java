@@ -17,8 +17,12 @@ public class Review {
     @Id
     @Column(name = "id", nullable = false)
     private Long id;
+    @Column(name = "customer_id", nullable = false)
     private Long customer_id;
+    @Column(name = "rating", nullable = false)
     private Integer rating;
+    @Column(name = "content", nullable = false)
     private String content;
+    @Column(name = "item_id", nullable = false)
     private Long item_id;
 }

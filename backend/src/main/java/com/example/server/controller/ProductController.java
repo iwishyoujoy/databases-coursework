@@ -24,7 +24,7 @@ public class ProductController {
     public String create(@RequestBody Product product) {
         String toSend = "";
         try {
-            productRepo.findAll().stream().filter(user -> user.getName().equals(product.getName())).filter(user -> user.getId().equals(product.getId())).findFirst().get();
+            productRepo.findAll().stream().filter(user -> user.getName().equals(product.getName())).filter(user -> user.getId_item().equals(product.getId_item())).findFirst().get();
             toSend = "Такой продукт уже существует.";
         } catch (NoSuchElementException e) {
             productRepo.save(product);
@@ -37,7 +37,7 @@ public class ProductController {
     @GetMapping("{id}")
     public Product getProduct(@PathVariable String id) {
         try {
-            return productRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
+            return productRepo.findAll().stream().filter(user -> user.getId_item() == Long.parseLong(id)).findFirst().get();
         } catch (NoSuchElementException e) {
             return null;
         }
@@ -51,7 +51,7 @@ public class ProductController {
     public String delete(@PathVariable String id) {
         String toSend = "";
         try {
-            Product product = productRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
+            Product product = productRepo.findAll().stream().filter(user -> user.getId_item() == Long.parseLong(id)).findFirst().get();
             productRepo.delete(product);
             toSend = "done";
         } catch (NoSuchElementException e) {
@@ -65,8 +65,8 @@ public class ProductController {
         String toSend = "";
         Product productBefore;
         try {
-            productBefore = productRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
-            product.setId(productBefore.getId());
+            productBefore = productRepo.findAll().stream().filter(user -> user.getId_item() == Long.parseLong(id)).findFirst().get();
+            product.setId_item(productBefore.getId_item());
             productRepo.save(product);
             toSend = "done";
         } catch (NoSuchElementException e) {

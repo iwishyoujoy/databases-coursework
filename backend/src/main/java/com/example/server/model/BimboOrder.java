@@ -19,8 +19,11 @@ public class BimboOrder {
     @Id
     @Column(name = "id", nullable = false)
     private Long id;
+    @Column(name = "customer_id", nullable = false)
     private Long customer_id;
+    @Column(name = "timestamp", nullable = false)
     private Timestamp timestamp;
+    @Column(name = "status", nullable = false)
     private String status;
 
 }

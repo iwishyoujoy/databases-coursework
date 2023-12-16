@@ -36,14 +36,14 @@ public class ItemInOrderController {
         } catch (NoSuchElementException e) {
             itemInOrderRepo.save(itemInOrder);
             Item item = itemRepo.findAll().stream().filter(user -> user.getId().equals(itemInOrder.getItemId().getItem_id())).findFirst().get();
-            if(item.getAppointment_id() == null){
-                Product product = productRepo.findAll().stream().filter(user -> user.getId().equals(item.getProduct_id())).findFirst().get();
+            if(item.getType().equals("Appointment")){
+                Product product = productRepo.findAll().stream().filter(user -> user.getId_item().equals(item.getId())).findFirst().get();
                 int new_amount = product.getAmount_available();
                 new_amount--;
                 product.setAmount_available(new_amount);
                 productRepo.save(product);
             }else{
-                Appointment appointment = appointmentRepo.findAll().stream().filter(user -> user.getId().equals(item.getAppointment_id())).findFirst().get();
+                Appointment appointment = appointmentRepo.findAll().stream().filter(user -> user.getId().equals(item.getId())).findFirst().get();
                 AppointmentController appointmentController = new AppointmentController(appointmentRepo);
                 appointmentController.create(appointment);
             }
@@ -81,14 +81,14 @@ public class ItemInOrderController {
                     .get();
 
             Item item = itemRepo.findAll().stream().filter(user -> user.getId().equals(itemInOrder.getItemId().getItem_id())).findFirst().get();
-            if(item.getAppointment_id() == null){
-                Product product = productRepo.findAll().stream().filter(user -> user.getId().equals(item.getProduct_id())).findFirst().get();
+            if(item.getType().equals("Appointment")){
+                Product product = productRepo.findAll().stream().filter(user -> user.getId_item().equals(item.getId())).findFirst().get();
                 int new_amount = product.getAmount_available();
                 new_amount++;
                 product.setAmount_available(new_amount);
                 productRepo.save(product);
             }else{
-                Appointment appointment = appointmentRepo.findAll().stream().filter(user -> user.getId().equals(item.getAppointment_id())).findFirst().get();
+                Appointment appointment = appointmentRepo.findAll().stream().filter(user -> user.getId().equals(item.getId())).findFirst().get();
                 AppointmentController appointmentController = new AppointmentController(appointmentRepo);
                 appointmentController.delete(appointment);
             }

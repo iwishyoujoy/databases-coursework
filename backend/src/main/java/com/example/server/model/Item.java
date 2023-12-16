@@ -21,9 +21,6 @@ public class Item implements Serializable {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    @Column(name = "product_id")
-    private Long product_id;
-
-    @Column(name = "appointment_id ")
-    private Long appointment_id;
+    @Column(name = "type")
+    private String type;
 }

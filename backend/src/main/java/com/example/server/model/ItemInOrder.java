@@ -16,7 +16,7 @@ import java.io.Serializable;
 public class ItemInOrder {
     @EmbeddedId
     ItemId itemId;
-
+    @Column(name = "current_amount", nullable = false)
     private Integer current_amount;
 
 }
