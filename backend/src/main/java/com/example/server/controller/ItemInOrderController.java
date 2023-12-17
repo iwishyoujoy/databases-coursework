@@ -87,7 +87,7 @@ public class ItemInOrderController {
             }else{
                 Appointment appointment = appointmentRepo.findAll().stream().filter(user -> user.getItem_id().equals(item.getId())).findFirst().get();
                 AppointmentController appointmentController = new AppointmentController(appointmentRepo);
-                appointmentController.delete(appointment);
+                appointmentController.delete(appointment.getItem_id().toString(), appointment.getDate_time().toString());
             }
             itemInOrderRepo.delete(itemInOrder);
             return 200;

@@ -46,9 +46,10 @@ public class AppointmentController {
         return appointmentRepo.findAll();
     }
 
-    @DeleteMapping()
-    public int delete(@RequestBody Appointment appointment) {
+    @DeleteMapping("{item_id}/{timestamp}")
+    public int delete(@PathVariable String item_id, @PathVariable String timestamp) {
         try {
+            Appointment appointment = appointmentRepo.findAll().stream().filter(user -> user.getDate_time().toString().equals(timestamp)).filter(user -> user.getItem_id() == Integer.parseInt(item_id)).findFirst().get();
             appointmentRepo.delete(appointment);
             return 200;
         } catch (NoSuchElementException e) {
