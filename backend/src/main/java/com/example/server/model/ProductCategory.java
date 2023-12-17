@@ -8,9 +8,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "procedure")
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductCategory {

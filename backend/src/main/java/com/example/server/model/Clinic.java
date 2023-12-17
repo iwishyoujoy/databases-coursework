@@ -9,9 +9,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "clinic")
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Clinic {

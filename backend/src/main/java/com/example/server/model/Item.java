@@ -9,9 +9,7 @@ import lombok.*;
 import java.io.Serializable;
 @Entity
 @Table(name = "item")
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 //TODO: нужна ли этот класс??????

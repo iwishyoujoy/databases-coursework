@@ -11,9 +11,7 @@ import java.sql.Date;
 
 @Entity
 @Table(name = "customer")
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Customer {

@@ -7,9 +7,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "favorite_product")
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class FavoriteProduct {

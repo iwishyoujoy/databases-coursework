@@ -2,6 +2,7 @@ package com.example.server.controller;
 
 import com.example.server.model.Clinic;
 import com.example.server.repo.ClinicRepo;
+import com.example.server.service.AuthRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,11 +23,11 @@ public class ClinicController {
         this.clinicRepo = clinicRepo;
     }
 
-    @PostMapping("{login}")
-    public int signIn(@RequestBody Clinic reqClinic, @PathVariable String login) {
+    @PostMapping()
+    public int signIn(@RequestBody AuthRequest reqClinic) {
         Clinic realClinic;
         try {
-            realClinic = clinicRepo.findAll().stream().filter(user -> user.getLogin().equals(login)).findFirst().get();
+            realClinic = clinicRepo.findAll().stream().filter(user -> user.getLogin().equals(reqClinic.getUsername())).findFirst().get();
             String reqPass = encryptPassword(reqClinic.getPassword());
             if (realClinic.getPassword().equals(reqPass)) return 200;
             else return 501;

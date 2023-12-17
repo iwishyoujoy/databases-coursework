@@ -2,6 +2,7 @@ package com.example.server.controller;
 
 import com.example.server.model.Customer;
 import com.example.server.repo.CustomerRepo;
+import com.example.server.service.AuthRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,11 +23,11 @@ public class CustomerController {
         this.customerRepo = customerRepo;
     }
 
-    @PostMapping("{login}")
-    public int signIn(@RequestBody Customer reqCustomer, @PathVariable String login) {
+    @PostMapping()
+    public int signIn(@RequestBody AuthRequest reqCustomer) {
         Customer realCustomer;
         try {
-            realCustomer = customerRepo.findAll().stream().filter(customer -> customer.getLogin().equals(login)).findFirst().get();
+            realCustomer = customerRepo.findAll().stream().filter(customer -> customer.getLogin().equals(reqCustomer.getUsername())).findFirst().get();
             String reqPass = encryptPassword(reqCustomer.getPassword());
             if (realCustomer.getPassword().equals(reqPass)) return 200;
             else return 501;

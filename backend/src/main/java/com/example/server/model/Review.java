@@ -8,9 +8,7 @@ import lombok.*;
 
 @Entity
 @Table(name = "review")
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Review {

@@ -11,9 +11,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "appointment")
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Appointment {

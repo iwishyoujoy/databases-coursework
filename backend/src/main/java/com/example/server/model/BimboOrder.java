@@ -10,9 +10,7 @@ import java.sql.Timestamp;
 
 @Entity
 @Table(name = "bimbo_order")
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class BimboOrder {

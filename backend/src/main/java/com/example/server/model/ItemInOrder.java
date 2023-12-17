@@ -8,9 +8,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "item_in_order")
-@Getter
-@Setter
-@ToString
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ItemInOrder {
