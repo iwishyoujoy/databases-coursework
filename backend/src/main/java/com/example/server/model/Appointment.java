@@ -18,8 +18,8 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class Appointment {
     @Id
-    @Column(name = "id", nullable = false)
-    private Long id;
+    @Column(name = "item_id ", nullable = false)
+    private Long item_id ;
     @Column(name = "date_time", nullable = false)
     private Timestamp date_time;
     @Column(name = "procedure_id", nullable = false)

@@ -23,32 +23,29 @@ public class ClinicController {
     }
 
     @PostMapping("{login}")
-    public String signIn(@RequestBody Clinic reqClinic, @PathVariable String login) {
+    public int signIn(@RequestBody Clinic reqClinic, @PathVariable String login) {
         Clinic realClinic;
-        String toSend = "";
         try {
             realClinic = clinicRepo.findAll().stream().filter(user -> user.getLogin().equals(login)).findFirst().get();
             String reqPass = encryptPassword(reqClinic.getPassword());
-            if (realClinic.getPassword().equals(reqPass)) toSend = "pass";
-            else toSend = "Неправильный пароль.";
+            if (realClinic.getPassword().equals(reqPass)) return 200;
+            else return 501;
         } catch (NoSuchElementException e) {
-            toSend = "Пользователя с таким логином не существует.";
+            return 500;
         }
-        return toSend;
 
     }
+
     @PostMapping
-    public String signUp(@RequestBody Clinic clinic) {
-        String toSend = "";
+    public int signUp(@RequestBody Clinic clinic) {
         try {
             clinicRepo.findAll().stream().filter(user -> user.getLogin().equals(clinic.getLogin())).findFirst().get();
-            toSend = "Пользователь с таким логином уже существует.";
+            return 500;
         } catch (NoSuchElementException e) {
             clinic.setPassword(encryptPassword(clinic.getPassword()));
             clinicRepo.save(clinic);
-            toSend = "Вы успешно зарегистрированы. Войдите в свой аккаунт.";
+            return 200;
         }
-        return toSend;
     }
 
     //проверила работу сервера
@@ -58,17 +55,15 @@ public class ClinicController {
     }
 
     @DeleteMapping("{login}")
-    public String delete(@PathVariable String login){
-        String toSend = "";
+    public int delete(@PathVariable String login) {
         Clinic clinic;
         try {
             clinic = clinicRepo.findAll().stream().filter(c -> c.getLogin().equals(login)).findFirst().get();
             clinicRepo.delete(clinic);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Клиники с таким логином не существует.";
+            return 500;
         }
-        return toSend;
     }
 
     @GetMapping("/all")
@@ -77,20 +72,19 @@ public class ClinicController {
     }
 
     @PutMapping("{login}")
-    public String update(@RequestBody Clinic clinic, @PathVariable String login) {
-        String toSend = "";
+    public int update(@RequestBody Clinic clinic, @PathVariable String login) {
         Clinic clinicBefore;
         try {
             clinicBefore = clinicRepo.findAll().stream().filter(c -> c.getLogin().equals(login)).findFirst().get();
             clinic.setId(clinicBefore.getId());
             clinicRepo.save(clinic);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Клиники с таким логином не существует.";
+            return 500;
         }
-        return toSend;
     }
-    private String encryptPassword(final String password){
+
+    private String encryptPassword(final String password) {
         md.update(password.getBytes());
         byte[] byteBuffer = md.digest();
         StringBuilder strHexString = new StringBuilder();

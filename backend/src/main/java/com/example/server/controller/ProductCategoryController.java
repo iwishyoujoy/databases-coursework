@@ -22,16 +22,12 @@ public class ProductCategoryController {
     }
 
     @PostMapping
-    public String create(@RequestBody ProductCategory productCategory) {
-        String toSend = "";
+    public int create(@RequestBody ProductCategory productCategory) {
         try {
             productCategoryRepo.findAll().stream().filter(user -> user.getName().equals(productCategory.getName())).filter(user -> user.getId().equals(productCategory.getId())).findFirst().get();
-            toSend = "Такая категория продуктов уже существует.";
-        } catch (NoSuchElementException e) {
+            return 500;        } catch (NoSuchElementException e) {
             productCategoryRepo.save(productCategory);
-            toSend = "Категория создана.";
-        }
-        return toSend;
+            return 200;        }
     }
 
 
@@ -49,31 +45,23 @@ public class ProductCategoryController {
     }
 
     @DeleteMapping("{id}")
-    public String delete(@PathVariable String id) {
-        String toSend = "";
+    public int delete(@PathVariable String id) {
         try {
             ProductCategory productCategory = productCategoryRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
             productCategoryRepo.delete(productCategory);
-            toSend = "done";
-        } catch (NoSuchElementException e) {
-            toSend = "Такого продукта не существует.";
-        }
-        return toSend;
+            return 200;        } catch (NoSuchElementException e) {
+            return 500;        }
     }
 
     @PutMapping("{id}")
-    public String update(@RequestBody ProductCategory productCategory, @PathVariable String id) {
-        String toSend = "";
+    public int update(@RequestBody ProductCategory productCategory, @PathVariable String id) {
         ProductCategory categoryBefore;
         try {
             categoryBefore = productCategoryRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
             productCategory.setId(categoryBefore.getId());
             productCategoryRepo.save(productCategory);
-            toSend = "done";
-        } catch (NoSuchElementException e) {
-            toSend = "Такого продукта не существует.";
-        }
-        return toSend;
+            return 200;        } catch (NoSuchElementException e) {
+            return 500;        }
     }
 
 }

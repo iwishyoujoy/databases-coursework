@@ -28,11 +28,10 @@ public class ItemInOrderController {
     }
 
     @PostMapping
-    public String create(@RequestBody ItemInOrder itemInOrder) throws NoSuchAlgorithmException {
-        String toSend = "";
+    public int create(@RequestBody ItemInOrder itemInOrder) throws NoSuchAlgorithmException {
         try {
             itemInOrderRepo.findAll().stream().filter(user -> user.getItemId().equals(itemInOrder.getItemId())).filter(user -> user.getCurrent_amount().equals(itemInOrder.getCurrent_amount())).findFirst().get();
-            toSend = "Уже лежит в заказе.";
+            return 500;
         } catch (NoSuchElementException e) {
             itemInOrderRepo.save(itemInOrder);
             Item item = itemRepo.findAll().stream().filter(user -> user.getId().equals(itemInOrder.getItemId().getItem_id())).findFirst().get();
@@ -43,13 +42,12 @@ public class ItemInOrderController {
                 product.setAmount_available(new_amount);
                 productRepo.save(product);
             }else{
-                Appointment appointment = appointmentRepo.findAll().stream().filter(user -> user.getId().equals(item.getId())).findFirst().get();
+                Appointment appointment = appointmentRepo.findAll().stream().filter(user -> user.getItem_id().equals(item.getId())).findFirst().get();
                 AppointmentController appointmentController = new AppointmentController(appointmentRepo);
                 appointmentController.create(appointment);
             }
-            toSend = "Положили в заказ.";
+            return 200;
         }
-        return toSend;
     }
 
     @GetMapping("/all/{order_id}")
@@ -67,8 +65,7 @@ public class ItemInOrderController {
     }
 
     @DeleteMapping("{order_id}/{item_id}")
-    public String delete(@PathVariable Long order_id, @PathVariable Long item_id) {
-        String toSend = "";
+    public int delete(@PathVariable Long order_id, @PathVariable Long item_id) {
         try {
             ItemInOrder itemInOrder = itemInOrderRepo
                     .findAll()
@@ -88,16 +85,15 @@ public class ItemInOrderController {
                 product.setAmount_available(new_amount);
                 productRepo.save(product);
             }else{
-                Appointment appointment = appointmentRepo.findAll().stream().filter(user -> user.getId().equals(item.getId())).findFirst().get();
+                Appointment appointment = appointmentRepo.findAll().stream().filter(user -> user.getItem_id().equals(item.getId())).findFirst().get();
                 AppointmentController appointmentController = new AppointmentController(appointmentRepo);
                 appointmentController.delete(appointment);
             }
             itemInOrderRepo.delete(itemInOrder);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException | NoSuchAlgorithmException e) {
-            toSend = "Такой категории не существует.";
+            return 500;
         }
-        return toSend;
     }
 
 

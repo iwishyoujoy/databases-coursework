@@ -23,67 +23,61 @@ public class SellerController {
     }
 
     @PostMapping("{login}")
-    public String signIn(@RequestBody Seller reqSeller, @PathVariable String login) {
+    public int signIn(@RequestBody Seller reqSeller, @PathVariable String login) {
         Seller realSeller;
-        String toSend = "";
         try {
             realSeller = sellerRepo.findAll().stream().filter(user -> user.getLogin().equals(login)).findFirst().get();
             String reqPass = encryptPassword(reqSeller.getPassword());
-            if (realSeller.getPassword().equals(reqPass)) toSend = "pass";
-            else toSend = "Неправильный пароль.";
+            if (realSeller.getPassword().equals(reqPass)) return 200;
+            else return 501;
         } catch (NoSuchElementException e) {
-            toSend = "Пользователя с таким логином не существует.";
+            return 500;
         }
-        return toSend;
     }
+
     @PostMapping
-    public String signUp(@RequestBody Seller seller) {
-        String toSend = "";
+    public int signUp(@RequestBody Seller seller) {
         try {
             sellerRepo.findAll().stream().filter(user -> user.getLogin().equals(seller.getLogin())).findFirst().get();
-            toSend = "Пользователь с таким логином уже существует.";
+            return 500;
         } catch (NoSuchElementException e) {
             seller.setPassword(encryptPassword(seller.getPassword()));
             sellerRepo.save(seller);
-            toSend = "Вы успешно зарегистрированы. Войдите в свой аккаунт.";
+            return 200;
         }
-        return toSend;
     }
 
     @GetMapping("{id}")
     public Seller getSeller(@PathVariable String id) {
         return sellerRepo.findAll().stream().filter(user -> user.getId() == Integer.parseInt(id)).findFirst().get();
     }
+
     @DeleteMapping("{login}")
-    public String delete(@PathVariable String login){
-        String toSend = "";
+    public int delete(@PathVariable String login) {
         Seller seller;
         try {
             seller = sellerRepo.findAll().stream().filter(c -> c.getLogin().equals(login)).findFirst().get();
             sellerRepo.delete(seller);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Продавца с таким логином не существует.";
+            return 500;
         }
-        return toSend;
     }
 
     @PutMapping("{login}")
-    public String update(@RequestBody Seller seller, @PathVariable String login) {
-        String toSend = "";
+    public int update(@RequestBody Seller seller, @PathVariable String login) {
         Seller sellerBefore;
         try {
             sellerBefore = sellerRepo.findAll().stream().filter(c -> c.getLogin().equals(login)).findFirst().get();
             seller.setId(sellerBefore.getId());
             sellerRepo.save(seller);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Пользователя с таким логином не существует.";
+            return 500;
         }
-        return toSend;
     }
 
-    private String encryptPassword(final String password){
+    private String encryptPassword(final String password) {
         md.update(password.getBytes());
         byte[] byteBuffer = md.digest();
         StringBuilder strHexString = new StringBuilder();

@@ -21,16 +21,14 @@ public class ProductController {
     }
 
     @PostMapping
-    public String create(@RequestBody Product product) {
-        String toSend = "";
+    public int create(@RequestBody Product product) {
         try {
             productRepo.findAll().stream().filter(user -> user.getName().equals(product.getName())).filter(user -> user.getId_item().equals(product.getId_item())).findFirst().get();
-            toSend = "Такой продукт уже существует.";
+            return 500;
         } catch (NoSuchElementException e) {
             productRepo.save(product);
-            toSend = "Запись создана.";
+            return 200;
         }
-        return toSend;
     }
 
 
@@ -42,37 +40,34 @@ public class ProductController {
             return null;
         }
     }
+
     @GetMapping("/all")
     public List<Product> getAllProduct() {
         return productRepo.findAll();
     }
 
     @DeleteMapping("{id}")
-    public String delete(@PathVariable String id) {
-        String toSend = "";
+    public int delete(@PathVariable String id) {
         try {
             Product product = productRepo.findAll().stream().filter(user -> user.getId_item() == Long.parseLong(id)).findFirst().get();
             productRepo.delete(product);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Такого продукта не существует.";
+            return 500;
         }
-        return toSend;
     }
 
     @PutMapping("{id}")
-    public String update(@RequestBody Product product, @PathVariable String id) {
-        String toSend = "";
+    public int update(@RequestBody Product product, @PathVariable String id) {
         Product productBefore;
         try {
             productBefore = productRepo.findAll().stream().filter(user -> user.getId_item() == Long.parseLong(id)).findFirst().get();
             product.setId_item(productBefore.getId_item());
             productRepo.save(product);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Такого продукта не существует.";
+            return 500;
         }
-        return toSend;
     }
 
 }

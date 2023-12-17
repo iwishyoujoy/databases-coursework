@@ -21,16 +21,14 @@ public class AppointmentController {
     }
 
     @PostMapping
-    public String create(@RequestBody Appointment appointment) {
-        String toSend = "";
+    public int create(@RequestBody Appointment appointment) {
         try {
-            appointmentRepo.findAll().stream().filter(user -> user.getDate_time().equals(appointment.getDate_time())).filter(user -> user.getId().equals(appointment.getId())).findFirst().get();
-            toSend = "Запись на эту процедуру в это время уже есть.";
+            appointmentRepo.findAll().stream().filter(user -> user.getDate_time().equals(appointment.getDate_time())).filter(user -> user.getItem_id().equals(appointment.getItem_id())).findFirst().get();
+            return 500;
         } catch (NoSuchElementException e) {
             appointmentRepo.save(appointment);
-            toSend = "Запись создана.";
+            return 200;
         }
-        return toSend;
     }
 
 
@@ -38,7 +36,7 @@ public class AppointmentController {
     public Appointment getAppointment(@PathVariable String item_id, @PathVariable String timestamp) {
         String newtimestamp = timestamp.split("\"")[1] + ".0";
         try {
-            return appointmentRepo.findAll().stream().filter(user -> user.getDate_time().toString().equals(newtimestamp)).filter(user -> user.getId() == Integer.parseInt(item_id)).findFirst().get();
+            return appointmentRepo.findAll().stream().filter(user -> user.getDate_time().toString().equals(newtimestamp)).filter(user -> user.getItem_id() == Integer.parseInt(item_id)).findFirst().get();
         } catch (NoSuchElementException e) {
             return null;
         }
@@ -49,31 +47,27 @@ public class AppointmentController {
     }
 
     @DeleteMapping()
-    public String delete(@RequestBody Appointment appointment) {
-        String toSend = "";
+    public int delete(@RequestBody Appointment appointment) {
         try {
             appointmentRepo.delete(appointment);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Такой записи не существует.";
+            return 500;
         }
-        return toSend;
     }
 
     @PutMapping("{item_id}/{timestamp}")
-    public String update(@RequestBody Appointment appointment, @PathVariable String item_id, @PathVariable String timestamp) {
-        String toSend = "";
+    public int update(@RequestBody Appointment appointment, @PathVariable String item_id, @PathVariable String timestamp) {
         String newtimestamp = timestamp.split("\"")[1] + ".0";
         Appointment appointmentBefore;
         try {
-            appointmentBefore = appointmentRepo.findAll().stream().filter(user -> user.getDate_time().toString().equals(newtimestamp)).filter(user -> user.getId() == Integer.parseInt(item_id)).findFirst().get();
-            appointment.setId(appointmentBefore.getId());
+            appointmentBefore = appointmentRepo.findAll().stream().filter(user -> user.getDate_time().toString().equals(newtimestamp)).filter(user -> user.getItem_id() == Integer.parseInt(item_id)).findFirst().get();
+            appointment.setItem_id(appointmentBefore.getItem_id());
             appointmentRepo.save(appointment);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Такой записи не существует.";
+            return 500;
         }
-        return toSend;
     }
 
 }

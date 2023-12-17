@@ -22,16 +22,14 @@ public class ReviewController {
     }
 
     @PostMapping
-    public String create(@RequestBody Review review) {
-        String toSend = "";
+    public int create(@RequestBody Review review) {
         try {
             reviewRepo.findAll().stream().filter(user -> user.getItem_id().equals(review.getItem_id())).filter(user -> user.getCustomer_id().equals(review.getCustomer_id())).findFirst().get();
-            toSend = "Отзыв на этот айтем уже существует.";
+            return 500;
         } catch (NoSuchElementException e) {
             reviewRepo.save(review);
-            toSend = "Отзыв создан.";
+            return 200;
         }
-        return toSend;
     }
 
 
@@ -66,30 +64,26 @@ public class ReviewController {
     }
 
     @DeleteMapping("{id}")
-    public String delete(@PathVariable String id) {
-        String toSend = "";
+    public int delete(@PathVariable String id) {
         try {
             Review review = reviewRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
             reviewRepo.delete(review);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Такого отзыва не существует.";
+            return 500;
         }
-        return toSend;
     }
 
     @PutMapping("{id}")
-    public String update(@RequestBody Review review, @PathVariable String id) {
-        String toSend = "";
+    public int update(@RequestBody Review review, @PathVariable String id) {
         Review procedureBefore;
         try {
             procedureBefore = reviewRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
             review.setId(procedureBefore.getId());
             reviewRepo.save(review);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Такого отзыва не существует.";
+            return 500;
         }
-        return toSend;
     }
 }

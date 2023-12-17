@@ -23,31 +23,27 @@ public class CustomerController {
     }
 
     @PostMapping("{login}")
-    public String signIn(@RequestBody Customer reqCustomer, @PathVariable String login) {
+    public int signIn(@RequestBody Customer reqCustomer, @PathVariable String login) {
         Customer realCustomer;
-        String toSend = "";
         try {
             realCustomer = customerRepo.findAll().stream().filter(customer -> customer.getLogin().equals(login)).findFirst().get();
             String reqPass = encryptPassword(reqCustomer.getPassword());
-            if (realCustomer.getPassword().equals(reqPass)) toSend = "pass";
-            else toSend = "Неправильный пароль.";
+            if (realCustomer.getPassword().equals(reqPass)) return 200;
+            else return 501;
         } catch (NoSuchElementException e) {
-            toSend = "Пользователя с таким логином не существует.";
+            return 500;
         }
-        return toSend;
     }
     @PostMapping
-    public String signUp(@RequestBody Customer customer) {
-        String toSend = "";
+    public int signUp(@RequestBody Customer customer) {
         try {
             customerRepo.findAll().stream().filter(user -> user.getLogin().equals(customer.getLogin())).findFirst().get();
-            toSend = "Пользователь с таким логином уже существует.";
+            return 500;
         } catch (NoSuchElementException e) {
             customer.setPassword(encryptPassword(customer.getPassword()));
             customerRepo.save(customer);
-            toSend = "Вы успешно зарегистрированы. Войдите в свой аккаунт.";
+            return 200;
         }
-        return toSend;
     }
 
     @GetMapping("{id}")
@@ -55,32 +51,30 @@ public class CustomerController {
         return customerRepo.findAll().stream().filter(user -> user.getId() == Integer.parseInt(id)).findFirst().get();
     }
     @DeleteMapping("{login}")
-    public String delete(@PathVariable String login){
+    public int delete(@PathVariable String login){
         String toSend = "";
         Customer customer;
         try {
             customer = customerRepo.findAll().stream().filter(c -> c.getLogin().equals(login)).findFirst().get();
             customerRepo.delete(customer);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Пользователя с таким логином не существует.";
+            return 500;
         }
-        return toSend;
     }
 
     @PutMapping("{login}")
-    public String update(@RequestBody Customer customer, @PathVariable String login) {
+    public int update(@RequestBody Customer customer, @PathVariable String login) {
         String toSend = "";
         Customer customerBefore;
         try {
             customerBefore = customerRepo.findAll().stream().filter(c -> c.getLogin().equals(login)).findFirst().get();
             customer.setId(customerBefore.getId());
             customerRepo.save(customer);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Пользователя с таким логином не существует.";
+            return 500;
         }
-        return toSend;
     }
 
     @GetMapping("/all")

@@ -23,8 +23,7 @@ public class FavoriteProductController {
     }
 
     @PostMapping()
-    public String create(@RequestBody FavoriteProduct favoriteProduct) {
-        String toSend = "";
+    public int create(@RequestBody FavoriteProduct favoriteProduct) {
         try {
             favoriteProductRepo.findAll().stream()
                     .filter(user -> user.getFavoriteProductId().getCustomer_id()
@@ -34,12 +33,11 @@ public class FavoriteProductController {
                     .findFirst()
                     .get();
 
-            toSend = "Такой продукт уже существует в любимом этого клиента.";
+            return 500;
         } catch (NoSuchElementException e) {
             favoriteProductRepo.save(favoriteProduct);
-            toSend = "Теперь в избранном.";
+            return 200;
         }
-        return toSend;
     }
 
 
@@ -60,16 +58,14 @@ public class FavoriteProductController {
     }
 
     @DeleteMapping("{customer_id}/{item_id}")
-    public String delete(@PathVariable Long customer_id, @PathVariable Long item_id) {
-        String toSend = "";
+    public int delete(@PathVariable Long customer_id, @PathVariable Long item_id) {
         try {
             FavoriteProduct favoriteProduct = favoriteProductRepo.findAll().stream().filter(user -> user.getFavoriteProductId().getCustomer_id().equals(customer_id)).filter(user -> user.getFavoriteProductId().getItem_id().equals(item_id)).findFirst().get();
             favoriteProductRepo.delete(favoriteProduct);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Такого айтема нет в избранном этого клиента.";
+            return 500;
         }
-        return toSend;
     }
 
 }

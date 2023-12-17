@@ -14,22 +14,21 @@ import java.util.NoSuchElementException;
 @CrossOrigin
 public class ProcedureController {
     private final ProcedureRepo procedureRepo;
+
     @Autowired
     public ProcedureController(ProcedureRepo procedureRepo) throws NoSuchAlgorithmException {
         this.procedureRepo = procedureRepo;
     }
 
     @PostMapping
-    public String create(@RequestBody Procedure procedure) {
-        String toSend = "";
+    public int create(@RequestBody Procedure procedure) {
         try {
             procedureRepo.findAll().stream().filter(user -> user.getName().equals(procedure.getName())).filter(user -> user.getId().equals(procedure.getId())).findFirst().get();
-            toSend = "Такая процедура уже существует.";
+            return 500;
         } catch (NoSuchElementException e) {
             procedureRepo.save(procedure);
-            toSend = "Процедура создана.";
+            return 200;
         }
-        return toSend;
     }
 
 
@@ -41,36 +40,33 @@ public class ProcedureController {
             return null;
         }
     }
+
     @GetMapping("/all")
     public List<Procedure> getAllProcedure() {
         return procedureRepo.findAll();
     }
 
     @DeleteMapping("{id}")
-    public String delete(@PathVariable String id) {
-        String toSend = "";
+    public int delete(@PathVariable String id) {
         try {
             Procedure procedure = procedureRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
             procedureRepo.delete(procedure);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Такая процедура не существует.";
+            return 500;
         }
-        return toSend;
     }
 
     @PutMapping("{id}")
-    public String update(@RequestBody Procedure procedure, @PathVariable String id) {
-        String toSend = "";
+    public int update(@RequestBody Procedure procedure, @PathVariable String id) {
         Procedure procedureBefore;
         try {
             procedureBefore = procedureRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
             procedure.setId(procedureBefore.getId());
             procedureRepo.save(procedure);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Такая процедура не существует.";
+            return 500;
         }
-        return toSend;
     }
 }

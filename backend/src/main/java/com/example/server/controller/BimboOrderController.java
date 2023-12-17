@@ -9,6 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+
 @RestController
 @RequestMapping("api/order")
 @CrossOrigin
@@ -21,16 +22,14 @@ public class BimboOrderController {
     }
 
     @PostMapping
-    public String create(@RequestBody BimboOrder bimboOrder) {
-        String toSend = "";
+    public int create(@RequestBody BimboOrder bimboOrder) {
         try {
             bimboOrderRepo.findAll().stream().filter(user -> user.getTimestamp().equals(bimboOrder.getTimestamp())).filter(user -> user.getCustomer_id().equals(bimboOrder.getCustomer_id())).findFirst().get();
-            toSend = "Такой заказ уже существует.";
+            return 500;
         } catch (NoSuchElementException e) {
             bimboOrderRepo.save(bimboOrder);
-            toSend = "Заказ создан.";
+            return 200;
         }
-        return toSend;
     }
 
 
@@ -48,8 +47,8 @@ public class BimboOrderController {
         try {
             List<BimboOrder> list = bimboOrderRepo.findAll();
             List<BimboOrder> to_ret = new ArrayList<>();
-            for(BimboOrder fp : list){
-                if(fp.getCustomer_id().equals(customer_id)){
+            for (BimboOrder fp : list) {
+                if (fp.getCustomer_id().equals(customer_id)) {
                     to_ret.add(fp);
                 }
             }
@@ -65,31 +64,27 @@ public class BimboOrderController {
     }
 
     @DeleteMapping("{id}")
-    public String delete(@PathVariable String id) {
-        String toSend = "";
+    public int delete(@PathVariable String id) {
         try {
             BimboOrder bimboOrder = bimboOrderRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
             bimboOrderRepo.delete(bimboOrder);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Такого продукта не существует.";
+            return 500;
         }
-        return toSend;
     }
 
     @PutMapping("{id}")
-    public String update(@RequestBody BimboOrder bimboOrder, @PathVariable String id) {
-        String toSend = "";
+    public int update(@RequestBody BimboOrder bimboOrder, @PathVariable String id) {
         BimboOrder productBefore;
         try {
             productBefore = bimboOrderRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
             bimboOrder.setId(productBefore.getId());
             bimboOrderRepo.save(bimboOrder);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Такого продукта не существует.";
+            return 500;
         }
-        return toSend;
     }
 
 }

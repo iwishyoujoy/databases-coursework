@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.NoSuchElementException;
+
 @RestController
 @RequestMapping("api/procedure_category")
 @CrossOrigin
@@ -20,16 +21,14 @@ public class ProcedureCategoryController {
     }
 
     @PostMapping
-    public String create(@RequestBody ProcedureCategory procedureCategory) {
-        String toSend = "";
+    public int create(@RequestBody ProcedureCategory procedureCategory) {
         try {
             procedureCategoryRepo.findAll().stream().filter(user -> user.getName().equals(procedureCategory.getName())).filter(user -> user.getId().equals(procedureCategory.getId())).findFirst().get();
-            toSend = "Такая категория процедур уже существует.";
+            return 500;
         } catch (NoSuchElementException e) {
             procedureCategoryRepo.save(procedureCategory);
-            toSend = "Категория создана.";
+            return 200;
         }
-        return toSend;
     }
 
 
@@ -41,37 +40,34 @@ public class ProcedureCategoryController {
             return null;
         }
     }
+
     @GetMapping("/all")
     public List<ProcedureCategory> getAllProduct() {
         return procedureCategoryRepo.findAll();
     }
 
     @DeleteMapping("{id}")
-    public String delete(@PathVariable String id) {
-        String toSend = "";
+    public int delete(@PathVariable String id) {
         try {
             ProcedureCategory procedureCategory = procedureCategoryRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
             procedureCategoryRepo.delete(procedureCategory);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Такой категории не существует.";
+            return 500;
         }
-        return toSend;
     }
 
     @PutMapping("{id}")
-    public String update(@RequestBody ProcedureCategory procedureCategory, @PathVariable String id) {
-        String toSend = "";
+    public int update(@RequestBody ProcedureCategory procedureCategory, @PathVariable String id) {
         ProcedureCategory productBefore;
         try {
             productBefore = procedureCategoryRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
             procedureCategory.setId(productBefore.getId());
             procedureCategoryRepo.save(procedureCategory);
-            toSend = "done";
+            return 200;
         } catch (NoSuchElementException e) {
-            toSend = "Такой категории не существует.";
+            return 500;
         }
-        return toSend;
     }
 
 }
