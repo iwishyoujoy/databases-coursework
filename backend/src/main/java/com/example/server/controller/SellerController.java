@@ -23,7 +23,7 @@ public class SellerController {
         this.sellerRepo = sellerRepo;
     }
 
-    @PostMapping()
+    @PostMapping("signin/")
     public int signIn(@RequestBody AuthRequest reqSeller) {
         Seller realSeller;
         try {
@@ -36,7 +36,7 @@ public class SellerController {
         }
     }
 
-    @PostMapping
+    @PostMapping("signup/")
     public int signUp(@RequestBody Seller seller) {
         try {
             sellerRepo.findAll().stream().filter(user -> user.getLogin().equals(seller.getLogin())).findFirst().get();

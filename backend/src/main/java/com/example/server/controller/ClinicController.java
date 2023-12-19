@@ -23,7 +23,7 @@ public class ClinicController {
         this.clinicRepo = clinicRepo;
     }
 
-    @PostMapping()
+    @PostMapping("signin/")
     public int signIn(@RequestBody AuthRequest reqClinic) {
         Clinic realClinic;
         try {
@@ -37,7 +37,7 @@ public class ClinicController {
 
     }
 
-    @PostMapping
+    @PostMapping("signup/")
     public int signUp(@RequestBody Clinic clinic) {
         try {
             clinicRepo.findAll().stream().filter(user -> user.getLogin().equals(clinic.getLogin())).findFirst().get();

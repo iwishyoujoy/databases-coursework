@@ -23,7 +23,7 @@ public class CustomerController {
         this.customerRepo = customerRepo;
     }
 
-    @PostMapping()
+    @PostMapping("signin/")
     public int signIn(@RequestBody AuthRequest reqCustomer) {
         Customer realCustomer;
         try {
@@ -35,7 +35,7 @@ public class CustomerController {
             return 500;
         }
     }
-    @PostMapping
+    @PostMapping("signup/")
     public int signUp(@RequestBody Customer customer) {
         try {
             customerRepo.findAll().stream().filter(user -> user.getLogin().equals(customer.getLogin())).findFirst().get();
@@ -53,7 +53,6 @@ public class CustomerController {
     }
     @DeleteMapping("{login}")
     public int delete(@PathVariable String login){
-        String toSend = "";
         Customer customer;
         try {
             customer = customerRepo.findAll().stream().filter(c -> c.getLogin().equals(login)).findFirst().get();
@@ -66,7 +65,6 @@ public class CustomerController {
 
     @PutMapping("{login}")
     public int update(@RequestBody Customer customer, @PathVariable String login) {
-        String toSend = "";
         Customer customerBefore;
         try {
             customerBefore = customerRepo.findAll().stream().filter(c -> c.getLogin().equals(login)).findFirst().get();

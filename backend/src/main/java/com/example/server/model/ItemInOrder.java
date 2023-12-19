@@ -2,9 +2,7 @@ package com.example.server.model;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.antlr.v4.runtime.misc.NotNull;
 
-import java.io.Serializable;
 
 @Entity
 @Table(name = "item_in_order")

@@ -2,7 +2,6 @@ package com.example.server.controller;
 
 import com.example.server.model.ProductCategory;
 import com.example.server.repo.ProductCategoryRepo;
-import com.example.server.repo.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
