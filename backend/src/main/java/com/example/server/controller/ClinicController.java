@@ -4,6 +4,8 @@ import com.example.server.model.Clinic;
 import com.example.server.repo.ClinicRepo;
 import com.example.server.service.AuthRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.MessageDigest;
@@ -24,64 +26,69 @@ public class ClinicController {
     }
 
     @PostMapping("signin/")
-    public int signIn(@RequestBody AuthRequest reqClinic) {
+    public ResponseEntity<Void> signIn(@RequestBody AuthRequest reqClinic) {
         Clinic realClinic;
         try {
             realClinic = clinicRepo.findAll().stream().filter(user -> user.getLogin().equals(reqClinic.getUsername())).findFirst().get();
             String reqPass = encryptPassword(reqClinic.getPassword());
-            if (realClinic.getPassword().equals(reqPass)) return 200;
-            else return 501;
+            if (realClinic.getPassword().equals(reqPass)) return ResponseEntity.status(HttpStatus.OK).build();
+            else return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (NoSuchElementException e) {
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
 
     }
 
     @PostMapping("signup/")
-    public int signUp(@RequestBody Clinic clinic) {
+    public ResponseEntity<Void> signUp(@RequestBody Clinic clinic) {
         try {
             clinicRepo.findAll().stream().filter(user -> user.getLogin().equals(clinic.getLogin())).findFirst().get();
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (NoSuchElementException e) {
             clinic.setPassword(encryptPassword(clinic.getPassword()));
             clinicRepo.save(clinic);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         }
     }
 
-    //проверила работу сервера
     @GetMapping("{id}")
-    public Clinic getClinic(@PathVariable String id) {
-        return clinicRepo.findAll().stream().filter(user -> user.getId() == Integer.parseInt(id)).findFirst().get();
+    public ResponseEntity<Clinic> getClinic(@PathVariable String id) {
+        try{
+            Clinic clinic = clinicRepo.findAll().stream().filter(user -> user.getId() == Integer.parseInt(id)).findFirst().get();
+            return ResponseEntity.ok().body(clinic);
+        } catch (NoSuchElementException e){
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
     @DeleteMapping("{login}")
-    public int delete(@PathVariable String login) {
+    public ResponseEntity<Void> delete(@PathVariable String login) {
         Clinic clinic;
         try {
             clinic = clinicRepo.findAll().stream().filter(c -> c.getLogin().equals(login)).findFirst().get();
             clinicRepo.delete(clinic);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping("/all")
-    public List<Clinic> getAllClinic() {
-        return clinicRepo.findAll();
+    public ResponseEntity<List<Clinic>> getAllClinic() {
+        List<Clinic> clinics = clinicRepo.findAll();
+        return ResponseEntity.ok().body(clinics);
     }
 
     @PutMapping("{login}")
-    public int update(@RequestBody Clinic clinic, @PathVariable String login) {
+    public ResponseEntity<Void> update(@RequestBody Clinic clinic, @PathVariable String login) {
         Clinic clinicBefore;
         try {
             clinicBefore = clinicRepo.findAll().stream().filter(c -> c.getLogin().equals(login)).findFirst().get();
             clinic.setId(clinicBefore.getId());
             clinicRepo.save(clinic);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

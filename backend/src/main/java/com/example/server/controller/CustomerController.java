@@ -4,6 +4,8 @@ import com.example.server.model.Customer;
 import com.example.server.repo.CustomerRepo;
 import com.example.server.service.AuthRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.MessageDigest;
@@ -24,61 +26,66 @@ public class CustomerController {
     }
 
     @PostMapping("signin/")
-    public int signIn(@RequestBody AuthRequest reqCustomer) {
+    public ResponseEntity<Void> signIn(@RequestBody AuthRequest reqCustomer) {
         Customer realCustomer;
         try {
             realCustomer = customerRepo.findAll().stream().filter(customer -> customer.getLogin().equals(reqCustomer.getUsername())).findFirst().get();
             String reqPass = encryptPassword(reqCustomer.getPassword());
-            if (realCustomer.getPassword().equals(reqPass)) return 200;
-            else return 501;
+            if (realCustomer.getPassword().equals(reqPass)) return ResponseEntity.status(HttpStatus.OK).build();
+            else return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (NoSuchElementException e) {
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
     @PostMapping("signup/")
-    public int signUp(@RequestBody Customer customer) {
+    public ResponseEntity<Void> signUp(@RequestBody Customer customer) {
         try {
             customerRepo.findAll().stream().filter(user -> user.getLogin().equals(customer.getLogin())).findFirst().get();
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (NoSuchElementException e) {
             customer.setPassword(encryptPassword(customer.getPassword()));
             customerRepo.save(customer);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         }
     }
 
     @GetMapping("{id}")
-    public Customer getCustomer(@PathVariable String id) {
-        return customerRepo.findAll().stream().filter(user -> user.getId() == Integer.parseInt(id)).findFirst().get();
+    public ResponseEntity<Customer> getCustomer(@PathVariable String id) {
+        try{
+            Customer customer = customerRepo.findAll().stream().filter(user -> user.getId() == Integer.parseInt(id)).findFirst().get();
+            return ResponseEntity.ok().body(customer);
+        } catch(NoSuchElementException e){
+            return ResponseEntity.badRequest().body(null);
+        }
     }
     @DeleteMapping("{login}")
-    public int delete(@PathVariable String login){
+    public ResponseEntity<Void> delete(@PathVariable String login){
         Customer customer;
         try {
             customer = customerRepo.findAll().stream().filter(c -> c.getLogin().equals(login)).findFirst().get();
             customerRepo.delete(customer);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @PutMapping("{login}")
-    public int update(@RequestBody Customer customer, @PathVariable String login) {
+    public ResponseEntity<Void> update(@RequestBody Customer customer, @PathVariable String login) {
         Customer customerBefore;
         try {
             customerBefore = customerRepo.findAll().stream().filter(c -> c.getLogin().equals(login)).findFirst().get();
             customer.setId(customerBefore.getId());
             customerRepo.save(customer);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @GetMapping("/all")
-    public List<Customer> getAllCustomer() {
-        return customerRepo.findAll();
+    public ResponseEntity<List<Customer>> getAllCustomer() {
+        return ResponseEntity.ok().body(customerRepo.findAll());
     }
 
     private String encryptPassword(final String password){

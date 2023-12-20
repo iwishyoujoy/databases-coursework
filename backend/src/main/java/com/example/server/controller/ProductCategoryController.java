@@ -3,6 +3,8 @@ package com.example.server.controller;
 import com.example.server.model.ProductCategory;
 import com.example.server.repo.ProductCategoryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
@@ -21,46 +23,47 @@ public class ProductCategoryController {
     }
 
     @PostMapping
-    public int create(@RequestBody ProductCategory productCategory) {
+    public ResponseEntity<Void> create(@RequestBody ProductCategory productCategory) {
         try {
             productCategoryRepo.findAll().stream().filter(user -> user.getName().equals(productCategory.getName())).filter(user -> user.getId().equals(productCategory.getId())).findFirst().get();
-            return 500;        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();        } catch (NoSuchElementException e) {
             productCategoryRepo.save(productCategory);
-            return 200;        }
+            return ResponseEntity.status(HttpStatus.OK).build();        }
     }
 
 
     @GetMapping("{id}")
-    public ProductCategory getProductCategory(@PathVariable String id) {
+    public ResponseEntity<ProductCategory> getProductCategory(@PathVariable String id) {
         try {
-            return productCategoryRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
+            ProductCategory productCategory = productCategoryRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
+            return ResponseEntity.ok().body(productCategory);
         } catch (NoSuchElementException e) {
-            return null;
+            return ResponseEntity.badRequest().body(null);
         }
     }
     @GetMapping("/all")
-    public List<ProductCategory> getAllProductCategory() {
-        return productCategoryRepo.findAll();
+    public ResponseEntity<List<ProductCategory>> getAllProductCategory() {
+        return ResponseEntity.ok().body(productCategoryRepo.findAll());
     }
 
     @DeleteMapping("{id}")
-    public int delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable String id) {
         try {
             ProductCategory productCategory = productCategoryRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
             productCategoryRepo.delete(productCategory);
-            return 200;        } catch (NoSuchElementException e) {
-            return 500;        }
+            return ResponseEntity.status(HttpStatus.OK).build();        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();        }
     }
 
     @PutMapping("{id}")
-    public int update(@RequestBody ProductCategory productCategory, @PathVariable String id) {
+    public ResponseEntity<Void> update(@RequestBody ProductCategory productCategory, @PathVariable String id) {
         ProductCategory categoryBefore;
         try {
             categoryBefore = productCategoryRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
             productCategory.setId(categoryBefore.getId());
             productCategoryRepo.save(productCategory);
-            return 200;        } catch (NoSuchElementException e) {
-            return 500;        }
+            return ResponseEntity.status(HttpStatus.OK).build();        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();        }
     }
 
 }

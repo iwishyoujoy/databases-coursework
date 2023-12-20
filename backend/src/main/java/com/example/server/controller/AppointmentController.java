@@ -3,6 +3,8 @@ package com.example.server.controller;
 import com.example.server.model.Appointment;
 import com.example.server.repo.AppointmentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
@@ -21,53 +23,57 @@ public class AppointmentController {
     }
 
     @PostMapping
-    public int create(@RequestBody Appointment appointment) {
+    public ResponseEntity<Void> create(@RequestBody Appointment appointment) {
         try {
             appointmentRepo.findAll().stream().filter(user -> user.getDate_time().equals(appointment.getDate_time())).filter(user -> user.getItem_id().equals(appointment.getItem_id())).findFirst().get();
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (NoSuchElementException e) {
             appointmentRepo.save(appointment);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         }
     }
 
 
     @GetMapping("{item_id}/{timestamp}")
-    public Appointment getAppointment(@PathVariable String item_id, @PathVariable String timestamp) {
+    public ResponseEntity<Appointment> getAppointment(@PathVariable String item_id, @PathVariable String timestamp) {
         String newtimestamp = timestamp.split("\"")[1] + ".0";
         try {
-            return appointmentRepo.findAll().stream().filter(user -> user.getDate_time().toString().equals(newtimestamp)).filter(user -> user.getItem_id() == Integer.parseInt(item_id)).findFirst().get();
+            Appointment appointment = appointmentRepo.findAll().stream().filter(user -> user.getDate_time().toString().equals(newtimestamp)).filter(user -> user.getItem_id() == Integer.parseInt(item_id)).findFirst().get();
+            return ResponseEntity.ok().body(appointment);
         } catch (NoSuchElementException e) {
-            return null;
+            return ResponseEntity.badRequest().body(null);
         }
     }
+
     @GetMapping("/all")
-    public List<Appointment> getAllAppointment() {
-        return appointmentRepo.findAll();
+    public ResponseEntity<List<Appointment>> getAllAppointment() {
+        List<Appointment> appointments = appointmentRepo.findAll();
+        return ResponseEntity.ok().body(appointments);    
+        
     }
 
     @DeleteMapping("{item_id}/{timestamp}")
-    public int delete(@PathVariable String item_id, @PathVariable String timestamp) {
+    public ResponseEntity<Void> delete(@PathVariable String item_id, @PathVariable String timestamp) {
         try {
             Appointment appointment = appointmentRepo.findAll().stream().filter(user -> user.getDate_time().toString().equals(timestamp)).filter(user -> user.getItem_id() == Integer.parseInt(item_id)).findFirst().get();
             appointmentRepo.delete(appointment);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @PutMapping("{item_id}/{timestamp}")
-    public int update(@RequestBody Appointment appointment, @PathVariable String item_id, @PathVariable String timestamp) {
+    public ResponseEntity<Void> update(@RequestBody Appointment appointment, @PathVariable String item_id, @PathVariable String timestamp) {
         String newtimestamp = timestamp.split("\"")[1] + ".0";
         Appointment appointmentBefore;
         try {
             appointmentBefore = appointmentRepo.findAll().stream().filter(user -> user.getDate_time().toString().equals(newtimestamp)).filter(user -> user.getItem_id() == Integer.parseInt(item_id)).findFirst().get();
             appointment.setItem_id(appointmentBefore.getItem_id());
             appointmentRepo.save(appointment);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

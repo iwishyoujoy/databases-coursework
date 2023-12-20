@@ -3,6 +3,8 @@ package com.example.server.controller;
 import com.example.server.model.Procedure;
 import com.example.server.repo.ProcedureRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
@@ -21,52 +23,53 @@ public class ProcedureController {
     }
 
     @PostMapping
-    public int create(@RequestBody Procedure procedure) {
+    public ResponseEntity<Void> create(@RequestBody Procedure procedure) {
         try {
             procedureRepo.findAll().stream().filter(user -> user.getName().equals(procedure.getName())).filter(user -> user.getId().equals(procedure.getId())).findFirst().get();
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (NoSuchElementException e) {
             procedureRepo.save(procedure);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         }
     }
 
 
     @GetMapping("{id}")
-    public Procedure getProcedure(@PathVariable String id) {
+    public ResponseEntity<Procedure> getProcedure(@PathVariable String id) {
         try {
-            return procedureRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
+            Procedure procedure = procedureRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
+            return ResponseEntity.ok().body(procedure);
         } catch (NoSuchElementException e) {
-            return null;
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
     @GetMapping("/all")
-    public List<Procedure> getAllProcedure() {
-        return procedureRepo.findAll();
+    public ResponseEntity<List<Procedure>> getAllProcedure() {
+        return ResponseEntity.ok().body(procedureRepo.findAll());
     }
 
     @DeleteMapping("{id}")
-    public int delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable String id) {
         try {
             Procedure procedure = procedureRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
             procedureRepo.delete(procedure);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @PutMapping("{id}")
-    public int update(@RequestBody Procedure procedure, @PathVariable String id) {
+    public ResponseEntity<Void> update(@RequestBody Procedure procedure, @PathVariable String id) {
         Procedure procedureBefore;
         try {
             procedureBefore = procedureRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
             procedure.setId(procedureBefore.getId());
             procedureRepo.save(procedure);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

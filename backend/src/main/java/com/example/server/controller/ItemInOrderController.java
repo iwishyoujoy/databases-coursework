@@ -3,6 +3,8 @@ package com.example.server.controller;
 import com.example.server.model.*;
 import com.example.server.repo.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
@@ -28,10 +30,10 @@ public class ItemInOrderController {
     }
 
     @PostMapping
-    public int create(@RequestBody ItemInOrder itemInOrder) throws NoSuchAlgorithmException {
+    public ResponseEntity<Void> create(@RequestBody ItemInOrder itemInOrder) throws NoSuchAlgorithmException {
         try {
             itemInOrderRepo.findAll().stream().filter(user -> user.getItemId().equals(itemInOrder.getItemId())).filter(user -> user.getCurrent_amount().equals(itemInOrder.getCurrent_amount())).findFirst().get();
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (NoSuchElementException e) {
             itemInOrderRepo.save(itemInOrder);
             Item item = itemRepo.findAll().stream().filter(user -> user.getId().equals(itemInOrder.getItemId().getItem_id())).findFirst().get();
@@ -46,26 +48,26 @@ public class ItemInOrderController {
                 AppointmentController appointmentController = new AppointmentController(appointmentRepo);
                 appointmentController.create(appointment);
             }
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         }
     }
 
     @GetMapping("/all/{order_id}")
-    public List<ItemInOrder> getItemOfOrder(@PathVariable Long order_id) {
+    public ResponseEntity<List<ItemInOrder>> getItemOfOrder(@PathVariable Long order_id) {
         try {
             List<ItemInOrder> list = itemInOrderRepo.findAll();
             List<ItemInOrder> to_ret = new ArrayList<>();
             for (ItemInOrder itemInOrder : list)
                 if (itemInOrder.getItemId().getOrder_id().equals(order_id))
                     to_ret.add(itemInOrder);
-            return to_ret;
+            return ResponseEntity.ok().body(to_ret);
         } catch (NoSuchElementException e) {
-            return null;
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
     @DeleteMapping("{order_id}/{item_id}")
-    public int delete(@PathVariable Long order_id, @PathVariable Long item_id) {
+    public ResponseEntity<Void> delete(@PathVariable Long order_id, @PathVariable Long item_id) {
         try {
             ItemInOrder itemInOrder = itemInOrderRepo
                     .findAll()
@@ -90,9 +92,9 @@ public class ItemInOrderController {
                 appointmentController.delete(appointment.getItem_id().toString(), appointment.getDate_time().toString());
             }
             itemInOrderRepo.delete(itemInOrder);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException | NoSuchAlgorithmException e) {
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

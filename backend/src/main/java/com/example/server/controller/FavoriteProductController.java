@@ -3,6 +3,8 @@ package com.example.server.controller;
 import com.example.server.model.FavoriteProduct;
 import com.example.server.repo.FavoriteProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
@@ -23,7 +25,7 @@ public class FavoriteProductController {
     }
 
     @PostMapping()
-    public int create(@RequestBody FavoriteProduct favoriteProduct) {
+    public ResponseEntity<Void> create(@RequestBody FavoriteProduct favoriteProduct) {
         try {
             favoriteProductRepo.findAll().stream()
                     .filter(user -> user.getFavoriteProductId().getCustomer_id()
@@ -33,16 +35,16 @@ public class FavoriteProductController {
                     .findFirst()
                     .get();
 
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (NoSuchElementException e) {
             favoriteProductRepo.save(favoriteProduct);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         }
     }
 
 
     @GetMapping("/all/{customer_id}")
-    public List<FavoriteProduct> getFavoriteOfCustomer(@PathVariable Long customer_id) {
+    public ResponseEntity<List<FavoriteProduct>> getFavoriteOfCustomer(@PathVariable Long customer_id) {
         try {
             List<FavoriteProduct> list = favoriteProductRepo.findAll();
             List<FavoriteProduct> to_ret = new ArrayList<>();
@@ -51,20 +53,20 @@ public class FavoriteProductController {
                     to_ret.add(fp);
                 }
             }
-            return to_ret;
+            return ResponseEntity.ok().body(to_ret);
         } catch (NoSuchElementException e) {
-            return null;
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
     @DeleteMapping("{customer_id}/{item_id}")
-    public int delete(@PathVariable Long customer_id, @PathVariable Long item_id) {
+    public ResponseEntity<Void> delete(@PathVariable Long customer_id, @PathVariable Long item_id) {
         try {
             FavoriteProduct favoriteProduct = favoriteProductRepo.findAll().stream().filter(user -> user.getFavoriteProductId().getCustomer_id().equals(customer_id)).filter(user -> user.getFavoriteProductId().getItem_id().equals(item_id)).findFirst().get();
             favoriteProductRepo.delete(favoriteProduct);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

@@ -3,6 +3,8 @@ package com.example.server.controller;
 import com.example.server.model.Review;
 import com.example.server.repo.ReviewRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
@@ -22,33 +24,34 @@ public class ReviewController {
     }
 
     @PostMapping
-    public int create(@RequestBody Review review) {
+    public ResponseEntity<Void> create(@RequestBody Review review) {
         try {
             reviewRepo.findAll().stream().filter(user -> user.getItem_id().equals(review.getItem_id())).filter(user -> user.getCustomer_id().equals(review.getCustomer_id())).findFirst().get();
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (NoSuchElementException e) {
             reviewRepo.save(review);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         }
     }
 
 
     @GetMapping("/one/{id}")
-    public Review getReview(@PathVariable Long id) {
+    public ResponseEntity<Review> getReview(@PathVariable Long id) {
         try {
-            return reviewRepo.findAll().stream().filter(user -> user.getId().equals(id)).findFirst().get();
+            Review review = reviewRepo.findAll().stream().filter(user -> user.getId().equals(id)).findFirst().get();
+            return ResponseEntity.ok().body(review);
         } catch (NoSuchElementException e) {
-            return null;
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
     @GetMapping("/all")
-    public List<Review> getAllReview() {
-        return reviewRepo.findAll();
+    public ResponseEntity<List<Review>> getAllReview() {
+        return ResponseEntity.ok().body(reviewRepo.findAll());
     }
 
     @GetMapping("/customer/{customer_id}")
-    public List<Review> getReviewOfCustomer(@PathVariable Long customer_id) {
+    public ResponseEntity<List<Review>> getReviewOfCustomer(@PathVariable Long customer_id) {
         try {
             List<Review> list = reviewRepo.findAll();
             List<Review> to_ret = new ArrayList<>();
@@ -57,33 +60,33 @@ public class ReviewController {
                     to_ret.add(review);
                 }
             }
-            return to_ret;
+            return ResponseEntity.ok().body(to_ret);
         } catch (NoSuchElementException e) {
-            return null;
+            return ResponseEntity.badRequest().body(null);
         }
     }
 
     @DeleteMapping("{id}")
-    public int delete(@PathVariable String id) {
+    public ResponseEntity<Void> delete(@PathVariable String id) {
         try {
             Review review = reviewRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
             reviewRepo.delete(review);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @PutMapping("{id}")
-    public int update(@RequestBody Review review, @PathVariable String id) {
+    public ResponseEntity<Void> update(@RequestBody Review review, @PathVariable String id) {
         Review procedureBefore;
         try {
             procedureBefore = reviewRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
             review.setId(procedureBefore.getId());
             reviewRepo.save(review);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

@@ -4,6 +4,8 @@ import com.example.server.model.Seller;
 import com.example.server.repo.SellerRepo;
 import com.example.server.service.AuthRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.MessageDigest;
@@ -24,57 +26,63 @@ public class SellerController {
     }
 
     @PostMapping("signin/")
-    public int signIn(@RequestBody AuthRequest reqSeller) {
+    public ResponseEntity<Void> signIn(@RequestBody AuthRequest reqSeller) {
         Seller realSeller;
         try {
             realSeller = sellerRepo.findAll().stream().filter(user -> user.getLogin().equals(reqSeller.getUsername())).findFirst().get();
             String reqPass = encryptPassword(reqSeller.getPassword());
-            if (realSeller.getPassword().equals(reqPass)) return 200;
-            else return 501;
+            if (realSeller.getPassword().equals(reqPass)) return ResponseEntity.status(HttpStatus.OK).build();
+            else return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (NoSuchElementException e) {
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @PostMapping("signup/")
-    public int signUp(@RequestBody Seller seller) {
+    public ResponseEntity<Void> signUp(@RequestBody Seller seller) {
         try {
             sellerRepo.findAll().stream().filter(user -> user.getLogin().equals(seller.getLogin())).findFirst().get();
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (NoSuchElementException e) {
             seller.setPassword(encryptPassword(seller.getPassword()));
             sellerRepo.save(seller);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         }
     }
 
     @GetMapping("{id}")
-    public Seller getSeller(@PathVariable String id) {
-        return sellerRepo.findAll().stream().filter(user -> user.getId() == Integer.parseInt(id)).findFirst().get();
+    public ResponseEntity<Seller> getSeller(@PathVariable String id) {
+        try{
+            Seller seller = sellerRepo.findAll().stream().filter(user -> user.getId() == Integer.parseInt(id)).findFirst().get();
+            return ResponseEntity.ok().body(seller);
+        } catch(NoSuchElementException e){
+            return ResponseEntity.badRequest().body(null);
+        }
+
     }
 
     @DeleteMapping("{login}")
-    public int delete(@PathVariable String login) {
+    public ResponseEntity<Void> delete(@PathVariable String login) {
         Seller seller;
         try {
             seller = sellerRepo.findAll().stream().filter(c -> c.getLogin().equals(login)).findFirst().get();
             sellerRepo.delete(seller);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
     @PutMapping("{login}")
-    public int update(@RequestBody Seller seller, @PathVariable String login) {
+    public ResponseEntity<Void> update(@RequestBody Seller seller, @PathVariable String login) {
         Seller sellerBefore;
         try {
             sellerBefore = sellerRepo.findAll().stream().filter(c -> c.getLogin().equals(login)).findFirst().get();
             seller.setId(sellerBefore.getId());
             sellerRepo.save(seller);
-            return 200;
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {
-            return 500;
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
