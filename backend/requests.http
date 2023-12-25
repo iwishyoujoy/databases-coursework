@@ -1,0 +1,10 @@
+POST http://localhost:3100/api/seller/signup/
+Content-Type: application/json
+
+{
+    "contact": "1",
+    "email": "b",
+    "login": "q",
+    "name" : "q",
+    "password": "p1"
+}
