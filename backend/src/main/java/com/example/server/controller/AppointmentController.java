@@ -60,7 +60,7 @@ public class AppointmentController {
     @DeleteMapping("{item_id}")
     public ResponseEntity<Void> delete(@PathVariable String item_id) {
         try {
-            Appointment appointment = appointmentRepo.findById(Long.parseLong(item_id));
+            Appointment appointment = appointmentRepo.findAll().stream().filter(user -> user.getItem_id().equals(Long.parseLong(item_id))).findFirst().get();
             Item item = itemRepo.findById((Long.parseLong(item_id)));
             appointmentRepo.delete(appointment);
             itemRepo.delete(item);
@@ -74,7 +74,7 @@ public class AppointmentController {
     public ResponseEntity<Void> update(@RequestBody Appointment appointment, @PathVariable String item_id) {
         Appointment appointmentBefore;
         try {
-            appointmentBefore = appointmentRepo.findById(Long.parseLong(item_id));
+            appointmentBefore = appointmentRepo.findAll().stream().filter(user -> user.getItem_id().equals(Long.parseLong(item_id))).findFirst().get();
             appointment.setItem_id(appointmentBefore.getItem_id());
             appointmentRepo.save(appointment);
             return ResponseEntity.status(HttpStatus.OK).build();

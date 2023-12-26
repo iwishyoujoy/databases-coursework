@@ -30,7 +30,7 @@ public class SellerController {
     public ResponseEntity<Void> signIn(@RequestBody AuthRequest reqSeller) {
         Seller realSeller;
         try {
-            realSeller = sellerRepo.findByLogin(reqSeller.getLogin());
+            realSeller = sellerRepo.findAll().stream().filter(user -> user.getLogin().equals(reqSeller.getLogin())).findFirst().get();
             String reqPass = encryptPassword(reqSeller.getPassword());
             if (realSeller.getPassword().equals(reqPass)) return ResponseEntity.status(HttpStatus.OK).build();
             else return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -42,8 +42,8 @@ public class SellerController {
     @PostMapping("signup/")
     public ResponseEntity<Void> signUp(@RequestBody Seller seller) {
         try {
-            sellerRepo.findByLogin(seller.getLogin());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            sellerRepo.findAll().stream().filter(user -> user.getLogin().equals(seller.getLogin())).findFirst().get();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (NoSuchElementException e) {
             seller.setPassword(encryptPassword(seller.getPassword()));
             sellerRepo.save(seller);
@@ -54,7 +54,7 @@ public class SellerController {
     @GetMapping("{id}")
     public ResponseEntity<Seller> getSeller(@PathVariable String id) {
         try{
-            Seller seller = sellerRepo.findById((Long.parseLong(id)));
+            Seller seller = sellerRepo.findAll().stream().filter(user -> user.getId().equals(Long.parseLong(id))).findFirst().get();
             return ResponseEntity.ok().body(seller);
         } catch(NoSuchElementException e){
             return ResponseEntity.badRequest().body(null);
@@ -66,7 +66,7 @@ public class SellerController {
     public ResponseEntity<Void> delete(@PathVariable String login) {
         Seller seller;
         try {
-            seller = sellerRepo.findByLogin(login);
+            seller = sellerRepo.findAll().stream().filter(user -> user.getLogin().equals(login)).findFirst().get();
             sellerRepo.delete(seller);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {
@@ -78,8 +78,9 @@ public class SellerController {
     public ResponseEntity<Void> update(@RequestBody Seller seller, @PathVariable String login) {
         Seller sellerBefore;
         try {
-            sellerBefore = sellerRepo.findByLogin(login);
+            sellerBefore = sellerRepo.findAll().stream().filter(user -> user.getLogin().equals(login)).findFirst().get();
             seller.setId(sellerBefore.getId());
+            seller.setPassword(encryptPassword(seller.getPassword()));
             sellerRepo.save(seller);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {

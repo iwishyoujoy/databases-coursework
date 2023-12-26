@@ -37,7 +37,7 @@ public class ProcedureCategoryController {
     @GetMapping("{id}")
     public ResponseEntity<ProcedureCategory> getProduct(@PathVariable String id) {
         try {
-            ProcedureCategory procedureCategory = procedureCategoryRepo.findById(Long.parseLong(id));
+            ProcedureCategory procedureCategory = procedureCategoryRepo.findAll().stream().filter(user -> user.getId().equals(Long.parseLong(id))).findFirst().get();
             return ResponseEntity.ok().body(procedureCategory);
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body(null);
@@ -52,7 +52,7 @@ public class ProcedureCategoryController {
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         try {
-            ProcedureCategory procedureCategory = procedureCategoryRepo.findById(Long.parseLong(id));
+            ProcedureCategory procedureCategory = procedureCategoryRepo.findAll().stream().filter(user -> user.getId().equals(Long.parseLong(id))).findFirst().get();
             procedureCategoryRepo.delete(procedureCategory);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {
@@ -64,7 +64,7 @@ public class ProcedureCategoryController {
     public ResponseEntity<Void> update(@RequestBody ProcedureCategory procedureCategory, @PathVariable String id) {
         ProcedureCategory productBefore;
         try {
-            productBefore = procedureCategoryRepo.findById(Long.parseLong(id));
+            productBefore = procedureCategoryRepo.findAll().stream().filter(user -> user.getId().equals(Long.parseLong(id))).findFirst().get();
             procedureCategory.setId(productBefore.getId());
             procedureCategoryRepo.save(procedureCategory);
             return ResponseEntity.status(HttpStatus.OK).build();

@@ -41,7 +41,7 @@ public class ProductController {
     @GetMapping("{id}")
     public ResponseEntity<Product> getProduct(@PathVariable String id) {
         try {
-            Product product = productRepo.findById((Long.parseLong(id)));
+            Product product = productRepo.findAll().stream().filter(user -> user.getId_item().equals(Long.parseLong(id))).findFirst().get();
             return ResponseEntity.ok().body(product);
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body(null);
@@ -56,8 +56,8 @@ public class ProductController {
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         try {
-            Product product = productRepo.findById((Long.parseLong(id)));
-            Item item = itemRepo.findById((Long.parseLong(id)));
+            Product product = productRepo.findAll().stream().filter(user -> user.getId_item().equals(Long.parseLong(id))).findFirst().get();
+            Item item = itemRepo.findAll().stream().filter(user -> user.getId().equals(Long.parseLong(id))).findFirst().get();
             productRepo.delete(product);
             itemRepo.delete(item);
             return ResponseEntity.status(HttpStatus.OK).build();
@@ -70,7 +70,7 @@ public class ProductController {
     public ResponseEntity<Void> update(@RequestBody Product product, @PathVariable String id) {
         Product productBefore;
         try {
-            productBefore = productRepo.findById((Long.parseLong(id)));
+            productBefore = productRepo.findAll().stream().filter(user -> user.getId_item().equals(Long.parseLong(id))).findFirst().get();
             product.setId_item(productBefore.getId_item());
             productRepo.save(product);
             return ResponseEntity.status(HttpStatus.OK).build();
