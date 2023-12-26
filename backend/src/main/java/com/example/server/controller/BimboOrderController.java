@@ -23,7 +23,7 @@ public class BimboOrderController {
         this.bimboOrderRepo = bimboOrderRepo;
     }
 
-    @PostMapping
+    @PostMapping("create/")
     public ResponseEntity<Void> create(@RequestBody BimboOrder bimboOrder) {
         try {
             bimboOrderRepo.findAll().stream().filter(user -> user.getTimestamp().equals(bimboOrder.getTimestamp())).filter(user -> user.getCustomer_id().equals(bimboOrder.getCustomer_id())).findFirst().get();

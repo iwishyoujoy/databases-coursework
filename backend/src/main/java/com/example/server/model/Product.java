@@ -2,6 +2,8 @@ package com.example.server.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -14,6 +16,7 @@ import lombok.*;
 public class Product {
     @Id
     @Column(name = "id_item", nullable = false)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id_item;
     @Column(name = "name", nullable = false)
     private String name;

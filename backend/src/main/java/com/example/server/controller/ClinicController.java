@@ -25,11 +25,12 @@ public class ClinicController {
         this.clinicRepo = clinicRepo;
     }
 
+    //TODO: тоже не работает
     @PostMapping("signin/")
     public ResponseEntity<Void> signIn(@RequestBody AuthRequest reqClinic) {
         Clinic realClinic;
         try {
-            realClinic = clinicRepo.findAll().stream().filter(user -> user.getLogin().equals(reqClinic.getUsername())).findFirst().get();
+            realClinic = clinicRepo.findByLogin(reqClinic.getLogin());
             String reqPass = encryptPassword(reqClinic.getPassword());
             if (realClinic.getPassword().equals(reqPass)) return ResponseEntity.status(HttpStatus.OK).build();
             else return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
@@ -42,7 +43,7 @@ public class ClinicController {
     @PostMapping("signup/")
     public ResponseEntity<Void> signUp(@RequestBody Clinic clinic) {
         try {
-            clinicRepo.findAll().stream().filter(user -> user.getLogin().equals(clinic.getLogin())).findFirst().get();
+            clinicRepo.findByLogin(clinic.getLogin());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (NoSuchElementException e) {
             clinic.setPassword(encryptPassword(clinic.getPassword()));
@@ -54,7 +55,7 @@ public class ClinicController {
     @GetMapping("{id}")
     public ResponseEntity<Clinic> getClinic(@PathVariable String id) {
         try{
-            Clinic clinic = clinicRepo.findAll().stream().filter(user -> user.getId() == Integer.parseInt(id)).findFirst().get();
+            Clinic clinic = clinicRepo.findById(Long.parseLong(id));
             return ResponseEntity.ok().body(clinic);
         } catch (NoSuchElementException e){
             return ResponseEntity.badRequest().body(null);
@@ -65,7 +66,7 @@ public class ClinicController {
     public ResponseEntity<Void> delete(@PathVariable String login) {
         Clinic clinic;
         try {
-            clinic = clinicRepo.findAll().stream().filter(c -> c.getLogin().equals(login)).findFirst().get();
+            clinic = clinicRepo.findByLogin(login);
             clinicRepo.delete(clinic);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {
@@ -83,7 +84,7 @@ public class ClinicController {
     public ResponseEntity<Void> update(@RequestBody Clinic clinic, @PathVariable String login) {
         Clinic clinicBefore;
         try {
-            clinicBefore = clinicRepo.findAll().stream().filter(c -> c.getLogin().equals(login)).findFirst().get();
+            clinicBefore = clinicRepo.findByLogin(login);
             clinic.setId(clinicBefore.getId());
             clinicRepo.save(clinic);
             return ResponseEntity.status(HttpStatus.OK).build();

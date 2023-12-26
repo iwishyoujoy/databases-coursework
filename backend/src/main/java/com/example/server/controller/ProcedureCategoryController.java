@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("api/procedure_category")
+@RequestMapping("api/procedureCategory")
 @CrossOrigin
 public class ProcedureCategoryController {
     private final ProcedureCategoryRepo procedureCategoryRepo;
@@ -22,7 +22,7 @@ public class ProcedureCategoryController {
         this.procedureCategoryRepo = procedureCategoryRepo;
     }
 
-    @PostMapping
+    @PostMapping("create/")
     public ResponseEntity<Void> create(@RequestBody ProcedureCategory procedureCategory) {
         try {
             procedureCategoryRepo.findAll().stream().filter(user -> user.getName().equals(procedureCategory.getName())).filter(user -> user.getId().equals(procedureCategory.getId())).findFirst().get();
@@ -37,7 +37,7 @@ public class ProcedureCategoryController {
     @GetMapping("{id}")
     public ResponseEntity<ProcedureCategory> getProduct(@PathVariable String id) {
         try {
-            ProcedureCategory procedureCategory = procedureCategoryRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
+            ProcedureCategory procedureCategory = procedureCategoryRepo.findById(Long.parseLong(id));
             return ResponseEntity.ok().body(procedureCategory);
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body(null);
@@ -52,7 +52,7 @@ public class ProcedureCategoryController {
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         try {
-            ProcedureCategory procedureCategory = procedureCategoryRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
+            ProcedureCategory procedureCategory = procedureCategoryRepo.findById(Long.parseLong(id));
             procedureCategoryRepo.delete(procedureCategory);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {
@@ -64,7 +64,7 @@ public class ProcedureCategoryController {
     public ResponseEntity<Void> update(@RequestBody ProcedureCategory procedureCategory, @PathVariable String id) {
         ProcedureCategory productBefore;
         try {
-            productBefore = procedureCategoryRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
+            productBefore = procedureCategoryRepo.findById(Long.parseLong(id));
             procedureCategory.setId(productBefore.getId());
             procedureCategoryRepo.save(procedureCategory);
             return ResponseEntity.status(HttpStatus.OK).build();

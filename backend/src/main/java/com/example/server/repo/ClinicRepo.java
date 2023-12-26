@@ -4,6 +4,8 @@ import com.example.server.model.Clinic;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ClinicRepo extends JpaRepository<Clinic, Long> {
+    Clinic findById(long id);
+    Clinic findByLogin(String login);
 }
 
 

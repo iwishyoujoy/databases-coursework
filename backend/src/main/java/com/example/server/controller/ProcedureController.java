@@ -22,7 +22,7 @@ public class ProcedureController {
         this.procedureRepo = procedureRepo;
     }
 
-    @PostMapping
+    @PostMapping("create/")
     public ResponseEntity<Void> create(@RequestBody Procedure procedure) {
         try {
             procedureRepo.findAll().stream().filter(user -> user.getName().equals(procedure.getName())).filter(user -> user.getId().equals(procedure.getId())).findFirst().get();

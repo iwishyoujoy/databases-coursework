@@ -29,28 +29,33 @@ public class ItemInOrderController {
         this.productRepo = productRepo;
     }
 
-    @PostMapping
-    public ResponseEntity<Void> create(@RequestBody ItemInOrder itemInOrder) throws NoSuchAlgorithmException {
+    @PostMapping("create/")
+    public ResponseEntity<Void> create(@RequestBody itemInOrderId itemInOrderId) throws NoSuchAlgorithmException {
         try {
-            itemInOrderRepo.findAll().stream().filter(user -> user.getItemId().equals(itemInOrder.getItemId())).filter(user -> user.getCurrent_amount().equals(itemInOrder.getCurrent_amount())).findFirst().get();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            itemInOrderRepo.findAll().stream().filter(user -> user.getItemInOrderId().getOrder_id().equals(itemInOrderId.getOrder_id())).filter(user -> user.getItemInOrderId().getItem_id().equals(itemInOrderId.getItem_id())).findFirst().get();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (NoSuchElementException e) {
-            itemInOrderRepo.save(itemInOrder);
-            Item item = itemRepo.findAll().stream().filter(user -> user.getId().equals(itemInOrder.getItemId().getItem_id())).findFirst().get();
-            if(item.getType().equals("Appointment")){
+            Item item = itemRepo.findAll().stream().filter(user -> user.getId().equals(itemInOrderId.getItem_id())).findFirst().get();
+            if(item.getType().equals("product")){
                 Product product = productRepo.findAll().stream().filter(user -> user.getId_item().equals(item.getId())).findFirst().get();
                 int new_amount = product.getAmount_available();
-                new_amount--;
+                if(new_amount == 0) {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                }
+                new_amount-=itemInOrderId.getCurrent_amount();
                 product.setAmount_available(new_amount);
                 productRepo.save(product);
-            }else{
+            } else {
                 Appointment appointment = appointmentRepo.findAll().stream().filter(user -> user.getItem_id().equals(item.getId())).findFirst().get();
-                AppointmentController appointmentController = new AppointmentController(appointmentRepo);
-                appointmentController.create(appointment);
+                appointment.setStatus(true);
+                appointmentRepo.save(appointment);
             }
+            ItemInOrder itemInOrder = new ItemInOrder(itemInOrderId);
+            itemInOrderRepo.save(itemInOrder);
             return ResponseEntity.status(HttpStatus.OK).build();
         }
     }
+
 
     @GetMapping("/all/{order_id}")
     public ResponseEntity<List<ItemInOrder>> getItemOfOrder(@PathVariable Long order_id) {
@@ -58,7 +63,7 @@ public class ItemInOrderController {
             List<ItemInOrder> list = itemInOrderRepo.findAll();
             List<ItemInOrder> to_ret = new ArrayList<>();
             for (ItemInOrder itemInOrder : list)
-                if (itemInOrder.getItemId().getOrder_id().equals(order_id))
+                if (itemInOrder.getItemInOrderId().getOrder_id().equals(order_id))
                     to_ret.add(itemInOrder);
             return ResponseEntity.ok().body(to_ret);
         } catch (NoSuchElementException e) {
@@ -69,31 +74,36 @@ public class ItemInOrderController {
     @DeleteMapping("{order_id}/{item_id}")
     public ResponseEntity<Void> delete(@PathVariable Long order_id, @PathVariable Long item_id) {
         try {
-            ItemInOrder itemInOrder = itemInOrderRepo
-                    .findAll()
-                    .stream()
-                    .filter(user -> user.getItemId().getOrder_id()
-                            .equals(order_id))
-                    .filter(user -> user.getItemId().getItem_id().
-                            equals(item_id))
-                    .findFirst()
-                    .get();
+            ItemInOrder itemInOrder = itemInOrderRepo.findAll().stream().filter(user -> user.getItemInOrderId().getOrder_id().equals(order_id)).filter(user -> user.getItemInOrderId().getItem_id().equals(item_id)).findFirst().get();
 
-            Item item = itemRepo.findAll().stream().filter(user -> user.getId().equals(itemInOrder.getItemId().getItem_id())).findFirst().get();
-            if(item.getType().equals("Appointment")){
-                Product product = productRepo.findAll().stream().filter(user -> user.getId_item().equals(item.getId())).findFirst().get();
+            Item item = itemRepo.findAll().stream().filter(user -> user.getId().equals(item_id)).findFirst().get();
+            if(item.getType().equals("product")){
+                Product product = productRepo.findAll().stream().filter(user -> user.getId_item().equals(item_id)).findFirst().get();
                 int new_amount = product.getAmount_available();
-                new_amount++;
+                new_amount+=itemInOrder.getItemInOrderId().getCurrent_amount();
                 product.setAmount_available(new_amount);
                 productRepo.save(product);
             }else{
                 Appointment appointment = appointmentRepo.findAll().stream().filter(user -> user.getItem_id().equals(item.getId())).findFirst().get();
-                AppointmentController appointmentController = new AppointmentController(appointmentRepo);
-                appointmentController.delete(appointment.getItem_id().toString(), appointment.getDate_time().toString());
+                appointment.setStatus(false);
+                appointmentRepo.save(appointment);
             }
             itemInOrderRepo.delete(itemInOrder);
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (NoSuchElementException | NoSuchAlgorithmException e) {
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+    @PutMapping("update/")
+    public ResponseEntity<Void> update_amount(@RequestBody itemInOrderId itemInOrderId) throws NoSuchAlgorithmException {
+        try {
+            itemInOrderRepo.findAll().stream().filter(user -> user.getItemInOrderId().getOrder_id().equals(itemInOrderId.getOrder_id())).filter(user -> user.getItemInOrderId().getItem_id().equals(itemInOrderId.getItem_id())).findFirst().get();
+            delete(itemInOrderId.getOrder_id(), itemInOrderId.getItem_id());
+            create(itemInOrderId);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

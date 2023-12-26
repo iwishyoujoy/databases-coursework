@@ -1,0 +1,1 @@
+DELETE http://localhost:3100/api/item_in_order/7/3

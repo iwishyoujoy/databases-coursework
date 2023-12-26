@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
-@RequestMapping("api/product_category")
+@RequestMapping("api/productCategory")
 @CrossOrigin
 public class ProductCategoryController {
     private final ProductCategoryRepo productCategoryRepo;
@@ -22,7 +22,7 @@ public class ProductCategoryController {
         this.productCategoryRepo = productCategoryRepo;
     }
 
-    @PostMapping
+    @PostMapping("create/")
     public ResponseEntity<Void> create(@RequestBody ProductCategory productCategory) {
         try {
             productCategoryRepo.findAll().stream().filter(user -> user.getName().equals(productCategory.getName())).filter(user -> user.getId().equals(productCategory.getId())).findFirst().get();
@@ -35,7 +35,7 @@ public class ProductCategoryController {
     @GetMapping("{id}")
     public ResponseEntity<ProductCategory> getProductCategory(@PathVariable String id) {
         try {
-            ProductCategory productCategory = productCategoryRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
+            ProductCategory productCategory = productCategoryRepo.findById((Long.parseLong(id)));
             return ResponseEntity.ok().body(productCategory);
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body(null);
@@ -49,7 +49,7 @@ public class ProductCategoryController {
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {
         try {
-            ProductCategory productCategory = productCategoryRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
+            ProductCategory productCategory = productCategoryRepo.findById((Long.parseLong(id)));
             productCategoryRepo.delete(productCategory);
             return ResponseEntity.status(HttpStatus.OK).build();        } catch (NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();        }
@@ -59,7 +59,7 @@ public class ProductCategoryController {
     public ResponseEntity<Void> update(@RequestBody ProductCategory productCategory, @PathVariable String id) {
         ProductCategory categoryBefore;
         try {
-            categoryBefore = productCategoryRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
+            categoryBefore = productCategoryRepo.findById((Long.parseLong(id)));
             productCategory.setId(categoryBefore.getId());
             productCategoryRepo.save(productCategory);
             return ResponseEntity.status(HttpStatus.OK).build();        } catch (NoSuchElementException e) {

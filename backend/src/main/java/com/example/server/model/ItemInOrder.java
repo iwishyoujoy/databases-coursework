@@ -11,9 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 public class ItemInOrder {
     @EmbeddedId
-    ItemId itemId;
-    @Column(name = "current_amount", nullable = false)
-    private Integer current_amount;
+    itemInOrderId itemInOrderId;
 
 }
 

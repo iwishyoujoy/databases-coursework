@@ -25,22 +25,25 @@ public class CustomerController {
         this.customerRepo = customerRepo;
     }
 
+    //TODO: не работает, непонятно почему
     @PostMapping("signin/")
     public ResponseEntity<Void> signIn(@RequestBody AuthRequest reqCustomer) {
         Customer realCustomer;
         try {
-            realCustomer = customerRepo.findAll().stream().filter(customer -> customer.getLogin().equals(reqCustomer.getUsername())).findFirst().get();
+            realCustomer = customerRepo.findByLogin(reqCustomer.getLogin());
             String reqPass = encryptPassword(reqCustomer.getPassword());
             if (realCustomer.getPassword().equals(reqPass)) return ResponseEntity.status(HttpStatus.OK).build();
-            else return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            else return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
+
+
     @PostMapping("signup/")
     public ResponseEntity<Void> signUp(@RequestBody Customer customer) {
         try {
-            customerRepo.findAll().stream().filter(user -> user.getLogin().equals(customer.getLogin())).findFirst().get();
+            customerRepo.findByLogin(customer.getLogin());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (NoSuchElementException e) {
             customer.setPassword(encryptPassword(customer.getPassword()));
@@ -52,7 +55,7 @@ public class CustomerController {
     @GetMapping("{id}")
     public ResponseEntity<Customer> getCustomer(@PathVariable String id) {
         try{
-            Customer customer = customerRepo.findAll().stream().filter(user -> user.getId() == Integer.parseInt(id)).findFirst().get();
+            Customer customer = customerRepo.findById(Long.parseLong(id));
             return ResponseEntity.ok().body(customer);
         } catch(NoSuchElementException e){
             return ResponseEntity.badRequest().body(null);
@@ -62,7 +65,7 @@ public class CustomerController {
     public ResponseEntity<Void> delete(@PathVariable String login){
         Customer customer;
         try {
-            customer = customerRepo.findAll().stream().filter(c -> c.getLogin().equals(login)).findFirst().get();
+            customer = customerRepo.findByLogin(login);
             customerRepo.delete(customer);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {
@@ -74,8 +77,9 @@ public class CustomerController {
     public ResponseEntity<Void> update(@RequestBody Customer customer, @PathVariable String login) {
         Customer customerBefore;
         try {
-            customerBefore = customerRepo.findAll().stream().filter(c -> c.getLogin().equals(login)).findFirst().get();
+            customerBefore = customerRepo.findByLogin(login);
             customer.setId(customerBefore.getId());
+            customer.setPassword(encryptPassword(customer.getPassword()));
             customerRepo.save(customer);
             return ResponseEntity.status(HttpStatus.OK).build();
         } catch (NoSuchElementException e) {

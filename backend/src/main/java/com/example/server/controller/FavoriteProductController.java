@@ -1,6 +1,7 @@
 package com.example.server.controller;
 
 import com.example.server.model.FavoriteProduct;
+import com.example.server.model.FavoriteProductId;
 import com.example.server.repo.FavoriteProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,19 +25,20 @@ public class FavoriteProductController {
         this.favoriteProductRepo = favoriteProductRepo;
     }
 
-    @PostMapping()
-    public ResponseEntity<Void> create(@RequestBody FavoriteProduct favoriteProduct) {
+    @PostMapping("create/")
+    public ResponseEntity<Void> create(@RequestBody FavoriteProductId favoriteProductId) {
         try {
             favoriteProductRepo.findAll().stream()
                     .filter(user -> user.getFavoriteProductId().getCustomer_id()
-                            .equals(favoriteProduct.getFavoriteProductId().getCustomer_id()))
+                            .equals(favoriteProductId.getCustomer_id()))
                     .filter(user -> user.getFavoriteProductId().getItem_id()
-                            .equals(favoriteProduct.getFavoriteProductId().getItem_id()))
+                            .equals(favoriteProductId.getItem_id()))
                     .findFirst()
                     .get();
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (NoSuchElementException e) {
+            FavoriteProduct favoriteProduct = new FavoriteProduct(favoriteProductId);
             favoriteProductRepo.save(favoriteProduct);
             return ResponseEntity.status(HttpStatus.OK).build();
         }

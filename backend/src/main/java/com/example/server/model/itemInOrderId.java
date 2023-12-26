@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Embeddable
 @Data
 public
-class ItemId implements Serializable {
+class itemInOrderId implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -18,4 +18,8 @@ class ItemId implements Serializable {
 
     @Column(name = "item_id ", nullable = false)
     private Long item_id;
+
+    @Column(name = "current_amount", nullable = false)
+    private Integer current_amount;
+
 }

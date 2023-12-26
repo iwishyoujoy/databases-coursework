@@ -12,7 +12,6 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-//TODO: нужна ли этот класс??????
 public class Item implements Serializable {
 
     @Id
