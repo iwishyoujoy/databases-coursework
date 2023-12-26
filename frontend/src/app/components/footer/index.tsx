@@ -4,11 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./footer.module.css";
 
-import logo from "@/images/logo.svg";
-import address from "@/images/address.svg";
-import email from "@/images/email.svg";
-import phone from "@/images/phone.svg";
-import fax from "@/images/fax.svg";
+import logo from "public/images/logo.svg";
+import address from "public/images/address.svg";
+import email from "public/images/email.svg";
+import phone from "public/images/phone.svg";
+import fax from "public/images/fax.svg";
 
 import { Button } from '@chakra-ui/react';
 
