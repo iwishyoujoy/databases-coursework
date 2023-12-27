@@ -1,6 +1,8 @@
 package com.example.server.controller;
 
 import com.example.server.model.ProcedureCategory;
+import com.example.server.model.Procedure;
+import com.example.server.repo.ProcedureRepo;
 import com.example.server.repo.ProcedureCategoryRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,10 +18,12 @@ import java.util.NoSuchElementException;
 @CrossOrigin
 public class ProcedureCategoryController {
     private final ProcedureCategoryRepo procedureCategoryRepo;
+    private final ProcedureRepo procedureRepo;
 
     @Autowired
-    public ProcedureCategoryController(ProcedureCategoryRepo procedureCategoryRepo) throws NoSuchAlgorithmException {
+    public ProcedureCategoryController(ProcedureCategoryRepo procedureCategoryRepo, ProcedureRepo procedureRepo) throws NoSuchAlgorithmException {
         this.procedureCategoryRepo = procedureCategoryRepo;
+        this.procedureRepo = procedureRepo;
     }
 
     @PostMapping("create/")
@@ -47,6 +51,12 @@ public class ProcedureCategoryController {
     @GetMapping("/all")
     public ResponseEntity<List<ProcedureCategory>> getAllProduct() {
         return ResponseEntity.ok().body(procedureCategoryRepo.findAll());
+    }
+
+    @GetMapping("/{id}/procedures")
+    public ResponseEntity<List<Procedure>> getAllProcedureByCategory(@PathVariable Long id) {
+        List<Procedure> list = procedureRepo.findAll().stream().filter(user -> user.getProcedure_category_id() == id).toList();
+        return ResponseEntity.ok().body(list);
     }
 
     @DeleteMapping("{id}")
