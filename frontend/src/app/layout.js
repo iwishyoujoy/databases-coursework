@@ -3,8 +3,8 @@ import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
 import { ChakraProvider } from '@chakra-ui/react'
-import { Header } from './components/header';
-import { Footer } from './components/footer';
+import { Header } from './components/Header';
+import { Footer } from './components/Footer';
 import { StoreProvider } from './redux/storeProvider';
 
 // export const metadata = {

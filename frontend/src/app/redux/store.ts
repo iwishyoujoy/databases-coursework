@@ -5,6 +5,15 @@ interface LoginState {
   isLogged: boolean;
   login: string;
   password: string;
+  name: string;
+  surname: string;
+  birthday: string;
+  phoneNumber: string;
+}
+
+interface CategoryState {
+  productCategory: string;
+  procedureCategory: string;
 }
 
 const loginSlice = createSlice({
@@ -13,6 +22,10 @@ const loginSlice = createSlice({
     isLogged: false,
     login: undefined,
     password: undefined,
+    name: undefined,
+    surname: undefined,
+    birthday: undefined,
+    phoneNumber: undefined,
   } as LoginState,
   reducers: {
     setLogin: (state, action: PayloadAction<string>) => {
@@ -21,17 +34,44 @@ const loginSlice = createSlice({
     setPassword: (state, action: PayloadAction<string>) => {
       state.password = action.payload;
     },
+    setName: (state, action: PayloadAction<string>) => {
+      state.name = action.payload;
+    },
+    setSurname: (state, action: PayloadAction<string>) => {
+      state.surname = action.payload;
+    },
+    setBirthday: (state, action: PayloadAction<string>) => {
+      state.birthday = action.payload;
+    },
+    setPhoneNumber: (state, action: PayloadAction<string>) => {
+      state.phoneNumber = action.payload;
+    },
     setIsLogged: (state, action: PayloadAction<boolean>) => {
       state.isLogged = action.payload;
     },
   }
 });
 
-export const { setLogin, setPassword, setIsLogged } = loginSlice.actions;
+const categorySlice = createSlice({
+  name: 'category',
+  initialState: {
+    productCategory: undefined,
+    procedureCategory: undefined,
+  } as CategoryState,
+  reducers: {
+    setProductCategory: (state, action: PayloadAction<string>) => {
+      state.productCategory = action.payload;
+    },
+    setProcedureCategory: (state, action: PayloadAction<string>) => {
+      state.procedureCategory = action.payload;
+    },
+  }
+});
 
 export const store = configureStore({
   reducer: {
     login: loginSlice.reducer,
+    category: categorySlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(logger),
@@ -40,4 +80,6 @@ export const store = configureStore({
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+export const { setLogin, setPassword, setName, setSurname, setBirthday, setPhoneNumber, setIsLogged } = loginSlice.actions;
+export const { setProcedureCategory, setProductCategory } = categorySlice.actions;
 
