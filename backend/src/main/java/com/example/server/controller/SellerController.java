@@ -51,10 +51,10 @@ public class SellerController {
         }
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<Seller> getSeller(@PathVariable String id) {
+    @GetMapping("{login}")
+    public ResponseEntity<Seller> getSeller(@PathVariable String login) {
         try{
-            Seller seller = sellerRepo.findAll().stream().filter(user -> user.getId().equals(Long.parseLong(id))).findFirst().get();
+            Seller seller = sellerRepo.findAll().stream().filter(user -> user.getLogin().equals(login)).findFirst().get();
             return ResponseEntity.ok().body(seller);
         } catch(NoSuchElementException e){
             return ResponseEntity.badRequest().body(null);

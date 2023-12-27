@@ -51,10 +51,10 @@ public class ClinicController {
         }
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<Clinic> getClinic(@PathVariable String id) {
+    @GetMapping("{login}")
+    public ResponseEntity<Clinic> getClinic(@PathVariable String login) {
         try{
-            Clinic clinic = clinicRepo.findAll().stream().filter(user -> user.getId() == Long.parseLong(id)).findFirst().get();
+            Clinic clinic = clinicRepo.findAll().stream().filter(user -> user.getLogin().equals(login)).findFirst().get();
             return ResponseEntity.ok().body(clinic);
         } catch (NoSuchElementException e){
             return ResponseEntity.badRequest().body(null);

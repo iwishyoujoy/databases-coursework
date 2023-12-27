@@ -51,10 +51,10 @@ public class CustomerController {
         }
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<Customer> getCustomer(@PathVariable String id) {
+    @GetMapping("{login}")
+    public ResponseEntity<Customer> getCustomer(@PathVariable String login) {
         try{
-            Customer customer = customerRepo.findAll().stream().filter(user -> user.getId().equals(Long.parseLong(id))).findFirst().get();
+            Customer customer = customerRepo.findAll().stream().filter(user -> user.getLogin().equals(login)).findFirst().get();
             return ResponseEntity.ok().body(customer);
         } catch(NoSuchElementException e){
             return ResponseEntity.badRequest().body(null);

@@ -1,1 +1,1 @@
-GET http://localhost:3100/api/procedureCategory/6/procedures
+GET http://localhost:3100/api/seller/qwerty
