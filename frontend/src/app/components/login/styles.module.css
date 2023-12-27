@@ -3,7 +3,7 @@
     margin-bottom: 50px;
 
     width: 600px;
-    height: 450px;
+    height: 400px;
     background-color: var(--light-light-pink);
     border-radius: var(--border-radius-m);
 
@@ -99,7 +99,7 @@
 }
 
 .background{
-    height: 450px;
+    height: 400px;
     object-fit: cover;
     border-top-right-radius: var(--border-radius-m);
     border-bottom-right-radius: var(--border-radius-m);

@@ -1,5 +1,10 @@
+import { Banner } from "./components/banner";
+import { DesktopWrapper } from "./components/desktopWrapper";
+
 export default function Home() {
   return (
-    <div></div>
+    <div className='container'>
+      {/* <Banner /> */}
+    </div>
   )
 }
