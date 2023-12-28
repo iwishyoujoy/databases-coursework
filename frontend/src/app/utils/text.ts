@@ -10,3 +10,7 @@ export const getItemsListLength = (items, one, more) => {
         return `${items.length} ${more}`;
     }
 }
+
+export const roundAmount = (amount) => {
+    return Math.round(amount);
+}

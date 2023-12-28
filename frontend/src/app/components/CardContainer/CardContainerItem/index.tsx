@@ -4,7 +4,7 @@ import styles from './styles.module.css';
 import Image from 'next/image';
 import addToCart from 'public/images/addtoCart.svg';
 
-interface IProductProps{
+export interface IProductProps{
     id_item: number;
     name: string;
     price: number;
@@ -15,7 +15,7 @@ interface IProductProps{
     product_category_id: number;
 }
 
-interface IProcedureProps{
+export interface IProcedureProps{
     id: number;
     photo_url: string;
     name: string;
@@ -34,7 +34,7 @@ export const Card: React.FC<ICardProps> = (props) => {
 
     return (
         <div className={styles.container}>
-            <Link href={isProduct ? `clothes/${(item as IProductProps).id_item}` : `procedures/${(item as IProcedureProps).id}`}>
+            <Link href={isProduct ? `products/${(item as IProductProps).id_item}` : `procedures/${(item as IProcedureProps).id}`}>
                 <Image  className={styles.image} src={item.photo_url} alt={item.name} width='200' height='200'/>
             </Link>
             <div className={styles.textContainer}>

@@ -10,9 +10,9 @@ import styles from './styles.module.css';
 import { DesktopWrapper } from "../../../components/DesktopWrapper";
 import Link from "next/link";
 import axios from "axios";
-import Image from "next/image";
-import arrow from 'public/images/arrow.svg';
+
 import { getItemsListLength } from "../../../utils/text";
+import { OrderCard } from "../../../components/OrderCard";
 
 export interface IOrderProps {
     id: number;
@@ -51,7 +51,6 @@ export default function Page({ params: { id } }: AccountProps) {
     useEffect(() => {
         getOrdersForCustomer(id)
             .then(data => {
-                console.log(data);
                 setOrders(data);
             })
             .catch(error => console.error(error));
@@ -69,23 +68,7 @@ export default function Page({ params: { id } }: AccountProps) {
                     <div className={styles.counter}>{getItemsListLength(orders, 'order', 'orders')}</div>
                     {orders.map((order, key) => {
                         return (
-                            <div className={styles.orderContainer} key={key}>
-                                <div className={styles.statusContainer}>
-                                    <div className={styles.status}>{order.status}</div>
-                                    <div className={styles.id}>#{order.id}</div>
-                                </div>
-                                <div className={styles.infoContainer}>
-                                    <div className={styles.info}>
-                                        <div className={styles.header}>Date and time: </div>
-                                        <div className={styles.data}>{order.timestamp}</div>
-                                    </div>
-                                    <Image className={styles.arrow} src={arrow} alt='Open the order'/>
-                                    {/* <div className={styles.info}>
-                                        <div className={styles.data}>{order.amount}</div>
-                                        <div className={styles.header}>Date and time</div>
-                                    </div> */}
-                                </div>
-                            </div>
+                           <OrderCard order={order} key={key} login={id}/> 
                         )
                     })}
                 </div>
