@@ -40,7 +40,6 @@ async function getCustomerData(login): Promise<any> {
 export default function Page({ params: { id } }: AccountProps) {
     const { isLogged } = useSelector((state: RootState) => state.login);
     const [ customer, setCustomer ] = useState<ICustomerProps>(null);
-    const navigate = useNavigate();
 
     // useEffect(() => {
     //     if (!isLogged){
