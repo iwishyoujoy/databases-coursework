@@ -25,7 +25,6 @@ public class SellerController {
         this.sellerRepo = sellerRepo;
     }
 
-    //TODO: не работает
     @PostMapping("signin/")
     public ResponseEntity<Void> signIn(@RequestBody AuthRequest reqSeller) {
         Seller realSeller;

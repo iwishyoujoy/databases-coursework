@@ -2,6 +2,7 @@ package com.example.server.controller;
 
 import com.example.server.model.BimboOrder;
 import com.example.server.repo.BimboOrderRepo;
+import com.example.server.repo.CustomerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,12 @@ import java.util.NoSuchElementException;
 @CrossOrigin
 public class BimboOrderController {
     private final BimboOrderRepo bimboOrderRepo;
+    private final CustomerRepo customerRepo;
 
     @Autowired
-    public BimboOrderController(BimboOrderRepo bimboOrderRepo) throws NoSuchAlgorithmException {
+    public BimboOrderController(BimboOrderRepo bimboOrderRepo, CustomerRepo customerRepo) throws NoSuchAlgorithmException {
         this.bimboOrderRepo = bimboOrderRepo;
+        this.customerRepo = customerRepo;
     }
 
     @PostMapping("create/")
@@ -45,9 +48,10 @@ public class BimboOrderController {
         }
     }
 
-    @GetMapping("/customer/{customer_id}")
-    public ResponseEntity<List<BimboOrder>> getOrderOfCustomer(@PathVariable Long customer_id) {
+    @GetMapping("/customer/{customer_login}")
+    public ResponseEntity<List<BimboOrder>> getOrderOfCustomer(@PathVariable String customer_login) {
         try {
+            Long customer_id = customerRepo.findAll().stream().filter(user -> user.getLogin().equals(customer_login)).findFirst().get().getId();
             List<BimboOrder> list = bimboOrderRepo.findAll();
             List<BimboOrder> to_ret = new ArrayList<>();
             for (BimboOrder fp : list) {
