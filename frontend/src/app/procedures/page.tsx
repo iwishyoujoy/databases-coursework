@@ -6,9 +6,9 @@ import { DesktopWrapper } from "../components/DesktopWrapper";
 export default function Page() {
     return (
         <>
-        <Categories />
+        <Categories categoryType="procedureCategory"/>
         <DesktopWrapper>
-            <CardContainer />
+            <CardContainer categoryType="procedureCategory"/>
         </DesktopWrapper>
         </>
     )

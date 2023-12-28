@@ -1,9 +1,12 @@
 .container{
+    height: 400px;
+}
+
+.container, .containerSignUp{
     margin-top: 50px;
     margin-bottom: 50px;
 
     width: 600px;
-    height: 400px;
     background-color: var(--light-light-pink);
     border-radius: var(--border-radius-m);
 
@@ -11,6 +14,10 @@
     flex-direction: row;
     align-items: flex-start;
     justify-content: space-between;
+}
+
+.containerSignUp{
+    height: 530px;
 }
 
 .leftContainer{
@@ -57,28 +64,36 @@
 }
 
 .buttonContainer{
+    width: 280px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    column-gap: 10px;
+    row-gap: 5px;
 }
 
 .button{
-    width: 135px;
+    width: 100%;
     border-radius: var(--border-radius-m);
     padding: 5px;
     border: 1px solid var(--bright-pink);
 }
 
-.signup, .signin:hover{
+.signin:hover{
     background-color: var(--bright-pink);
     color: var(--light-light-pink);
 }
 
-.signin, .signup:hover{
+.signin{
     background-color: var(--light-light-pink);
     color: var(--bright-pink);
+}
+
+.signup{
+    text-decoration: underline;
+    color: black;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-s);
 }
 
 .subtitle, .description {
@@ -100,7 +115,14 @@
 
 .background{
     height: 400px;
+}
+
+.background, .backgroundSignUp{
     object-fit: cover;
     border-top-right-radius: var(--border-radius-m);
     border-bottom-right-radius: var(--border-radius-m);
+}
+
+.backgroundSignUp{
+    height: 530px;
 }

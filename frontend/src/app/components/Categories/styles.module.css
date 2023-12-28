@@ -1,0 +1,22 @@
+.container{
+    min-width: 1200px;
+    height: 60px;
+    background-color: var(--light-light-pink);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    column-gap: 30px;
+    padding: 5px 30px;
+
+    margin-bottom: 20px;
+}
+
+.category{
+    cursor: pointer;
+}
+
+.hoverPink:hover{
+    color: var(--bright-pink);
+    transition: 0.1s ease-in-out;
+}

@@ -4,8 +4,8 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 import { RootState } from "../redux/store";
-import { Login } from "../components/login";
-import { DesktopWrapper } from "../components/desktopWrapper";
+import { SignIn } from "../components/SignInSignUpForm";
+import { DesktopWrapper } from "../components/DesktopWrapper";
 
 import styles from './styles.module.css';
 
@@ -19,7 +19,7 @@ export default function Page() {
                 <div></div>
             ) : (
                 <div className={styles.mainUI}>
-                    <Login />
+                    <SignIn />
                 </div>
             )}
         </DesktopWrapper>
