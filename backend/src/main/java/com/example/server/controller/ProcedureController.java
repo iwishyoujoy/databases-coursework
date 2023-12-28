@@ -1,7 +1,9 @@
 package com.example.server.controller;
 
 import com.example.server.model.Procedure;
+import com.example.server.model.Appointment;
 import com.example.server.repo.ProcedureRepo;
+import com.example.server.repo.AppointmentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +18,12 @@ import java.util.NoSuchElementException;
 @CrossOrigin
 public class ProcedureController {
     private final ProcedureRepo procedureRepo;
+    private final AppointmentRepo appointmentRepo;
 
     @Autowired
-    public ProcedureController(ProcedureRepo procedureRepo) throws NoSuchAlgorithmException {
+    public ProcedureController(ProcedureRepo procedureRepo, AppointmentRepo appointmentRepo) throws NoSuchAlgorithmException {
         this.procedureRepo = procedureRepo;
+        this.appointmentRepo = appointmentRepo;
     }
 
     @PostMapping("create/")
@@ -48,6 +52,13 @@ public class ProcedureController {
     public ResponseEntity<List<Procedure>> getAllProcedure() {
         return ResponseEntity.ok().body(procedureRepo.findAll());
     }
+
+    @GetMapping("/{id}/appointments")
+    public ResponseEntity<List<Appointment>> getAllProductsByCategory(@PathVariable Long id) {
+        List<Appointment> list = appointmentRepo.findAll().stream().filter(user -> user.getProcedure_id() == id).toList();
+        return ResponseEntity.ok().body(list);
+    }
+
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {

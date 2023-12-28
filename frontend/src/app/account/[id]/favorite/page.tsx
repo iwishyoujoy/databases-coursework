@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import cn from 'classnames';
 
 import styles from './styles.module.css';
-import { DesktopWrapper } from "../../../components/DesktopWrapper";
+import { DesktopWrapper } from "../../../components/desktopWrapper";
 import Link from "next/link";
 import axios from "axios";
 
