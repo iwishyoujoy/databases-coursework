@@ -1,1 +1,1 @@
-GET http://localhost:3100/api/order/customer/qwerty
+GET http://localhost:3100/api/order/check/7
