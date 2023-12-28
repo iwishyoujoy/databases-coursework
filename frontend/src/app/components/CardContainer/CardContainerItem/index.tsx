@@ -5,8 +5,10 @@ import Image from 'next/image';
 import addToCart from 'public/images/cart.svg';
 import heart from 'public/images/blackHeart.svg';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../../redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../../../redux/store';
+import { useEffect, useState } from 'react';
+import { getCustomerData } from '../../../account/[id]/profile/page';
 
 export interface IProductProps{
     id_item: number;
@@ -31,6 +33,7 @@ export interface IProcedureProps{
 interface ICardProps {
     item: IProductProps | IProcedureProps;
     isProduct?: boolean;
+    isInFavorite?: boolean;
 }
 
 export const addToFavorite = (customer_id, item_id) => {
@@ -52,16 +55,53 @@ export const addToFavorite = (customer_id, item_id) => {
     };
 };
 
+export const removeFromFavorite = (customer_id, item_id) => {
+    return (dispatch) => {
+        axios.delete(`http://localhost:3100/api/favorite/${customer_id}/${item_id}`)
+        .then(response => {
+            if (response.status === 200) {
+                dispatch({ type: 'REMOVE_FAVORITE_SUCCESS', payload: { customer_id, item_id } });
+            } else {
+                throw new Error('Failed to remove from favorites');
+            }
+        })
+        .catch(error => {
+            dispatch({ type: 'REMOVE_FAVORITE_FAILURE', payload: error.message });
+        });
+    };
+ };
+ 
+
 export const Card: React.FC<ICardProps> = (props) => {
+    const loginState = useSelector((state: RootState) => state.login);
     const dispatch = useDispatch<AppDispatch>();
-    const { item, isProduct = true } = props;
+    const [ customerId, setCustomerId ] = useState(11);
+    const { item, isProduct = true, isInFavorite } = props;
+
+    useEffect(() => {
+        getCustomerData(loginState.login)
+            .then(data => {
+                setCustomerId(data.id);
+            })
+            .catch(error => console.error(error));
+        }, [loginState.login]);
 
     const handleAddToFavoriteClick = () => {
         if (isProduct){
-            dispatch(addToFavorite(11, (item as IProductProps).id_item));
+            
+            dispatch(addToFavorite(customerId, (item as IProductProps).id_item));
         }
         else {
-            dispatch(addToFavorite(11, (item as IProcedureProps).id));
+            dispatch(addToFavorite(customerId, (item as IProcedureProps).id));
+        }
+    }
+
+    const handleRemoveFromFavoriteClick = () => {
+        if (isProduct){
+            dispatch(removeFromFavorite(customerId, (item as IProductProps).id_item));
+        }
+        else {
+            dispatch(removeFromFavorite(customerId, (item as IProcedureProps).id));
         }
     }
 
@@ -75,9 +115,11 @@ export const Card: React.FC<ICardProps> = (props) => {
                 <div className={styles.priceContainer}>
                     <div className={styles.price}>{item.price} $</div>
                     <div className={styles.buttonContainer}>
-                        <div className={styles.button} onClick={handleAddToFavoriteClick}>
-                            <Image className={styles.badge} src={heart} alt='Add to favorite'/>
-                        </div>
+                        {isProduct && 
+                            <div className={styles.button} onClick={isInFavorite ? handleRemoveFromFavoriteClick : handleAddToFavoriteClick}>
+                                <Image className={styles.badge} src={heart} alt='Add to favorite'/>
+                            </div>
+                        }
                         <div className={styles.button}>
                             <Image className={styles.badge} src={addToCart} alt='Add to cart'/>
                         </div>

@@ -37,7 +37,9 @@ export default function Page({ params: { id } }: AccountProps) {
         getFavoritesByCustomer(id)
             .then(data => {
                 const promises = data.map((item) => {
-                   return getProductById(item.item_id)
+                    const newItemData = item.favoriteProductId;
+
+                   return getProductById(newItemData.item_id)
                        .then(itemData => {
                            return itemData;
                        })
@@ -46,6 +48,7 @@ export default function Page({ params: { id } }: AccountProps) {
  
                 Promise.all(promises)
                    .then(products => {
+                        console.log(products);
                        setFavorites(products);
                    });
             })
@@ -62,11 +65,13 @@ export default function Page({ params: { id } }: AccountProps) {
                 </div>
                 <div className={styles.rightContainer}>
                     <div className={styles.counter}>{getItemsListLength(favorites, 'favorite', 'favorites')}</div>
-                    {favorites.map((favorite, key) => {
-                        return (
-                           <Card item={favorite} isProduct={true} key={key}/>
-                        )
-                    })}
+                    <div className={styles.favoriteContainer}>
+                        {favorites.map((favorite, key) => {
+                            return (
+                            <Card item={favorite} isInFavorite={true} isProduct={favorite?.id_item ? true : false} key={key}/>
+                            )
+                        })}
+                    </div>
                 </div>
             </div>
         </DesktopWrapper>

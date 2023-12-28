@@ -46,3 +46,11 @@
     padding: 0 10px;
     margin-bottom: -10px;
 }
+
+.favoriteContainer{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 20px;
+    row-gap: 20px;
+}

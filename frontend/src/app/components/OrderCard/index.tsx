@@ -29,7 +29,6 @@ export const OrderCard: React.FC<IOrderCardProps> = (props) => {
     useEffect(() => {
         getCheckForOrder(order.id)
             .then(data => {
-                console.log(data);
                 setAmount(data);
             })
             .catch(error => console.error(error));

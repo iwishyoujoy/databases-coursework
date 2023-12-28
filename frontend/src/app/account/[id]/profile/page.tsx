@@ -23,7 +23,7 @@ interface AccountProps{
     }
 }
 
-async function getCustomerData(login): Promise<any> {
+export async function getCustomerData(login): Promise<any> {
     try {
         const response = await axios.get(`http://localhost:3100/api/customer/${login}`);
     
