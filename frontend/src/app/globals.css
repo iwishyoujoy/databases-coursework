@@ -16,6 +16,7 @@
   --light-grey: #aaaaaa;
   --dark-grey: #545454;
 
+  --black-alpha-10: rgb(0,0,0,0.1);
   --black-alpha-56: rgb(0,0,0,0.56);
 
   --font-size-xs: 14px;

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import cn from 'classnames';
 import Image from 'next/image';
 
@@ -17,16 +17,16 @@ export const SignIn = () => {
     const [isSignUp, setIsSignUp] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
     const loginState = useSelector((state: RootState) => state.login);
-    const navigate = useNavigate();
+    const router = useRouter();
 
-    const signIn = (username, password) => {
+    const signIn = (login, password) => {
         return (dispatch) => {
-            axios.post('/api/customer/signin/', { username, password })
+            axios.post('/api/customer/signin/', { login, password })
             .then(response => {
                 if (response.status === 200) {
                     dispatch({ type: 'SIGNIN_SUCCESS', payload: response.data });
                     dispatch(setIsLogged(true));
-                    navigate(`/account/${loginState.login}/profile`);
+                    router.push(`/account/${loginState.login}/profile`);
                 } else {
                     throw new Error('Failed to sign in');
                 }
@@ -51,7 +51,7 @@ export const SignIn = () => {
                 if (response.status === 200) {
                     dispatch({ type: 'SIGNUP_SUCCESS', payload: response.data });
                     dispatch(setIsLogged(true));
-                    navigate(`/account/${loginState.login}/profile`);
+                    router.push(`/account/${loginState.login}/profile`);
                 } else {
                     throw new Error('Failed to sign up');
                 }
