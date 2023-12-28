@@ -46,10 +46,16 @@ public class ReviewController {
     }
 
     @GetMapping("/item-id/{itemid}")
-    public ResponseEntity<Review> getReviewByItem(@PathVariable Long itemid) {
+    public ResponseEntity<List<Review>> getReviewByItem(@PathVariable Long itemid) {
         try {
-            Review review = reviewRepo.findAll().stream().filter(user -> user.getItem_id().equals(itemid)).findFirst().get();
-            return ResponseEntity.ok().body(review);
+            List<Review> list = reviewRepo.findAll();
+            List<Review> to_ret = new ArrayList<>();
+            for (Review review : list) {
+                if (review.getItem_id().equals(itemid)) {
+                    to_ret.add(review);
+                }
+            }
+            return ResponseEntity.ok().body(to_ret);
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body(null);
         }
