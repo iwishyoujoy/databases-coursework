@@ -75,7 +75,7 @@ export const removeFromFavorite = (customer_id, item_id) => {
 export const Card: React.FC<ICardProps> = (props) => {
     const loginState = useSelector((state: RootState) => state.login);
     const dispatch = useDispatch<AppDispatch>();
-    const [ customerId, setCustomerId ] = useState(11);
+    const [ customerId, setCustomerId ] = useState();
     const { item, isProduct = true, isInFavorite } = props;
 
     useEffect(() => {
