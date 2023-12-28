@@ -9,6 +9,9 @@ import addToCart from 'public/images/cart.svg';
 import heart from 'public/images/heart.svg';
 import { capitalizeFirstLetter, getItemsListLength } from "../../utils/text";
 import { DesktopWrapper } from "../../components/DesktopWrapper";
+import { AppDispatch, RootState } from "../../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { getCustomerData } from "../../account/[id]/profile/page";
 
 interface ClothesProps{
     params: {
@@ -83,11 +86,34 @@ async function getReviewsById(id): Promise<any> {
     }
 }
 
+const addReview = (customer_id, rating, content, item_id) => {
+    return (dispatch) => {
+        axios.post('http://localhost:3100/api/review/create/', { customer_id, rating, content, item_id })
+        .then(response => {
+            if (response.status === 200) {
+                dispatch({ type: 'ADD_REVIEW_SUCCESS', payload: response.data });
+            } else {
+                throw new Error('Failed to sign in');
+            }
+            })
+        .catch(error => {
+            dispatch({ type: 'ADD_REVIEW_FAILURE', payload: error.message });
+        });
+    };
+};
+
 export default function Page({ params: { id } }: ClothesProps) {
+    const loginState = useSelector((state: RootState) => state.login);
+    const [ customerId, setCustomerId ] = useState();
+    const dispatch = useDispatch<AppDispatch>();
     const [ product, setProduct ] = useState<IProductProps>();
     const [ category, setCategory ] = useState<IProductCategoryProps>();
     const [ seller, setSeller ] = useState<ISellerProps>();
-    const [ reviews, setReviews ] = useState<IReviewProps[] | IReviewProps>();
+    const [ reviews, setReviews ] = useState<IReviewProps[]>();
+
+    const [ isWritingReview, setIsWritingReview ] = useState(false);
+    const [ rating, setRating ] = useState();
+    const [ content, setContent ] = useState();
 
     useEffect(() => {
         getProductById(id)
@@ -107,13 +133,35 @@ export default function Page({ params: { id } }: ClothesProps) {
                 
                 getReviewsById(data.id_item)
                     .then(data => {
-                        console.log(data);
                         setReviews(data);
                     })
                     .catch(error => console.error(error));
             })
             .catch(error => console.error(error));
-        }, [id]);
+        getCustomerData(loginState.login)
+            .then(data => {
+                setCustomerId(data.id);
+            })
+            .catch(error => console.error(error));
+        }, [id, loginState.login]);
+
+    const handleWriteReviewClick = () => {
+        setIsWritingReview(!isWritingReview);
+    }
+
+    const handleSendReviewClick = () => {
+        dispatch(addReview(customerId, rating, content, id));
+        setIsWritingReview(false);
+    }
+
+    const handleRatingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRating(event.target.value);
+        console.log(rating);
+    };
+    const handleContentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setContent(event.target.value);
+        console.log(content);
+    };
 
     return (
         <DesktopWrapper>
@@ -121,53 +169,52 @@ export default function Page({ params: { id } }: ClothesProps) {
                 <div className={styles.container}>
                     <div className={styles.mainContainer}>
                         <Image className={styles.image} height='300' width='300' src={product.photo_url} alt={product.description}/>
-                        <div className={styles.infoContainer}>
-                            <div className={styles.title}>{capitalizeFirstLetter(product.name)}</div>
-                            <div className={styles.actonContainer}>
-                                <div className={styles.price}>{product.price} $</div>
-                                <Image className={styles.badge} src={heart} alt='Add to favorite'/>
-                                <button className={styles.button} >Add to cart</button>
+                        <div className={styles.info}>
+                            <div className={styles.infoContainer}>
+                                <div className={styles.title}>{capitalizeFirstLetter(product.name)}</div>
+                                <div className={styles.actonContainer}>
+                                    <div className={styles.price}>{product.price} $</div>
+                                    <Image className={styles.badge} src={heart} alt='Add to favorite'/>
+                                    <button className={styles.button} >Add to cart</button>
+                                </div>
+                                    <div className={styles.aboutContainer}>
+                                        <div className={styles.about}>
+                                            <div className={styles.header}>Details: </div>
+                                            <div className={styles.text}>{product.description}</div>
+                                        </div>
+                                        {category && 
+                                            <div className={styles.about}>
+                                                <div className={styles.header}>Category: </div>
+                                                <div className={styles.text}>{capitalizeFirstLetter(category.name)}</div>
+                                            </div>
+                                        }
+                                        {seller && 
+                                            <div className={styles.about}>
+                                                <div className={styles.header}>Seller: </div>
+                                                <div className={styles.text}>{seller.name}</div>
+                                            </div>
+                                        }
+                                    </div> 
                             </div>
-                            <>
-                                <div className={styles.aboutContainer}>
-                                    <div className={styles.about}>
-                                        <div className={styles.header}>Details: </div>
-                                        <div className={styles.text}>{product.description}</div>
-                                    </div>
-                                    {category && 
-                                        <div className={styles.about}>
-                                            <div className={styles.header}>Category: </div>
-                                            <div className={styles.text}>{capitalizeFirstLetter(category.name)}</div>
+                            {reviews && <div className={styles.counter}>{getItemsListLength(reviews, 'review', 'reviews')}</div>}
+                            <div className={styles.reviewContainer}>
+                                {reviews && reviews.map((review, key) => {
+                                    return (
+                                        <div className={styles.review} key={key}>
+                                            <div className={styles.rating}>{review.rating} / 5</div>
+                                            <div className={styles.content}>{review.content}</div>
                                         </div>
-                                    }
-                                    {seller && 
-                                        <div className={styles.about}>
-                                            <div className={styles.header}>Seller: </div>
-                                            <div className={styles.text}>{seller.name}</div>
-                                        </div>
-                                    }
+                                    );
+                                })}
+                            </div>
+                            <button className={styles.buttonReview} onClick={handleWriteReviewClick}>Write a review</button>
+                            {isWritingReview  && 
+                                <div className={styles.reviewInputContainer}>
+                                    <input className={styles.input} type='text' placeholder='Rating (out of 5)' value={rating} onChange={handleRatingChange}/>
+                                    <textarea className={styles.inputBigger} type='text' placeholder='Write whatever you think!' value={content} onChange={handleContentChange}></textarea>
+                                    <button className={styles.buttonSend} onClick={handleSendReviewClick}>Send</button>
                                 </div>
-                                <div className={styles.reviewContainer}>
-                                    {reviews && <div>{getItemsListLength(reviews.length ?? '0', 'review', 'reviews')}</div>}
-                                    {/* {reviews.length > 1 ? reviews.map((review, key) => {
-                                        return (
-                                            <div className={styles.review} key={key}>
-                                                <div className={styles.rating}>{review.rating} / 5</div>
-                                                <div className={styles.content}>{review.content}</div>
-                                            </div>
-                                        )
-                                    }) : (
-                                        reviews.length === 1 ? (
-                                            <div className={styles.review} key={key}>
-                                                <div className={styles.rating}>{reviews.rating} / 5</div>
-                                                <div className={styles.content}>{reviews.content}</div>
-                                            </div>
-                                        ) : (
-                                            <div></div>
-                                        )
-                                    )} */}
-                                </div>
-                            </>
+                            }
                         </div>
                     </div>
                 </div>}
