@@ -1,1 +1,1 @@
-GET http://localhost:3100/api/seller/login/qwerty
+GET http://localhost:3100/api/review/item-id/1
