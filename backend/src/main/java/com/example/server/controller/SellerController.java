@@ -50,8 +50,20 @@ public class SellerController {
         }
     }
 
-    @GetMapping("{login}")
-    public ResponseEntity<Seller> getSeller(@PathVariable String login) {
+
+    @GetMapping("id/{id}")
+    public ResponseEntity<Seller> getSellerById(@PathVariable Long id) {
+        try{
+            Seller seller = sellerRepo.findAll().stream().filter(user -> user.getId().equals(id)).findFirst().get();
+            return ResponseEntity.ok().body(seller);
+        } catch(NoSuchElementException e){
+            return ResponseEntity.badRequest().body(null);
+        }
+
+    }
+
+    @GetMapping("login/{login}")
+    public ResponseEntity<Seller> getSellerByLodin(@PathVariable String login) {
         try{
             Seller seller = sellerRepo.findAll().stream().filter(user -> user.getLogin().equals(login)).findFirst().get();
             return ResponseEntity.ok().body(seller);

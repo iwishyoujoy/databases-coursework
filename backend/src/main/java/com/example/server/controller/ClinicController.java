@@ -52,7 +52,7 @@ public class ClinicController {
     }
 
     @GetMapping("{login}")
-    public ResponseEntity<Clinic> getClinic(@PathVariable String login) {
+    public ResponseEntity<Clinic> getClinicBuLogin(@PathVariable String login) {
         try{
             Clinic clinic = clinicRepo.findAll().stream().filter(user -> user.getLogin().equals(login)).findFirst().get();
             return ResponseEntity.ok().body(clinic);
@@ -61,7 +61,17 @@ public class ClinicController {
         }
     }
 
-    @DeleteMapping("{login}")
+    @GetMapping("id/{id}")
+    public ResponseEntity<Clinic> getClinicById(@PathVariable Long id) {
+        try{
+            Clinic clinic = clinicRepo.findAll().stream().filter(user -> user.getId().equals(id)).findFirst().get();
+            return ResponseEntity.ok().body(clinic);
+        } catch (NoSuchElementException e){
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+    @DeleteMapping("login/{login}")
     public ResponseEntity<Void> delete(@PathVariable String login) {
         Clinic clinic;
         try {
