@@ -16,6 +16,8 @@
   --light-grey: #aaaaaa;
   --dark-grey: #545454;
 
+  --black-alpha-56: rgb(0,0,0,0.56);
+
   --font-size-xs: 14px;
   --font-size-s: 16px;
   --font-size-sm: 18px;
@@ -46,7 +48,6 @@
 }
 
 .mainContent{
-  flex: 1 1 auto; 
   background-color: var(--white);
-  height: auto;
+  min-height: 460px;
 }

@@ -72,9 +72,14 @@
     row-gap: 8px;
 }
 
+.blackButton{
+    color: var(--bright-pink);
+}
+
 .blackButton:hover{
-    background-color: black;
-    color: var(--light-peach);
+    background-color: var(--bright-pink);
+    color: var(--light-light-pink);
+    border-color: var(--bright-pink);
 }
 .linkBigger{
     width: 200px;

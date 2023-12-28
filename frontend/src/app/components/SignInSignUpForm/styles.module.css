@@ -17,7 +17,7 @@
 }
 
 .containerSignUp{
-    height: 530px;
+    height: 560px;
 }
 
 .leftContainer{
@@ -124,5 +124,12 @@
 }
 
 .backgroundSignUp{
-    height: 530px;
+    height: 560px;
+}
+
+.inputDescription{
+    font-size: var(--font-size-s);
+    margin-bottom: -10px;
+    padding-left: 10px;
+    color: var(--medium-pink);
 }

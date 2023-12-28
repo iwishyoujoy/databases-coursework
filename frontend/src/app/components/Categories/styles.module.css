@@ -16,7 +16,7 @@
     cursor: pointer;
 }
 
-.hoverPink:hover{
+.hoverPink:hover, .selected{
     color: var(--bright-pink);
     transition: 0.1s ease-in-out;
 }

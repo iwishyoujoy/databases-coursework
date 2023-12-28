@@ -26,13 +26,15 @@ async function getAllProductCategories(categoryType): Promise<any> {
 export const Categories: React.FC<ICategoriesProps> = ({ categoryType = 'productCategory' }) => {
     const dispatch = useDispatch<AppDispatch>();
     const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState('All');
 
-    const handleCategoryClick = (value) => {
+    const handleCategoryClick = (id, name) => {
+        setSelectedCategory(name);
         if (categoryType === 'productCategory'){
-            dispatch(setProductCategory(value));
+            dispatch(setProductCategory(id));
         }
         else{
-            dispatch(setProcedureCategory(value));
+            dispatch(setProcedureCategory(id));
         }
     }
 
@@ -47,9 +49,11 @@ export const Categories: React.FC<ICategoriesProps> = ({ categoryType = 'product
 
     return (
         <div className={styles.container}>
-            <div className={cn(styles.category, styles.hoverPink)} onClick={() => handleCategoryClick('-1')}>All</div>
+            <div className={cn(styles.category, styles.hoverPink, selectedCategory === 'All' ? styles.selected : '')} onClick={() => handleCategoryClick('-1', 'All')}>All</div>
             {categories.map((category, key) => {
-                return (<div className={cn(styles.category, styles.hoverPink)} onClick={() => handleCategoryClick(category.id)} key={key}>{capitalizeFirstLetter(category.name)}</div>)
+                const name = capitalizeFirstLetter(category.name);
+
+                return (<div className={cn(styles.category, styles.hoverPink, selectedCategory === name ? styles.selected : '')} onClick={() => handleCategoryClick(category.id, name)} key={key}>{name}</div>)
             })}
         </div>
     )

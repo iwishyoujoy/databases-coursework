@@ -5,9 +5,10 @@ import styles from './styles.module.css';
 import { Card } from './CardContainerItem';
 import { RootState } from '../../redux/store';
 import { useSelector } from 'react-redux';
+import { getItemsListLength } from '../../utils/text';
 
 interface ICardContainerProps {
-    categoryType: 'productCategory' | 'procedureCategory';
+    categoryType?: 'productCategory' | 'procedureCategory';
 }
 
 async function getAllProducts(): Promise<any> {
@@ -97,9 +98,21 @@ export const CardContainer: React.FC<ICardContainerProps> = ({ categoryType = 'p
 
    return (
        <div className={styles.container}>
-           {products.map((product, key) => {
-               return (<Card item={product} key={key} isProduct={categoryType === 'productCategory'}/>)
-           })}
+            {products.length > 0 ? (
+                <>
+                <div className={styles.counter}>{getItemsListLength(products)}</div>
+                <div className={styles.cardContainer}>
+                    {products.map((product, key) => {
+                        return (<Card item={product} key={key} isProduct={categoryType === 'productCategory'}/>)
+                    })}
+                </div>
+                </>
+            ) : (
+                <div className={styles.errorContainer}>
+                    <h1 className={styles.error}>Oopsie... </h1>
+                    <p className={styles.errorDescription}>Nothing was found, search for something else</p>
+                </div>
+            )}
        </div>
    )
 }

@@ -1,5 +1,10 @@
 .container{
     display: flex;
+    flex-direction: column;
+    row-gap: 20px;
+}
+.cardContainer{
+    display: flex;
     flex-direction: row;
     align-items: flex-start;
     justify-content: flex-start;
@@ -7,4 +12,32 @@
     column-gap: 20px;
     row-gap: 20px;
     margin-bottom: 30px;
+}
+
+.counter{
+    align-self: center;
+    font-size: var(--font-size-sm);
+    color: var(--black-alpha-56);
+}
+
+.errorContainer{
+    height: 427px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    row-gap: 10px;
+}
+
+.error{
+    font-size: var(--font-size-l);
+    color: var(--medium-pink);
+    font-weight: var(--font-weight-l);
+    text-align: center;
+}
+
+.errorDescription{
+    font-size: var(--font-size-sm);
+    color: var(--medium-pink);
 }

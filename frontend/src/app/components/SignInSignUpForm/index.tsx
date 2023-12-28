@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import cn from 'classnames';
 import Image from 'next/image';
 
@@ -12,51 +13,54 @@ import { AppDispatch, RootState, setIsLogged, setLogin, setPassword, setName, se
 
 axios.defaults.baseURL = 'http://localhost:3100';
 
-export const signUp = (name, surname, birthday, phoneNumber, login, password) => {
-    return (dispatch) => {
-        axios.post('/api/customer/signup/', { 
-            name,
-            surname,
-            birthday,
-            phone_number: phoneNumber,
-            login,
-            password
-         })
-        .then(response => {
-            if (response.status === 200) {
-                dispatch({ type: 'SIGNUP_SUCCESS', payload: response.data });
-                dispatch(setIsLogged(true));
-            } else {
-                throw new Error('Failed to sign up');
-            }
-        })
-        .catch(error => {
-            dispatch({ type: 'SIGNUP_FAILURE', payload: error.message });
-        });
-    };
-};
-
-export const signIn = (username, password) => {
-    return (dispatch) => {
-        axios.post('/api/customer/signin/', { username, password })
-        .then(response => {
-            if (response.status === 200) {
-                dispatch({ type: 'SIGNIN_SUCCESS', payload: response.data });
-                dispatch(setIsLogged(true));
-            } else {
-                throw new Error('Failed to sign in');
-            }
-            })
-        .catch(error => {
-            dispatch({ type: 'SIGNIN_FAILURE', payload: error.message });
-        });
-    };
-};
-
 export const SignIn = () => {
     const [isSignUp, setIsSignUp] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
     const loginState = useSelector((state: RootState) => state.login);
+    const navigate = useNavigate();
+
+    const signIn = (username, password) => {
+        return (dispatch) => {
+            axios.post('/api/customer/signin/', { username, password })
+            .then(response => {
+                if (response.status === 200) {
+                    dispatch({ type: 'SIGNIN_SUCCESS', payload: response.data });
+                    dispatch(setIsLogged(true));
+                    navigate(`/account/${loginState.login}/profile`);
+                } else {
+                    throw new Error('Failed to sign in');
+                }
+                })
+            .catch(error => {
+                dispatch({ type: 'SIGNIN_FAILURE', payload: error.message });
+            });
+        };
+    };
+
+    const signUp = (name, surname, birthday, phoneNumber, login, password) => {
+        return (dispatch) => {
+            axios.post('/api/customer/signup/', { 
+                name,
+                surname,
+                birthday,
+                phone_number: phoneNumber,
+                login,
+                password
+             })
+            .then(response => {
+                if (response.status === 200) {
+                    dispatch({ type: 'SIGNUP_SUCCESS', payload: response.data });
+                    dispatch(setIsLogged(true));
+                    navigate(`/account/${loginState.login}/profile`);
+                } else {
+                    throw new Error('Failed to sign up');
+                }
+            })
+            .catch(error => {
+                dispatch({ type: 'SIGNUP_FAILURE', payload: error.message });
+            });
+        };
+    };
    
     const handleLoginChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       dispatch(setLogin(event.target.value));
@@ -93,7 +97,8 @@ export const SignIn = () => {
                     <div className={styles.inputContainer}>
                         <input className={styles.input} type='text' placeholder='Name' value={loginState.name} onChange={handleNameChange}/>
                         <input className={styles.input} type='text' placeholder='Surname' value={loginState.surname} onChange={handleSurnameChange}/>
-                        <input className={styles.input} type='date' placeholder='Birthday' max='2005-01-01' value={loginState.birthday} onChange={handleBirthdayChange}/>
+                        <div className={styles.inputDescription}>Your birthday:</div>
+                        <input className={styles.input} type='date' max='2005-01-01' value={loginState.birthday} onChange={handleBirthdayChange}/>
                         <input className={styles.input} type='text' placeholder='Phone number' value={loginState.phoneNumber} onChange={handlePhoneNumberChange}/>
                         <input className={styles.input} type='text' placeholder='Login' value={loginState.login} onChange={handleLoginChange}/>
                         <input className={styles.input} type='password' placeholder='Password' value={loginState.password} onChange={handlePasswordChange}/>

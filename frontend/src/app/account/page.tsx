@@ -10,18 +10,13 @@ import { DesktopWrapper } from "../components/DesktopWrapper";
 import styles from './styles.module.css';
 
 export default function Page() {
-    const { isLogged } = useSelector((state: RootState) => state.login);
-
+    // const { isLogged } = useSelector((state: RootState) => state.login);
     
     return (
         <DesktopWrapper>
-            {isLogged ? (
-                <div></div>
-            ) : (
-                <div className={styles.mainUI}>
-                    <SignIn />
-                </div>
-            )}
+            <div className={styles.mainUI}>
+                <SignIn />
+            </div>
         </DesktopWrapper>
     );
 }

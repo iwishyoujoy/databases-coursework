@@ -24,16 +24,16 @@ export const Footer = () => {
                     Welcome to Bimbo shop! Transform your dream into reality with our stylish trends and unforgettable shopping experience. Don't forget to check our updates on social media. Your satisfaction fuels our passion!
                 </div>
                 <div className={styles.buttonContainer}>
-                    <Button className={styles.blackButton} borderRadius="0" w="300px" colorScheme='black' variant='outline'>
+                    <Button className={styles.blackButton} borderRadius="8" w="300px" colorScheme='black' variant='outline'>
                         Twitter
                     </Button>
-                    <Button className={styles.blackButton} borderRadius="0" w="300px" colorScheme='black' variant='outline'>
+                    <Button className={styles.blackButton} borderRadius="8" w="300px" colorScheme='black' variant='outline'>
                         Facebook
                     </Button>
-                    <Button className={styles.blackButton} borderRadius="0" w="300px" colorScheme='black' variant='outline'>
+                    <Button className={styles.blackButton} borderRadius="8" w="300px" colorScheme='black' variant='outline'>
                         Instagram
                     </Button>
-                    <Button className={styles.blackButton} borderRadius="0" w="300px" colorScheme='black' variant='outline'>
+                    <Button className={styles.blackButton} borderRadius="8" w="300px" colorScheme='black' variant='outline'>
                         VK
                     </Button>
                 </div>
