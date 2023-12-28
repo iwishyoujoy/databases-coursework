@@ -102,8 +102,42 @@ const addReview = (customer_id, rating, content, item_id) => {
     };
 };
 
+const addItemToOrder = (customer_id, rating, content, item_id) => {
+    return (dispatch) => {
+        axios.post('http://localhost:3100/api/review/create/', { customer_id, rating, content, item_id })
+        .then(response => {
+            if (response.status === 200) {
+                dispatch({ type: 'ADD_REVIEW_SUCCESS', payload: response.data });
+            } else {
+                throw new Error('Failed to sign in');
+            }
+            })
+        .catch(error => {
+            dispatch({ type: 'ADD_REVIEW_FAILURE', payload: error.message });
+        });
+    };
+};
+
+const createOrder = (customer_id, timestamp, status) => {
+    return (dispatch) => {
+        axios.post('http://localhost:3100/api/order/create/', { customer_id, timestamp, status })
+        .then(response => {
+            if (response.status === 200) {
+                dispatch({ type: 'ADD_ORDER_SUCCESS', payload: response.data });
+            } else {
+                throw new Error('Failed to sign in');
+            }
+            })
+        .catch(error => {
+            dispatch({ type: 'ADD_ORDER_FAILURE', payload: error.message });
+        });
+    };
+};
+
 export default function Page({ params: { id } }: ClothesProps) {
     const loginState = useSelector((state: RootState) => state.login);
+    const cartState = useSelector((state: RootState) => state.cart);
+
     const [ customerId, setCustomerId ] = useState();
     const dispatch = useDispatch<AppDispatch>();
     const [ product, setProduct ] = useState<IProductProps>();
@@ -163,6 +197,12 @@ export default function Page({ params: { id } }: ClothesProps) {
         console.log(content);
     };
 
+    const handleAddToCartClick = () => {
+        if (!cartState.orderId){
+            createOrder
+        }
+    }
+
     return (
         <DesktopWrapper>
             {product && 
@@ -175,7 +215,7 @@ export default function Page({ params: { id } }: ClothesProps) {
                                 <div className={styles.actonContainer}>
                                     <div className={styles.price}>{product.price} $</div>
                                     <Image className={styles.badge} src={heart} alt='Add to favorite'/>
-                                    <button className={styles.button} >Add to cart</button>
+                                    <button className={styles.button} onClick={handleAddToCartClick}>Add to cart</button>
                                 </div>
                                     <div className={styles.aboutContainer}>
                                         <div className={styles.about}>

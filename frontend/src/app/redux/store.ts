@@ -16,6 +16,10 @@ interface CategoryState {
   procedureCategory: string;
 }
 
+interface CartState {
+  orderId: number;
+}
+
 const loginSlice = createSlice({
   name: 'login',
   initialState: {
@@ -68,10 +72,23 @@ const categorySlice = createSlice({
   }
 });
 
+const cartSlice = createSlice({
+  name: 'cart',
+  initialState: {
+    orderId: undefined,
+  } as CartState,
+  reducers: {
+    setOrderId: (state, action: PayloadAction<string>) => {
+      state.orderId = action.payload;
+    },
+  }
+});
+
 export const store = configureStore({
   reducer: {
     login: loginSlice.reducer,
     category: categorySlice.reducer,
+    cart: cartSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(logger),
@@ -82,4 +99,5 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export const { setLogin, setPassword, setName, setSurname, setBirthday, setPhoneNumber, setIsLogged } = loginSlice.actions;
 export const { setProcedureCategory, setProductCategory } = categorySlice.actions;
+export const { setOrderId } = cartSlice.actions;
 
