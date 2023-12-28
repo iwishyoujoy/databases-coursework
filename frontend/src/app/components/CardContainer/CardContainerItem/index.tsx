@@ -2,7 +2,11 @@ import Link from 'next/link';
 import { capitalizeFirstLetter } from '../../../utils/text';
 import styles from './styles.module.css';
 import Image from 'next/image';
-import addToCart from 'public/images/addtoCart.svg';
+import addToCart from 'public/images/cart.svg';
+import heart from 'public/images/blackHeart.svg';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../../redux/store';
 
 export interface IProductProps{
     id_item: number;
@@ -29,8 +33,37 @@ interface ICardProps {
     isProduct?: boolean;
 }
 
+export const addToFavorite = (customer_id, item_id) => {
+    return (dispatch) => {
+        axios.post('http://localhost:3100/api/favorite/create/', { 
+            customer_id,
+            item_id
+         })
+        .then(response => {
+            if (response.status === 200) {
+                dispatch({ type: 'ADD_FAVORITE_SUCCESS', payload: response.data });
+            } else {
+                throw new Error('Failed to sign up');
+            }
+        })
+        .catch(error => {
+            dispatch({ type: 'ADD_FAVORITE_FAILURE', payload: error.message });
+        });
+    };
+};
+
 export const Card: React.FC<ICardProps> = (props) => {
+    const dispatch = useDispatch<AppDispatch>();
     const { item, isProduct = true } = props;
+
+    const handleAddToFavoriteClick = () => {
+        if (isProduct){
+            dispatch(addToFavorite(11, (item as IProductProps).id_item));
+        }
+        else {
+            dispatch(addToFavorite(11, (item as IProcedureProps).id));
+        }
+    }
 
     return (
         <div className={styles.container}>
@@ -41,8 +74,13 @@ export const Card: React.FC<ICardProps> = (props) => {
                 <div className={styles.title}>{capitalizeFirstLetter(item.name)}</div>
                 <div className={styles.priceContainer}>
                     <div className={styles.price}>{item.price} $</div>
-                    <div className={styles.button}>
-                        <Image className={styles.addToCart} src={addToCart} alt='Add to cart'/>
+                    <div className={styles.buttonContainer}>
+                        <div className={styles.button} onClick={handleAddToFavoriteClick}>
+                            <Image className={styles.badge} src={heart} alt='Add to favorite'/>
+                        </div>
+                        <div className={styles.button}>
+                            <Image className={styles.badge} src={addToCart} alt='Add to cart'/>
+                        </div>
                     </div>
                 </div>
             </div>

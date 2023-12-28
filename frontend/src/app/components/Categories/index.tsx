@@ -41,7 +41,6 @@ export const Categories: React.FC<ICategoriesProps> = ({ categoryType = 'product
     useEffect(() => {
         getAllProductCategories(categoryType)
             .then(data => {
-                console.log(data);
                 setCategories(data);
             })
             .catch(error => console.error(error));

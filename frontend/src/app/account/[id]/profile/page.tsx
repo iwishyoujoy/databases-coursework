@@ -2,9 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import cn from 'classnames';
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
-import { useNavigate } from "react-router-dom";
 
 import styles from './styles.module.css';
 import { DesktopWrapper } from "../../../components/DesktopWrapper";
@@ -38,14 +35,7 @@ async function getCustomerData(login): Promise<any> {
 }
 
 export default function Page({ params: { id } }: AccountProps) {
-    const { isLogged } = useSelector((state: RootState) => state.login);
     const [ customer, setCustomer ] = useState<ICustomerProps>(null);
-
-    // useEffect(() => {
-    //     if (!isLogged){
-    //         navigate('/account');
-    //     }
-    // }, [isLogged, navigate]);
 
     useEffect(() => {
         getCustomerData(id)

@@ -22,7 +22,16 @@ export interface IProductCategoryProps {
     description: string;
 }
 
-async function getProductById(id): Promise<any> {
+export interface ISellerProps {
+    id: number;
+    name: string;
+    email: string;
+    contact: string;
+    login: string;
+    password: string;
+}
+
+export async function getProductById(id): Promise<any> {
     try {
         const response = await axios.get(`http://localhost:3100/api/product/${id}`);
     
@@ -46,7 +55,18 @@ async function getCategoryById(id): Promise<any> {
 
 async function getSellerById(id): Promise<any> {
     try {
-        const response = await axios.get(`http://localhost:3100/api/product/${id}`);
+        const response = await axios.get(`http://localhost:3100/api/seller/id/${id}`);
+    
+        return response.data;
+    }catch (error) {
+        console.error(`Error: ${error}`);
+        throw error;
+    }
+}
+
+async function getReviewsById(id): Promise<any> {
+    try {
+        const response = await axios.get(`http://localhost:3100/api/seller/id/${id}`);
     
         return response.data;
     }catch (error) {
@@ -58,6 +78,7 @@ async function getSellerById(id): Promise<any> {
 export default function Page({ params: { id } }: ClothesProps) {
     const [ product, setProduct ] = useState<IProductProps>();
     const [ category, setCategory ] = useState<IProductCategoryProps>();
+    const [ seller, setSeller ] = useState<ISellerProps>();
 
     useEffect(() => {
         getProductById(id)
@@ -66,7 +87,12 @@ export default function Page({ params: { id } }: ClothesProps) {
                 getCategoryById(data.product_category_id)
                     .then(data => {
                         setCategory(data);
-                        
+                    })
+                    .catch(error => console.error(error));
+                    
+                getSellerById(data.seller_id)
+                    .then(data => {
+                        setSeller(data);
                     })
                     .catch(error => console.error(error));
             })
@@ -101,7 +127,7 @@ export default function Page({ params: { id } }: ClothesProps) {
                                     {seller && 
                                         <div className={styles.about}>
                                             <div className={styles.header}>Seller: </div>
-                                            <div className={styles.text}>{product.description}</div>
+                                            <div className={styles.text}>{seller.name}</div>
                                         </div>
                                     }
                                 </div>

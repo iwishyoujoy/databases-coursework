@@ -2,9 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import cn from 'classnames';
-import { useSelector } from "react-redux";
-import { RootState } from "../../../redux/store";
-import { useNavigate } from "react-router-dom";
 
 import styles from './styles.module.css';
 import { DesktopWrapper } from "../../../components/DesktopWrapper";
@@ -39,14 +36,7 @@ async function getOrdersForCustomer(id): Promise<any> {
 }
 
 export default function Page({ params: { id } }: AccountProps) {
-    // const { isLogged } = useSelector((state: RootState) => state.login);
     const [ orders, setOrders ] = useState<IOrderProps[]>([]);
-
-    // useEffect(() => {
-    //     if (!isLogged){
-    //         navigate('/account');
-    //     }
-    // }, [isLogged, navigate]);
 
     useEffect(() => {
         getOrdersForCustomer(id)

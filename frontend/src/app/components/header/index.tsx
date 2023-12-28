@@ -17,8 +17,8 @@ export const Header = () => {
     return (
         <header className={styles.header}>
             <div className={styles.leftContainer}>
-                <Link className={styles.logoContainer} href='/'>
-                    <Image className={styles.logo} src={logo} alt="Logo picture - heels"/>
+                <Link className={styles.logoContainer} href='/products'>
+                    <Image className={styles.logo} src={logo} alt="Logo picture - diamond"/>
                     <div className={styles.logoText}>Bimbo shop</div>
                 </Link>
                 <div className={styles.menuContainer}>
