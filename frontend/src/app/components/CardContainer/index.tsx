@@ -100,7 +100,7 @@ export const CardContainer: React.FC<ICardContainerProps> = ({ categoryType = 'p
        <div className={styles.container}>
             {products.length > 0 ? (
                 <>
-                <div className={styles.counter}>{getItemsListLength(products)}</div>
+                <div className={styles.counter}>{getItemsListLength(products, 'item', 'items')}</div>
                 <div className={styles.cardContainer}>
                     {products.map((product, key) => {
                         return (<Card item={product} key={key} isProduct={categoryType === 'productCategory'}/>)
