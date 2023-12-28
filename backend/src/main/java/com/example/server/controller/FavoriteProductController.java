@@ -3,6 +3,7 @@ package com.example.server.controller;
 import com.example.server.model.FavoriteProduct;
 import com.example.server.model.FavoriteProductId;
 import com.example.server.repo.FavoriteProductRepo;
+import com.example.server.repo.CustomerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +20,12 @@ import java.util.NoSuchElementException;
 public class FavoriteProductController {
 
     private final FavoriteProductRepo favoriteProductRepo;
+    private final CustomerRepo customerRepo;
 
     @Autowired
-    public FavoriteProductController(FavoriteProductRepo favoriteProductRepo) throws NoSuchAlgorithmException {
+    public FavoriteProductController(FavoriteProductRepo favoriteProductRepo, CustomerRepo customerRepo) throws NoSuchAlgorithmException {
         this.favoriteProductRepo = favoriteProductRepo;
+        this.customerRepo = customerRepo;
     }
 
     @PostMapping("create/")
@@ -45,9 +48,10 @@ public class FavoriteProductController {
     }
 
 
-    @GetMapping("/all/{customer_id}")
-    public ResponseEntity<List<FavoriteProduct>> getFavoriteOfCustomer(@PathVariable Long customer_id) {
+    @GetMapping("/all/{customer_login}")
+    public ResponseEntity<List<FavoriteProduct>> getFavoriteOfCustomer(@PathVariable String customer_login) {
         try {
+            Long customer_id = customerRepo.findAll().stream().filter(user -> user.getLogin().equals(customer_login)).findFirst().get().getId();
             List<FavoriteProduct> list = favoriteProductRepo.findAll();
             List<FavoriteProduct> to_ret = new ArrayList<>();
             for(FavoriteProduct fp : list){
