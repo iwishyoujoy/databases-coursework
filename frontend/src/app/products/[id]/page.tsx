@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import { IProductProps } from "../../components/CardContainer/CardContainerItem";
 import addToCart from 'public/images/cart.svg';
 import heart from 'public/images/heart.svg';
-import { capitalizeFirstLetter } from "../../utils/text";
+import { capitalizeFirstLetter, getItemsListLength } from "../../utils/text";
 import { DesktopWrapper } from "../../components/DesktopWrapper";
 
 interface ClothesProps{
@@ -29,6 +29,14 @@ export interface ISellerProps {
     contact: string;
     login: string;
     password: string;
+}
+
+export interface IReviewProps {
+    id: number;
+    customer_id: number;
+    rating: number;
+    content: string;
+    item_id: number;
 }
 
 export async function getProductById(id): Promise<any> {
@@ -66,7 +74,7 @@ async function getSellerById(id): Promise<any> {
 
 async function getReviewsById(id): Promise<any> {
     try {
-        const response = await axios.get(`http://localhost:3100/api/seller/id/${id}`);
+        const response = await axios.get(`http://localhost:3100/api/review/item-id/${id}`);
     
         return response.data;
     }catch (error) {
@@ -79,6 +87,7 @@ export default function Page({ params: { id } }: ClothesProps) {
     const [ product, setProduct ] = useState<IProductProps>();
     const [ category, setCategory ] = useState<IProductCategoryProps>();
     const [ seller, setSeller ] = useState<ISellerProps>();
+    const [ reviews, setReviews ] = useState<IReviewProps[] | IReviewProps>();
 
     useEffect(() => {
         getProductById(id)
@@ -93,6 +102,13 @@ export default function Page({ params: { id } }: ClothesProps) {
                 getSellerById(data.seller_id)
                     .then(data => {
                         setSeller(data);
+                    })
+                    .catch(error => console.error(error));
+                
+                getReviewsById(data.id_item)
+                    .then(data => {
+                        console.log(data);
+                        setReviews(data);
                     })
                     .catch(error => console.error(error));
             })
@@ -131,8 +147,25 @@ export default function Page({ params: { id } }: ClothesProps) {
                                         </div>
                                     }
                                 </div>
-                                <div>
-
+                                <div className={styles.reviewContainer}>
+                                    {reviews && <div>{getItemsListLength(reviews.length ?? '0', 'review', 'reviews')}</div>}
+                                    {/* {reviews.length > 1 ? reviews.map((review, key) => {
+                                        return (
+                                            <div className={styles.review} key={key}>
+                                                <div className={styles.rating}>{review.rating} / 5</div>
+                                                <div className={styles.content}>{review.content}</div>
+                                            </div>
+                                        )
+                                    }) : (
+                                        reviews.length === 1 ? (
+                                            <div className={styles.review} key={key}>
+                                                <div className={styles.rating}>{reviews.rating} / 5</div>
+                                                <div className={styles.content}>{reviews.content}</div>
+                                            </div>
+                                        ) : (
+                                            <div></div>
+                                        )
+                                    )} */}
                                 </div>
                             </>
                         </div>
