@@ -3,15 +3,12 @@ package com.example.server.controller;
 import com.example.server.model.BimboOrder;
 import com.example.server.model.ItemInOrder;
 import com.example.server.model.Item;
-import com.example.server.model.Procedure;
-import com.example.server.model.Product;
 import com.example.server.repo.BimboOrderRepo;
 import com.example.server.repo.CustomerRepo;
 import com.example.server.repo.ItemInOrderRepo;
 import com.example.server.repo.ItemRepo;
 import com.example.server.repo.ProductRepo;
-import com.fasterxml.jackson.databind.ser.std.StdArraySerializers.DoubleArraySerializer;
-import com.example.server.repo.ProcedureRepo;
+import com.example.server.service.BimboIdentifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +16,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -30,18 +31,16 @@ public class BimboOrderController {
     private final BimboOrderRepo bimboOrderRepo;
     private final CustomerRepo customerRepo;
     private final ProductRepo productRepo;
-    private final ProcedureRepo procedureRepo;
     private final ItemInOrderRepo itemInOrderRepo;
     private final ItemRepo itemRepo;
 
     @Autowired
-    public BimboOrderController(BimboOrderRepo bimboOrderRepo, CustomerRepo customerRepo, ItemInOrderRepo itemInOrderRepo, ItemRepo itemRepo, ProductRepo productRepo, ProcedureRepo procedureRepo) throws NoSuchAlgorithmException {
+    public BimboOrderController(BimboOrderRepo bimboOrderRepo, CustomerRepo customerRepo, ItemInOrderRepo itemInOrderRepo, ItemRepo itemRepo, ProductRepo productRepo) throws NoSuchAlgorithmException {
         this.bimboOrderRepo = bimboOrderRepo;
         this.customerRepo = customerRepo;
         this.itemInOrderRepo = itemInOrderRepo;
         this.itemRepo = itemRepo;
         this.productRepo = productRepo;
-        this.procedureRepo = procedureRepo;
     }
 
     @PostMapping("create/")
@@ -65,6 +64,19 @@ public class BimboOrderController {
             return ResponseEntity.badRequest().body(null);
         }
     }
+
+
+    @GetMapping("login")
+    public ResponseEntity<BimboOrder> getOrderByLoginAndTime(@RequestBody BimboIdentifier bimboIdentifier) throws ParseException {
+        try {
+            BimboOrder order = bimboOrderRepo.findAll().stream().filter(user -> user.getTimestamp().equals(bimboIdentifier.getTimestamp())).filter(user -> user.getCustomer_login().equals(bimboIdentifier.getLogin())).findFirst().get();
+            return ResponseEntity.ok().body(order);
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+
+
 
 
     @GetMapping("/check/{id}")

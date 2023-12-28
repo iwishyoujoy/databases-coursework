@@ -24,6 +24,8 @@ public class BimboOrder {
     private Long id;
     @Column(name = "customer_id", nullable = false)
     private Long customer_id;
+    @Column(name = "customer_login", nullable = false)
+    private String customer_login;
     @Column(name = "timestamp", nullable = false)
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd' 'HH:mm:ss", timezone="Europe/Moscow")
     private Timestamp timestamp;
