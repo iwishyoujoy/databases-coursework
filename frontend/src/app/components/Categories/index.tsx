@@ -9,7 +9,7 @@ import { AppDispatch, setProcedureCategory, setProductCategory } from '../../red
 import { useDispatch } from 'react-redux';
 
 interface ICategoriesProps {
-    categoryType: 'productCategory' | 'procedureCategory';
+    categoryType?: 'productCategory' | 'procedureCategory';
 }
 
 async function getAllProductCategories(categoryType): Promise<any> {
@@ -47,6 +47,7 @@ export const Categories: React.FC<ICategoriesProps> = ({ categoryType = 'product
 
     return (
         <div className={styles.container}>
+            <div className={cn(styles.category, styles.hoverPink)} onClick={() => handleCategoryClick('-1')}>All</div>
             {categories.map((category, key) => {
                 return (<div className={cn(styles.category, styles.hoverPink)} onClick={() => handleCategoryClick(category.id)} key={key}>{capitalizeFirstLetter(category.name)}</div>)
             })}

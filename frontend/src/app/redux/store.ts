@@ -55,8 +55,8 @@ const loginSlice = createSlice({
 const categorySlice = createSlice({
   name: 'category',
   initialState: {
-    productCategory: undefined,
-    procedureCategory: undefined,
+    productCategory: '-1',
+    procedureCategory: '-1',
   } as CategoryState,
   reducers: {
     setProductCategory: (state, action: PayloadAction<string>) => {

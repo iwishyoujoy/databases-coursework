@@ -15,22 +15,32 @@ interface IProductProps{
     product_category_id: number;
 }
 
+interface IProcedureProps{
+    id: number;
+    photo_url: string;
+    name: string;
+    price: number;
+    procedure_category_id: number;
+    clinic_id: number;
+}
+
 interface ICardProps {
-    product: IProductProps;
+    item: IProductProps | IProcedureProps;
+    isProduct?: boolean;
 }
 
 export const Card: React.FC<ICardProps> = (props) => {
-    const {product} = props;
+    const { item, isProduct = true } = props;
 
     return (
         <div className={styles.container}>
-            <Link href={`clothes/${product.id_item}`}>
-                <Image  className={styles.image} src={product.photo_url} alt={product.name} width='200' height='200'/>
+            <Link href={isProduct ? `clothes/${(item as IProductProps).id_item}` : `procedures/${(item as IProcedureProps).id}`}>
+                <Image  className={styles.image} src={item.photo_url} alt={item.name} width='200' height='200'/>
             </Link>
             <div className={styles.textContainer}>
-                <div className={styles.title}>{capitalizeFirstLetter(product.name)}</div>
+                <div className={styles.title}>{capitalizeFirstLetter(item.name)}</div>
                 <div className={styles.priceContainer}>
-                    <div className={styles.price}>{product.price} $</div>
+                    <div className={styles.price}>{item.price} $</div>
                     <div className={styles.button}>
                         <Image className={styles.addToCart} src={addToCart} alt='Add to cart'/>
                     </div>

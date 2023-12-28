@@ -12,6 +12,10 @@
     margin-bottom: 20px;
 }
 
+.category{
+    cursor: pointer;
+}
+
 .hoverPink:hover{
     color: var(--bright-pink);
     transition: 0.1s ease-in-out;
