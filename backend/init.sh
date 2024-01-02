@@ -452,19 +452,19 @@ INSERT INTO Review (customer_id, rating, content, item_id)
 VALUES (3, 5, 'The eye shadow palette is a must-have for every makeup lover. The colors are rich and long-lasting.', 14);
 
 INSERT INTO Review (customer_id, rating, content, item_id)
-VALUES (4, 5, 'The dress is absolutely stunning! It fits perfectly and the fabric is so soft. Love it!', 8);
+VALUES (4, 5, 'The skirt is absolutely stunning! It fits perfectly and the fabric is so soft. Love it!', 8);
 
 INSERT INTO Review (customer_id, rating, content, item_id)
-VALUES (5, 4, 'The shoes are incredibly comfortable and stylish. I received positive feedback from everyone who saw them.', 13);
+VALUES (5, 4, 'The shoes are incredibly comfortable and stylish. I received positive feedback from everyone who saw them.', 10);
 
 INSERT INTO Review (customer_id, rating, content, item_id)
-VALUES (6, 5, 'The bag is perfect for carrying my essentials. It is spacious and comes in a beautiful color.', 6);
+VALUES (6, 5, 'Just an incredible red crop top, I've never felt so attractive! All the guys were watching me in the club!', 6);
 
 INSERT INTO Review (customer_id, rating, content, item_id)
-VALUES (7, 4, 'The skirt is beautiful and versatile. It can be worn with almost anything and is definitely a must-have in my wardrobe.', 7);
+VALUES (7, 4, 'What amazing black heels, I went to them on the red carpet of the movie where I was filming and everyone asked where I got them! I said that all the cool stuff can be found on the bimbo shop!', 7);
 
 INSERT INTO Review (customer_id, rating, content, item_id)
-VALUES (8, 5, 'The blouse is so comfortable and lightweight. It fits perfectly and is a great addition to my wardrobe.', 2);
+VALUES (8, 5, 'The blouse is so comfortable and lightweight. It fits perfectly and is a great addition to my wardrobe.', 1);
 
 -- Reviews for "Perfect Pout Lip Fillers"
 
