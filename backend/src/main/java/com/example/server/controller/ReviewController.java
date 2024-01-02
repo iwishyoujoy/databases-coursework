@@ -59,7 +59,7 @@ public class ReviewController {
             for (Review review : list) {
                 if (review.getItem_id().equals(itemid)) {
                     Customer customer = customerRepo.findAll().stream().filter(user -> user.getId().equals(review.getCustomer_id())).findFirst().get();
-                    ReviewReturner returner = new ReviewReturner(review.getId(), customer.getSurname(), customer.getName(), review.getRating(), review.getContent(), review.getItem_id());
+                    ReviewReturner returner = new ReviewReturner(review.getId(), review.getCustomer_id(), customer.getSurname(), customer.getName(), review.getRating(), review.getContent(), review.getItem_id());
                     to_ret.add(returner);
                 }
             }

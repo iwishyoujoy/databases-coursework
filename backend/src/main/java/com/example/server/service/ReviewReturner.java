@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ReviewReturner {
     private Long id;
+    private Long customer_id;
     private String surname;
     private String name;
     private Integer rating;
