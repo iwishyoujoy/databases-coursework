@@ -1,7 +1,11 @@
 package com.example.server.controller;
 
 import com.example.server.model.Review;
+import com.example.server.model.Customer;
 import com.example.server.repo.ReviewRepo;
+import com.example.server.repo.CustomerRepo;
+import com.example.server.service.ReviewReturner;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +21,12 @@ import java.util.NoSuchElementException;
 @CrossOrigin
 public class ReviewController {
     private final ReviewRepo reviewRepo;
+    private final CustomerRepo customerRepo;
 
     @Autowired
-    public ReviewController(ReviewRepo reviewRepo) throws NoSuchAlgorithmException {
+    public ReviewController(ReviewRepo reviewRepo, CustomerRepo customerRepo) throws NoSuchAlgorithmException {
         this.reviewRepo = reviewRepo;
+        this.customerRepo = customerRepo;
     }
 
     @PostMapping("create/")
@@ -46,13 +52,15 @@ public class ReviewController {
     }
 
     @GetMapping("/item-id/{itemid}")
-    public ResponseEntity<List<Review>> getReviewByItem(@PathVariable Long itemid) {
+    public ResponseEntity<List<ReviewReturner>> getReviewByItem(@PathVariable Long itemid) {
         try {
             List<Review> list = reviewRepo.findAll();
-            List<Review> to_ret = new ArrayList<>();
+            List<ReviewReturner> to_ret = new ArrayList<>();
             for (Review review : list) {
                 if (review.getItem_id().equals(itemid)) {
-                    to_ret.add(review);
+                    Customer customer = customerRepo.findAll().stream().filter(user -> user.getId().equals(review.getCustomer_id())).findFirst().get();
+                    ReviewReturner returner = new ReviewReturner(review.getId(), customer.getSurname(), customer.getName(), review.getRating(), review.getContent(), review.getItem_id());
+                    to_ret.add(returner);
                 }
             }
             return ResponseEntity.ok().body(to_ret);

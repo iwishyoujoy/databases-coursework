@@ -1,7 +1,1 @@
-get http://localhost:3100/api/order/login
-Content-Type: application/json
-
-{
-    "login" : "qwerty",
-    "timestamp": "2021-08-10 10:23:12"
-}
+get http://localhost:3100/api/review/item-id/1
