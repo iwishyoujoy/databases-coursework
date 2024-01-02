@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { RootState } from '../../redux/store';
 import account from "public/images/account.svg";
+import business from 'public/images/business.svg';
 import cart from "public/images/cart.svg";
 import cn from 'classnames';
 import logo from "public/images/logo.svg";
@@ -30,6 +31,9 @@ export const Header = () => {
             </div>
             <div className={styles.accountContainer}>
                 {loginState.isLogged ? '' : <div className={styles.status}>You're not logged in yet girly!</div>}
+                <Link href="/business" className={styles.menuLink}>
+                    <Image className={styles.menuLogo} src={business} alt="For business"/>
+                </Link>
                 <Link href="/" className={styles.menuLink}>
                     <Image className={styles.menuLogo} src={cart} alt="Cart"/>
                 </Link>

@@ -1,5 +1,6 @@
-import { logger } from './middleware/logger';
 import { PayloadAction, configureStore, createSlice } from '@reduxjs/toolkit';
+
+import { logger } from './middleware/logger';
 
 interface LoginState {
   isLogged: boolean;
@@ -9,6 +10,16 @@ interface LoginState {
   surname: string;
   birthday: string;
   phoneNumber: string;
+}
+
+interface BusinessState {
+  isLogged: boolean;
+  isSeller: boolean;
+  login: string;
+  password: string;
+  name: string;
+  email: string;
+  contact: string;
 }
 
 interface CategoryState {
@@ -56,6 +67,42 @@ const loginSlice = createSlice({
   }
 });
 
+const businessSlice = createSlice({
+  name: 'business',
+  initialState: {
+    isLogged: false,
+    isSeller: true,
+    name: undefined,
+    email: undefined,
+    contact: undefined,
+    login: undefined,
+    password: undefined,
+  } as BusinessState,
+  reducers: {
+    setLoginBusiness: (state, action: PayloadAction<string>) => { 
+      state.login = action.payload;
+    },
+    setPasswordBusiness: (state, action: PayloadAction<string>) => {
+      state.password = action.payload;
+    },
+    setNameBusiness: (state, action: PayloadAction<string>) => {
+      state.name = action.payload;
+    },
+    setEmailBusiness: (state, action: PayloadAction<string>) => {
+      state.email = action.payload;
+    },
+    setContactBusiness: (state, action: PayloadAction<string>) => {
+      state.contact = action.payload;
+    },
+    setIsLoggedBusiness: (state, action: PayloadAction<boolean>) => {
+      state.isLogged = action.payload;
+    },
+    setIsSellerBusiness: (state, action: PayloadAction<boolean>) => {
+      state.isSeller = action.payload;
+    },
+  }
+});
+
 const categorySlice = createSlice({
   name: 'category',
   initialState: {
@@ -78,7 +125,7 @@ const cartSlice = createSlice({
     orderId: undefined,
   } as CartState,
   reducers: {
-    setOrderId: (state, action: PayloadAction<string>) => {
+    setOrderId: (state, action: PayloadAction<number>) => {
       state.orderId = action.payload;
     },
   }
@@ -87,6 +134,7 @@ const cartSlice = createSlice({
 export const store = configureStore({
   reducer: {
     login: loginSlice.reducer,
+    business: businessSlice.reducer,
     category: categorySlice.reducer,
     cart: cartSlice.reducer,
   },
@@ -98,6 +146,7 @@ export const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export const { setLogin, setPassword, setName, setSurname, setBirthday, setPhoneNumber, setIsLogged } = loginSlice.actions;
+export const { setLoginBusiness, setPasswordBusiness, setNameBusiness, setEmailBusiness, setContactBusiness, setIsSellerBusiness, setIsLoggedBusiness } = businessSlice.actions;
 export const { setProcedureCategory, setProductCategory } = categorySlice.actions;
 export const { setOrderId } = cartSlice.actions;
 
