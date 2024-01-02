@@ -1,17 +1,19 @@
 'use client'
+
 import React, { useState } from 'react';
-import cn from 'classnames';
 
 import Image from "next/image";
 import Link from "next/link";
-
-import logo from "public/images/logo.svg";
-import cart from "public/images/cart.svg";
+import { RootState } from '../../redux/store';
 import account from "public/images/account.svg";
-
+import cart from "public/images/cart.svg";
+import cn from 'classnames';
+import logo from "public/images/logo.svg";
 import styles from './header.module.css';
+import { useSelector } from 'react-redux';
 
 export const Header = () => {
+    const loginState = useSelector((state: RootState) => state.login);
     const [selectedCategory, setSelectedCategory] = useState('Products');
 
     return (
@@ -27,6 +29,7 @@ export const Header = () => {
                 </div>
             </div>
             <div className={styles.accountContainer}>
+                {loginState.isLogged ? '' : 'You\'re not logged in yet'}
                 <Link href="/" className={styles.menuLink}>
                     <Image className={styles.menuLogo} src={cart} alt="Cart"/>
                 </Link>

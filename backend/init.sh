@@ -442,6 +442,30 @@ VALUES (1, 5, 'The lipstick was a show stopper! It lasted for a good 7 hours and
 INSERT INTO Review (customer_id, rating, content, item_id)
 VALUES (2, 5, 'The lipstick I purchased was the best!', 13);
 
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (1, 5, 'The lipstick is amazing! It gives my lips a beautiful and natural shine. I highly recommend it.', 4);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (2, 4, 'I bought these jeans and they are perfect for any occasion. They are super soft and stylish.', 5);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (3, 5, 'The eye shadow palette is a must-have for every makeup lover. The colors are rich and long-lasting.', 14);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (4, 5, 'The dress is absolutely stunning! It fits perfectly and the fabric is so soft. Love it!', 8);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (5, 4, 'The shoes are incredibly comfortable and stylish. I received positive feedback from everyone who saw them.', 13);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (6, 5, 'The bag is perfect for carrying my essentials. It is spacious and comes in a beautiful color.', 6);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (7, 4, 'The skirt is beautiful and versatile. It can be worn with almost anything and is definitely a must-have in my wardrobe.', 7);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (8, 5, 'The blouse is so comfortable and lightweight. It fits perfectly and is a great addition to my wardrobe.', 2);
+
 -- Заказы
 -- 'Starting to Sparkle' (не оформлен), 'Glam in Progress' (Оформлен), 'Glowing and Going' (Собран), 'Ready to Slay' (Получен).
 

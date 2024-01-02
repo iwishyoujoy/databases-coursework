@@ -8,7 +8,7 @@
     justify-content: space-between;
     align-items: center;
     height: 80px;
-    column-gap: 518px;
+    /* column-gap: 518px; */
 }
 
 .logo{
@@ -60,7 +60,7 @@
 
 .accountContainer{
     justify-content: right;
-    width: 95px;
+    width: 295px;
 }
 
 .hoverPink:hover, .selected{

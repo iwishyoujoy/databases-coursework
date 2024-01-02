@@ -1,17 +1,16 @@
 'use client'
 
+import { Card, IProductProps } from "../../../components/CardContainer/CardContainerItem";
 import React, { useEffect, useState } from "react";
-import cn from 'classnames';
 
-import styles from './styles.module.css';
 import { DesktopWrapper } from "../../../components/desktopWrapper";
 import Link from "next/link";
-import axios from "axios";
-
-import { getItemsListLength } from "../../../utils/text";
 import { OrderCard } from "../../../components/OrderCard";
+import axios from "axios";
+import cn from 'classnames';
+import { getItemsListLength } from "../../../utils/text";
 import { getProductById } from "../../../products/[id]/page";
-import { Card, IProductProps } from "../../../components/CardContainer/CardContainerItem";
+import styles from './styles.module.css';
 
 interface AccountProps{
     params: {
@@ -48,7 +47,6 @@ export default function Page({ params: { id } }: AccountProps) {
  
                 Promise.all(promises)
                    .then(products => {
-                        console.log(products);
                        setFavorites(products);
                    });
             })

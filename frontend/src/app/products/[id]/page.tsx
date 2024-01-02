@@ -1,17 +1,23 @@
 'use client'
 
-import Image from "next/image";
-import styles from './styles.module.css';
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { IProductProps } from "../../components/CardContainer/CardContainerItem";
-import addToCart from 'public/images/cart.svg';
-import heart from 'public/images/heart.svg';
-import { capitalizeFirstLetter, getItemsListLength } from "../../utils/text";
-import { DesktopWrapper } from "../../components/DesktopWrapper";
 import { AppDispatch, RootState } from "../../redux/store";
+import { IProductProps, addToFavorite, removeFromFavorite } from "../../components/CardContainer/CardContainerItem";
+import { capitalizeFirstLetter, getItemsListLength } from "../../utils/text";
 import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+
+import { DesktopWrapper } from "../../components/DesktopWrapper";
+import Image from "next/image";
+import axios from "axios";
+import blackHeart from 'public/images/blackHeart.svg';
+import cn from 'classnames';
 import { getCustomerData } from "../../account/[id]/profile/page";
+import minus from 'public/images/minus.svg';
+import minusDisabled from 'public/images/minusDisabled.svg';
+import pinkHeart from 'public/images/heart.svg';
+import plus from 'public/images/plus.svg';
+import plusDisabled from 'public/images/plusDisabled.svg';
+import styles from './styles.module.css';
 
 interface ClothesProps{
     params: {
@@ -87,6 +93,8 @@ async function getReviewsById(id): Promise<any> {
 }
 
 const addReview = (customer_id, rating, content, item_id) => {
+    console.log(customer_id, rating, content, item_id);
+
     return (dispatch) => {
         axios.post('http://localhost:3100/api/review/create/', { customer_id, rating, content, item_id })
         .then(response => {
@@ -102,41 +110,56 @@ const addReview = (customer_id, rating, content, item_id) => {
     };
 };
 
-const addItemToOrder = (customer_id, rating, content, item_id) => {
-    return (dispatch) => {
-        axios.post('http://localhost:3100/api/review/create/', { customer_id, rating, content, item_id })
-        .then(response => {
-            if (response.status === 200) {
-                dispatch({ type: 'ADD_REVIEW_SUCCESS', payload: response.data });
-            } else {
-                throw new Error('Failed to sign in');
-            }
-            })
-        .catch(error => {
-            dispatch({ type: 'ADD_REVIEW_FAILURE', payload: error.message });
-        });
-    };
+const getAverageReviewRating = (reviews: IReviewProps[]): number => {
+    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+
+    return totalRating / reviews.length;
 };
 
-const createOrder = (customer_id, timestamp, status) => {
-    return (dispatch) => {
-        axios.post('http://localhost:3100/api/order/create/', { customer_id, timestamp, status })
-        .then(response => {
-            if (response.status === 200) {
-                dispatch({ type: 'ADD_ORDER_SUCCESS', payload: response.data });
-            } else {
-                throw new Error('Failed to sign in');
-            }
-            })
-        .catch(error => {
-            dispatch({ type: 'ADD_ORDER_FAILURE', payload: error.message });
-        });
+const displayRatingAsStars = (rating) => {
+    const fullStar = '★';
+    const emptyStar = '☆';
+    const roundedRating = Math.round(rating);
+    const fullStarsCount = roundedRating;
+    const emptyStarsCount = 5 - fullStarsCount;
+
+    return fullStar.repeat(fullStarsCount) + emptyStar.repeat(emptyStarsCount);     
+};
+
+const ReviewModal = ({ isOpen, onClose, customerId, id }) => {
+    const dispatch = useDispatch<AppDispatch>();
+    const [ rating, setRating ] = useState();
+    const [ content, setContent ] = useState();
+
+    const handleSendReviewClick = () => {
+        dispatch(addReview(customerId, rating, content, parseInt(id)));
+        onClose();
+    }
+
+    const handleRatingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRating(parseInt(event.target.value));
     };
+
+    const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setContent(event.target.value);
+    };
+     
+    if (!isOpen) return null;
+
+    return (
+        <div className={styles.modalOverlay} onClick={onClose}>
+            <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+                <h2 className={styles.modalTitle}>Write a review</h2>
+                <input className={styles.modalInput} type="number" min="1" max="5" value={rating} onChange={handleRatingChange} placeholder="Rating out of 5"/>
+                <textarea className={cn(styles.modalInput, styles.modalText)} value={content} onChange={handleContentChange} placeholder="Review..."/>
+                <button className={styles.buttonInverted} onClick={handleSendReviewClick}>Submit</button>
+            </div>
+        </div>
+    );
 };
 
 export default function Page({ params: { id } }: ClothesProps) {
     const loginState = useSelector((state: RootState) => state.login);
-    const cartState = useSelector((state: RootState) => state.cart);
 
     const [ customerId, setCustomerId ] = useState();
     const dispatch = useDispatch<AppDispatch>();
@@ -146,8 +169,10 @@ export default function Page({ params: { id } }: ClothesProps) {
     const [ reviews, setReviews ] = useState<IReviewProps[]>();
 
     const [ isWritingReview, setIsWritingReview ] = useState(false);
-    const [ rating, setRating ] = useState();
-    const [ content, setContent ] = useState();
+
+    const [count, setCount] = useState(1);
+
+    const [isFavorite, setIsFavorite] = useState(false);
 
     useEffect(() => {
         getProductById(id)
@@ -179,27 +204,25 @@ export default function Page({ params: { id } }: ClothesProps) {
             .catch(error => console.error(error));
         }, [id, loginState.login]);
 
-    const handleWriteReviewClick = () => {
-        setIsWritingReview(!isWritingReview);
+    const toggleFavorite = () => {
+        if (isFavorite) {
+            dispatch(removeFromFavorite(customerId, product.id_item));
+            setIsFavorite(false);
+        } else {
+            dispatch(addToFavorite(customerId, product.id_item));
+            setIsFavorite(true);
+        }
     }
 
-    const handleSendReviewClick = () => {
-        dispatch(addReview(customerId, rating, content, id));
-        setIsWritingReview(false);
-    }
-
-    const handleRatingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRating(event.target.value);
-        console.log(rating);
-    };
-    const handleContentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setContent(event.target.value);
-        console.log(content);
+    const increaseCount = () => {
+        if (count < product.amount_available) {
+            setCount(prevCount => prevCount + 1);
+        }
     };
 
-    const handleAddToCartClick = () => {
-        if (!cartState.orderId){
-            createOrder
+    const decreaseCount = () => {
+        if (count > 1) {
+            setCount(prevCount => prevCount - 1);
         }
     }
 
@@ -207,57 +230,75 @@ export default function Page({ params: { id } }: ClothesProps) {
         <DesktopWrapper>
             {product && 
                 <div className={styles.container}>
-                    <div className={styles.mainContainer}>
-                        <Image className={styles.image} height='300' width='300' src={product.photo_url} alt={product.description}/>
-                        <div className={styles.info}>
-                            <div className={styles.infoContainer}>
-                                <div className={styles.title}>{capitalizeFirstLetter(product.name)}</div>
-                                <div className={styles.actonContainer}>
-                                    <div className={styles.price}>{product.price} $</div>
-                                    <Image className={styles.badge} src={heart} alt='Add to favorite'/>
-                                    <button className={styles.button} onClick={handleAddToCartClick}>Add to cart</button>
-                                </div>
-                                    <div className={styles.aboutContainer}>
-                                        <div className={styles.about}>
-                                            <div className={styles.header}>Details: </div>
-                                            <div className={styles.text}>{product.description}</div>
-                                        </div>
-                                        {category && 
-                                            <div className={styles.about}>
-                                                <div className={styles.header}>Category: </div>
-                                                <div className={styles.text}>{capitalizeFirstLetter(category.name)}</div>
+                    <div className={styles.topContainer}>
+                        <div className={styles.leftContainer}>
+                            <Image className={styles.image} src={product.photo_url} alt={product.description} height='300' width='300'/>
+                        </div>
+                        <div className={styles.rightContainer}>
+                            <div className={styles.productContainer}>
+                                <div className={styles.titleContainer}>
+                                    <div className={styles.title}>{capitalizeFirstLetter(product.name)}</div>
+                                    <div className={styles.avgReviewContainer}>
+                                        <div className={styles.avgReview}>
+                                            <div className={styles.avgRating}>
+                                                {reviews && displayRatingAsStars(getAverageReviewRating(reviews))}
                                             </div>
-                                        }
-                                        {seller && 
-                                            <div className={styles.about}>
-                                                <div className={styles.header}>Seller: </div>
-                                                <div className={styles.text}>{seller.name}</div>
-                                            </div>
-                                        }
-                                    </div> 
-                            </div>
-                            {reviews && <div className={styles.counter}>{getItemsListLength(reviews, 'review', 'reviews')}</div>}
-                            <div className={styles.reviewContainer}>
-                                {reviews && reviews.map((review, key) => {
-                                    return (
-                                        <div className={styles.review} key={key}>
-                                            <div className={styles.rating}>{review.rating} / 5</div>
-                                            <div className={styles.content}>{review.content}</div>
+                                            <div className={styles.numberOfReviews}>{reviews && getItemsListLength(reviews, 'review', 'reviews')}</div>
                                         </div>
-                                    );
-                                })}
-                            </div>
-                            <button className={styles.buttonReview} onClick={handleWriteReviewClick}>Write a review</button>
-                            {isWritingReview  && 
-                                <div className={styles.reviewInputContainer}>
-                                    <input className={styles.input} type='text' placeholder='Rating (out of 5)' value={rating} onChange={handleRatingChange}/>
-                                    <textarea className={styles.inputBigger} type='text' placeholder='Write whatever you think!' value={content} onChange={handleContentChange}></textarea>
-                                    <button className={styles.buttonSend} onClick={handleSendReviewClick}>Send</button>
+                                        <Image className={styles.addtoFavorite} src={isFavorite ? blackHeart : pinkHeart} alt='Add to favorite' onClick={toggleFavorite}/>
+                                    </div>
                                 </div>
-                            }
+                                <div className={styles.addToCartContainer}>
+                                    <div className={styles.buttonContainer}>
+                                        <div className={styles.counterContainer}>
+                                            <Image className={cn(styles.badge, count === 1 ? styles.badgeDisabled : styles.badgeEnabled)} src={count === 1 ? minusDisabled : minus} alt='Minus' onClick={decreaseCount}/>
+                                            <div className={styles.counter}>{count}</div>
+                                            <Image className={cn(styles.badge, count === product.amount_available ? styles.badgeDisabled : styles.badgeEnabled)} src={count === product.amount_available ? plusDisabled : plus} alt='Plus' onClick={increaseCount}/>
+                                        </div>
+                                        <button className={styles.button}>{`Add to cart - ${product.price * count} $`}</button>
+                                    </div>
+                                    <div className={styles.amountLeft}>{`${product.amount_available} ${product.amount_available === 1 ? 'piece' : 'pieces'} left`}</div>
+                                </div>
+                                <div className={styles.descriptionContainer}>
+                                    <div className={styles.descriptionElement}>
+                                        <div className={styles.header}>Description:</div>
+                                        <div className={styles.text}>{product.description}</div>
+                                    </div>
+                                    {category && 
+                                        <div className={styles.descriptionElement}>
+                                            <div className={styles.header}>Category:</div>
+                                            <div className={styles.text}>{capitalizeFirstLetter(category.name)}</div>
+                                        </div>
+                                    }
+                                    {seller && 
+                                        <div className={styles.descriptionElement}>
+                                            <div className={styles.header}>Seller:</div>
+                                            <div className={styles.text}>{seller.name}</div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div className={styles.reviewsContainer}>
+                                <div className={styles.reviewsTitle}>Reviews</div>
+                                <button className={styles.button} onClick={() => setIsWritingReview(true)} >Write a review</button>
+                                {reviews && 
+                                    reviews.map((review, key) => {
+                                        return (
+                                            <div className={styles.reviewContainer} key={key}>
+                                                <div className={styles.rating}>
+                                                    {displayRatingAsStars(review.rating)}
+                                                    {review.customer_id === customerId && <div className={styles.myReview}>my review</div>}    
+                                                </div>
+                                                <div className={styles.text}>{review.content}</div>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>}
+                {isWritingReview && <ReviewModal isOpen={isWritingReview} onClose={() => setIsWritingReview(false)}  customerId={customerId} id={id}/>}
         </DesktopWrapper>
     )
 }

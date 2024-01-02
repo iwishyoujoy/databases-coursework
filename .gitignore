@@ -1,0 +1,7 @@
+.DS_Store
+backend/.gradle/*
+backend/build/*
+
+frontend/.next/*
+frontend/node_modules/*
+frontend/package-lock.json

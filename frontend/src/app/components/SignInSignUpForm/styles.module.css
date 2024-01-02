@@ -81,8 +81,7 @@
 
 .signin:hover{
     background-color: var(--bright-pink);
-    color: var(--light-light-pink);
-    
+    color: var(--light-light-pink); 
 }
 
 .signin{
