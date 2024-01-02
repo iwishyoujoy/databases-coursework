@@ -44,6 +44,7 @@ export interface ISellerProps {
 
 export interface IReviewProps {
     id: number;
+    customer_id: number;
     surname: string;
     name: string;
     rating: number;
@@ -215,9 +216,9 @@ export default function Page({ params: { id } }: ClothesProps) {
             })
             .catch(error => console.error(error));
 
-        // if (reviews && customerId) {
-        //     setIsAlreadyWrittenReview(reviews.some(review => review.customer_id === customerId));
-        // }
+        if (reviews && customerId) {
+            setIsAlreadyWrittenReview(reviews.some(review => review.customer_id === customerId));
+        }
     }, [customerId, id, loginState.login, reviews, setIsAlreadyWrittenReview]);
 
     const toggleFavorite = () => {
@@ -326,7 +327,7 @@ export default function Page({ params: { id } }: ClothesProps) {
                                             <div className={styles.reviewContainer} key={key}>
                                                 <div className={styles.rating}>
                                                     {displayRatingAsStars(review.rating)}
-                                                    {/* {review.customer_id === customerId && <div className={styles.myReview}>my review</div>}     */}
+                                                    {review.customer_id === customerId && <div className={styles.myReview}>my review</div>}    
                                                 </div>
                                                 <div className={styles.text}>{review.content}</div>
                                                 <div className={styles.author}>by {review.surname} {review.name}</div>

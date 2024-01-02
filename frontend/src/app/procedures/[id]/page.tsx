@@ -143,6 +143,7 @@ export default function Page({ params: { id } }: ClothesProps) {
     const [ reviews, setReviews ] = useState<IReviewProps[]>();
 
     const [ isWritingReview, setIsWritingReview ] = useState(false);
+    const [ isAlreadyWrittenReview, setIsAlreadyWrittenReview ] = useState(false);
 
     useEffect(() => {
         getProcedureById(id)
@@ -180,17 +181,21 @@ export default function Page({ params: { id } }: ClothesProps) {
                 setCustomerId(data.id);
             })
             .catch(error => console.error(error));
-        }, [id, loginState.login]);
+        
+        if (reviews && customerId) {
+            setIsAlreadyWrittenReview(reviews.some(review => review.customer_id === customerId));
+        }
+        }, [customerId, id, loginState.login, reviews]);
 
     const handleReviewClick = () => {
         if (!loginState.isLogged) {
             toast.error("You can not write a review! Please log in first!");
         }
-        // else if (isAlreadyWrittenReview){
-        //     toast.error("You can not write a review! You\'ve already written a review for this item!", {
-        //         icon: '✍️'
-        //     });
-        // }
+        else if (isAlreadyWrittenReview){
+            toast.error("You can not write a review! You\'ve already written a review for this item!", {
+                icon: '✍️'
+            });
+        }
         else {
             setIsWritingReview(true);
         }
@@ -256,7 +261,7 @@ export default function Page({ params: { id } }: ClothesProps) {
                                             <div className={styles.reviewContainer} key={key}>
                                                 <div className={styles.rating}>
                                                     {displayRatingAsStars(review.rating)}
-                                                    {/* {review.customer_id === customerId && <div className={styles.myReview}>my review</div>}     */}
+                                                    {review.customer_id === customerId && <div className={styles.myReview}>my review</div>}    
                                                 </div>
                                                 <div className={styles.text}>{review.content}</div>
                                                 <div className={styles.author}>by {review.surname} {review.name}</div>
