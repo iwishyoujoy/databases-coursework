@@ -117,7 +117,7 @@ export const Card: React.FC<ICardProps> = (props) => {
             reverseOrder={false}
         />
         <div className={styles.container}>
-            <Link href={isProduct ? `products/${(item as IProductProps).id_item}` : `procedures/${(item as IProcedureProps).id}`}>
+            <Link href={isProduct ? `http://localhost:3000/products/${(item as IProductProps).id_item}` : `http://localhost:3000/procedures/${(item as IProcedureProps).id}`}>
                 <Image  className={styles.image} src={item.photo_url} alt={item.name} width='200' height='200'/>
             </Link>
             <div className={styles.textContainer}>
