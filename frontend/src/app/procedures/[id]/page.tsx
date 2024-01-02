@@ -1,17 +1,21 @@
 'use client'
 
-import Image from "next/image";
-import styles from './styles.module.css';
-import axios from "axios";
-import { useEffect, useState } from "react";
-import { IProcedureProps, IProductProps } from "../../components/CardContainer/CardContainerItem";
-import addToCart from 'public/images/cart.svg';
-import heart from 'public/images/heart.svg';
-import { capitalizeFirstLetter, getItemsListLength } from "../../utils/text";
-import { DesktopWrapper } from "../../components/DesktopWrapper";
 import { AppDispatch, RootState } from "../../redux/store";
+import { IProcedureProps, IProductProps } from "../../components/CardContainer/CardContainerItem";
+import { IReviewProps, addReview, displayRatingAsStars, getAverageReviewRating, getReviewsById } from "../../products/[id]/page";
+import { capitalizeFirstLetter, getItemsListLength } from "../../utils/text";
+import toast, { Toaster } from 'react-hot-toast';
+import { use, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+import { DesktopWrapper } from "../../components/DesktopWrapper";
+import Image from "next/image";
+import addToCart from 'public/images/cart.svg';
+import axios from "axios";
+import cn from 'classnames';
 import { getCustomerData } from "../../account/[id]/profile/page";
+import heart from 'public/images/heart.svg';
+import styles from './styles.module.css';
 
 interface ClothesProps{
     params: {
@@ -34,12 +38,11 @@ export interface IClinicProps {
     password: string;
 }
 
-export interface IReviewProps {
-    id: number;
-    customer_id: number;
-    rating: number;
-    content: string;
+export interface IAppointmentProps {
     item_id: number;
+    date_time: string;
+    procedure_id: number;
+    status: boolean;
 }
 
 export async function getProcedureById(id): Promise<any> {
@@ -75,9 +78,9 @@ async function getClinicById(id): Promise<any> {
     }
 }
 
-async function getReviewsById(id): Promise<any> {
+async function getAppointmentsById(id): Promise<any> {
     try {
-        const response = await axios.get(`http://localhost:3100/api/review/item-id/${id}`);
+        const response = await axios.get(`http://localhost:3100/api/procedure/${id}/appointments`);
     
         return response.data;
     }catch (error) {
@@ -86,20 +89,47 @@ async function getReviewsById(id): Promise<any> {
     }
 }
 
-const addReview = (customer_id, rating, content, item_id) => {
-    return (dispatch) => {
-        axios.post('http://localhost:3100/api/review/create/', { customer_id, rating, content, item_id })
-        .then(response => {
-            if (response.status === 200) {
-                dispatch({ type: 'ADD_REVIEW_SUCCESS', payload: response.data });
-            } else {
-                throw new Error('Failed to sign in');
-            }
-            })
-        .catch(error => {
-            dispatch({ type: 'ADD_REVIEW_FAILURE', payload: error.message });
-        });
+const ReviewModal = ({ isOpen, onClose, customerId, appointments }) => {
+    const dispatch = useDispatch<AppDispatch>();
+    const [ rating, setRating ] = useState();
+    const [ content, setContent ] = useState();
+    const [ id, setId ] = useState();
+
+    useEffect(() => {
+        setId(appointments[0].item_id);
+    }, [appointments]);
+
+    const handleSendReviewClick = () => {
+        dispatch(addReview(customerId, rating, content, parseInt(id)));
+        onClose();
+    }
+
+    const handleRatingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setRating(parseInt(event.target.value));
     };
+
+    const handleContentChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setContent(event.target.value);
+    };
+     
+    if (!isOpen) return null;
+
+    return (
+        <div className={styles.modalOverlay} onClick={onClose}>
+            <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+                <h2 className={styles.modalTitle}>Write a review</h2>
+                <div className={styles.modalInputLabel}>Select appointment to write review on:</div>
+                {appointments && <select className={cn(styles.selectModalContainer, styles.selectContainer)} onChange={(e) => setId(e.target.value)}>
+                    {appointments.map((appointment, key) => {
+                        return <option className={styles.optionModal} value={appointment.item_id} key={key}>{appointment.date_time}</option>
+                    })}
+                </select>}
+                <input className={styles.modalInput} type="number" min="1" max="5" value={rating} onChange={handleRatingChange} placeholder="Rating out of 5"/>
+                <textarea className={cn(styles.modalInput, styles.modalText)} value={content} onChange={handleContentChange} placeholder="Review..."/>
+                <button className={styles.buttonInverted} onClick={handleSendReviewClick}>Submit</button>
+            </div>
+        </div>
+    );
 };
 
 export default function Page({ params: { id } }: ClothesProps) {
@@ -109,11 +139,10 @@ export default function Page({ params: { id } }: ClothesProps) {
     const [ procedure, setProcedure ] = useState<IProcedureProps>();
     const [ category, setCategory ] = useState<IProcedureCategoryProps>();
     const [ clinic, setClinic ] = useState<IClinicProps>();
+    const [ appointments, setAppointments ] = useState<IAppointmentProps[]>([]);
     const [ reviews, setReviews ] = useState<IReviewProps[]>();
 
     const [ isWritingReview, setIsWritingReview ] = useState(false);
-    const [ rating, setRating ] = useState();
-    const [ content, setContent ] = useState();
 
     useEffect(() => {
         getProcedureById(id)
@@ -130,11 +159,19 @@ export default function Page({ params: { id } }: ClothesProps) {
                         setClinic(data);
                     })
                     .catch(error => console.error(error));
-                // нужно подавать другие айдишники - по аппоинтментам
-                getReviewsById(data.id)
+                
+                getAppointmentsById(data.id)
                     .then(data => {
-                        setReviews(data);
-                    })
+                        setAppointments(data);
+                        const reviewsPromises = data.map(appointment => getReviewsById(appointment.item_id));
+
+                        Promise.all(reviewsPromises)
+                            .then(reviewsArrays => {
+                                const allReviews = [].concat(...reviewsArrays);
+                                setReviews(allReviews);
+                            })
+                            .catch(error => console.error(error));
+                            })
                     .catch(error => console.error(error));
             })
             .catch(error => console.error(error));
@@ -145,78 +182,92 @@ export default function Page({ params: { id } }: ClothesProps) {
             .catch(error => console.error(error));
         }, [id, loginState.login]);
 
-    const handleWriteReviewClick = () => {
-        setIsWritingReview(!isWritingReview);
+    const handleReviewClick = () => {
+        if (!loginState.isLogged) {
+            toast.error("You can not write a review! Please log in first!");
+        }
+        // else if (isAlreadyWrittenReview){
+        //     toast.error("You can not write a review! You\'ve already written a review for this item!", {
+        //         icon: '✍️'
+        //     });
+        // }
+        else {
+            setIsWritingReview(true);
+        }
     }
-
-    const handleSendReviewClick = () => {
-        dispatch(addReview(customerId, rating, content, id));
-        setIsWritingReview(false);
-    }
-
-    const handleRatingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setRating(event.target.value);
-        console.log(rating);
-    };
-    const handleContentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setContent(event.target.value);
-        console.log(content);
-    };
 
     return (
         <DesktopWrapper>
+            <Toaster
+                position="bottom-right"
+                reverseOrder={false}
+            />
             {procedure && 
                 <div className={styles.container}>
-                    <div className={styles.mainContainer}>
-                        <Image className={styles.image} height='300' width='300' src={procedure.photo_url} alt={procedure.description}/>
-                        <div className={styles.info}>
-                            <div className={styles.infoContainer}>
-                                <div className={styles.title}>{capitalizeFirstLetter(procedure.name)}</div>
-                                <div className={styles.actonContainer}>
-                                    <div className={styles.price}>{procedure.price} $</div>
-                                    <Image className={styles.badge} src={heart} alt='Add to favorite'/>
-                                    <select>
-                                        <option>hello</option>
-                                    </select>
-                                    <button className={styles.button} >Add to cart</button>
-                                </div>
-                                    <div className={styles.aboutContainer}>
-                                        {category && 
-                                            <div className={styles.about}>
-                                                <div className={styles.header}>Category: </div>
-                                                <div className={styles.text}>{capitalizeFirstLetter(category.name)}</div>
+                    <div className={styles.topContainer}>
+                        <div className={styles.leftContainer}>
+                            <Image className={styles.image} src={procedure.photo_url} alt={procedure.name} height='300' width='300'/>
+                        </div>
+                        <div className={styles.rightContainer}>
+                            <div className={styles.productContainer}>
+                                <div className={styles.titleContainer}>
+                                    <div className={styles.title}>{capitalizeFirstLetter(procedure.name)}</div>
+                                    <div className={styles.avgReviewContainer}>
+                                        <div className={styles.avgReview}>
+                                            <div className={styles.avgRating}>
+                                                {reviews && displayRatingAsStars(getAverageReviewRating(reviews))}
                                             </div>
-                                        }
-                                        {clinic && 
-                                            <div className={styles.about}>
-                                                <div className={styles.header}>Seller: </div>
-                                                <div className={styles.text}>{clinic.name}</div>
-                                            </div>
-                                        }
-                                    </div> 
-                            </div>
-                            {reviews && <div className={styles.counter}>{getItemsListLength(reviews, 'review', 'reviews')}</div>}
-                            <div className={styles.reviewContainer}>
-                                {reviews && reviews.map((review, key) => {
-                                    return (
-                                        <div className={styles.review} key={key}>
-                                            <div className={styles.rating}>{review.rating} / 5</div>
-                                            <div className={styles.content}>{review.content}</div>
+                                            <div className={styles.numberOfReviews}>{reviews && getItemsListLength(reviews, 'review', 'reviews')}</div>
                                         </div>
-                                    );
-                                })}
-                            </div>
-                            <button className={styles.buttonReview} onClick={handleWriteReviewClick}>Write a review</button>
-                            {isWritingReview  && 
-                                <div className={styles.reviewInputContainer}>
-                                    <input className={styles.input} type='text' placeholder='Rating (out of 5)' value={rating} onChange={handleRatingChange}/>
-                                    <textarea className={styles.inputBigger} type='text' placeholder='Write whatever you think!' value={content} onChange={handleContentChange}></textarea>
-                                    <button className={styles.buttonSend} onClick={handleSendReviewClick}>Send</button>
+                                    </div>
                                 </div>
-                            }
+                                <div className={styles.addToCartContainer}>
+                                    <div className={styles.buttonContainer}>
+                                        {appointments && <select className={styles.selectContainer}>
+                                            {appointments.map((appointment, key) => {
+                                                return <option className={styles.option} key={key}>{appointment.date_time}</option>
+                                            })}
+                                        </select>}
+                                        <button className={styles.button}>{`Add to cart - ${procedure.price} $`}</button>
+                                    </div>
+                                    {appointments && <div className={styles.amountLeft}>{`${appointments.length} ${appointments.length === 1 ? 'appointment' : 'appointments'} available`}</div>}
+                                </div>
+                                <div className={styles.descriptionContainer}>
+                                    {category && 
+                                        <div className={styles.descriptionElement}>
+                                            <div className={styles.header}>Category:</div>
+                                            <div className={styles.text}>{capitalizeFirstLetter(category.name)}</div>
+                                        </div>
+                                    }
+                                    {clinic && 
+                                        <div className={styles.descriptionElement}>
+                                            <div className={styles.header}>Clinic:</div>
+                                            <div className={styles.text}>{clinic.name}</div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div className={styles.reviewsContainer}>
+                                <div className={styles.reviewsTitle}>Reviews</div>
+                                <button className={styles.button} onClick={handleReviewClick} >Write a review</button>
+                                {reviews && 
+                                    reviews.map((review, key) => {
+                                        return (
+                                            <div className={styles.reviewContainer} key={key}>
+                                                <div className={styles.rating}>
+                                                    {displayRatingAsStars(review.rating)}
+                                                    {review.customer_id === customerId && <div className={styles.myReview}>my review</div>}    
+                                                </div>
+                                                <div className={styles.text}>{review.content}</div>
+                                            </div>
+                                        )
+                                    })
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>}
+                {isWritingReview && <ReviewModal appointments={appointments} isOpen={isWritingReview} onClose={() => setIsWritingReview(false)}  customerId={customerId} id={id}/>}
         </DesktopWrapper>
-    )
+    );
 }

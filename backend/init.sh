@@ -422,7 +422,7 @@ INSERT INTO Review (customer_id, rating, content, item_id)
 VALUES (3, 5, 'These heels are to die for! Every step you take feels like a strut on the fashion runway! Loved the attention I got!', 2);
 
 INSERT INTO Review (customer_id, rating, content, item_id)
-VALUES (4, 5, 'Twilight Transform Skin Glow gave me a blemish-free and radiant skin that even made the moon jealous! Can not wait for my next session!', 21);
+VALUES (4, 5, 'Twilight Transform Skin Glow gave me a blemish-free and radiant skin that even made the moon jealous! Can not wait for my next session!', 23);
 
 INSERT INTO Review (customer_id, rating, content, item_id)
 VALUES (5, 4, 'No more bad hair days! Thanks to the Mermaid Waves Hair Extensions from Sparkle First. They are a true fairytale come alive.', 17);
@@ -465,6 +465,73 @@ VALUES (7, 4, 'The skirt is beautiful and versatile. It can be worn with almost 
 
 INSERT INTO Review (customer_id, rating, content, item_id)
 VALUES (8, 5, 'The blouse is so comfortable and lightweight. It fits perfectly and is a great addition to my wardrobe.', 2);
+
+-- Reviews for "Perfect Pout Lip Fillers"
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (1, 5, 'Oh My Gloss! These little lip fillers were just fantastic! I am in love!', 15);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (2, 4, 'I was beyond thrilled with the result. It was simply magical!', 15);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (3, 5, 'This was simply the best thing I have ever done with my face. My lips looked so much fuller and more attractive after this.', 15);
+
+-- Reviews for "Glossy Gloss Skin Glow"
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (4, 5, 'My skin became simply unbelievable after this procedure. It looked healthy and fresh!', 20);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (5, 4, 'I was surprised at how quickly my skin started to glow. This was truly a magical experience!', 20);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (6, 5, 'I was completely enchanted by this product. My skin became soft and shiny.', 20);
+
+-- Reviews for "Mermaid Waves Hair Extensions"
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (7, 5, 'This was simply fantastic! My hair became so much longer and silky.', 16);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (8, 4, 'I was surprised at how realistic my hair looked after this. This was truly a magical experience!', 17);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (9, 5, 'I was completely enchanted by this product. My hair became soft and silky.', 16);
+
+-- Reviews for "Princess Nails"
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (1, 5, 'These little princess nails were just fantastic! They made my fingers look so pretty and elegant.', 18);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (2, 4, 'I was beyond thrilled with the result. My fingers looked so much more stylish and sophisticated after this.', 28);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (3, 5, 'This was simply the best thing I have ever done with my hands. I felt like a queen after this.', 29);
+
+-- Reviews for "Butterfly Eyelash Extensions"
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (4, 5, 'These little butterfly eyelash extensions were just fantastic! They made my eyes look so much more dramatic and stunning.', 21);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (5, 4, 'I was beyond thrilled with the result. My eyes looked so much more expressive and beautiful after this.', 21);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (6, 5, 'This was simply the best thing I have ever done with my eyelashes. I felt like a beauty queen after this.', 21);
+
+-- Reviews for "Romantic Rose Lip Fillers"
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (7, 5, 'These little romantic rose lip fillers were just fantastic! They made my lips look so much more rosy and romantic.', 22);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (8, 4, 'I was beyond thrilled with the result. My lips looked so much more soft and kissable after this.', 31);
+
+INSERT INTO Review (customer_id, rating, content, item_id)
+VALUES (2, 4, 'I was beyond thrilled with the result. It was simply magical!', 30);
+
 
 -- Заказы
 -- 'Starting to Sparkle' (не оформлен), 'Glam in Progress' (Оформлен), 'Glowing and Going' (Собран), 'Ready to Slay' (Получен).

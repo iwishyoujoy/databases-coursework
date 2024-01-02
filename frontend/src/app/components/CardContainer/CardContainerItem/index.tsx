@@ -1,4 +1,5 @@
 import { AppDispatch, RootState } from '../../../redux/store';
+import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 
@@ -95,16 +96,26 @@ export const Card: React.FC<ICardProps> = (props) => {
         }, [item, loginState.login]);
 
     const toggleFavorite = () => {
-        if (isFavorite) {
-            dispatch(removeFromFavorite(customerId, (item as IProductProps).id_item));
-            setIsFavorite(false);
-        } else {
-            dispatch(addToFavorite(customerId, (item as IProductProps).id_item));
-            setIsFavorite(true);
+        if (!loginState.isLogged){
+            toast.error("You can not add this item to favorite! Please log in first!");
+        }
+        else{
+            if (isFavorite) {
+                dispatch(removeFromFavorite(customerId, (item as IProductProps).id_item));
+                setIsFavorite(false);
+            } else {
+                dispatch(addToFavorite(customerId, (item as IProductProps).id_item));
+                setIsFavorite(true);
+            }
         }
     }
 
     return (
+        <>
+        <Toaster
+            position="bottom-right"
+            reverseOrder={false}
+        />
         <div className={styles.container}>
             <Link href={isProduct ? `products/${(item as IProductProps).id_item}` : `procedures/${(item as IProcedureProps).id}`}>
                 <Image  className={styles.image} src={item.photo_url} alt={item.name} width='200' height='200'/>
@@ -126,6 +137,7 @@ export const Card: React.FC<ICardProps> = (props) => {
                 </div>
             </div>
         </div>
+        </>
     );
 
 }

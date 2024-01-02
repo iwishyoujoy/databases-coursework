@@ -3,6 +3,7 @@
 import { AppDispatch, RootState } from "../../redux/store";
 import { IProductProps, addToFavorite, removeFromFavorite } from "../../components/CardContainer/CardContainerItem";
 import { capitalizeFirstLetter, getItemsListLength } from "../../utils/text";
+import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
@@ -81,7 +82,7 @@ async function getSellerById(id): Promise<any> {
     }
 }
 
-async function getReviewsById(id): Promise<any> {
+export async function getReviewsById(id): Promise<any> {
     try {
         const response = await axios.get(`http://localhost:3100/api/review/item-id/${id}`);
     
@@ -92,7 +93,7 @@ async function getReviewsById(id): Promise<any> {
     }
 }
 
-const addReview = (customer_id, rating, content, item_id) => {
+export const addReview = (customer_id, rating, content, item_id) => {
     console.log(customer_id, rating, content, item_id);
 
     return (dispatch) => {
@@ -110,13 +111,13 @@ const addReview = (customer_id, rating, content, item_id) => {
     };
 };
 
-const getAverageReviewRating = (reviews: IReviewProps[]): number => {
+export const getAverageReviewRating = (reviews: IReviewProps[]): number => {
     const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
 
     return totalRating / reviews.length;
 };
 
-const displayRatingAsStars = (rating) => {
+export const displayRatingAsStars = (rating) => {
     const fullStar = '★';
     const emptyStar = '☆';
     const roundedRating = Math.round(rating);
@@ -169,6 +170,7 @@ export default function Page({ params: { id } }: ClothesProps) {
     const [ reviews, setReviews ] = useState<IReviewProps[]>();
 
     const [ isWritingReview, setIsWritingReview ] = useState(false);
+    const [ isAlreadyWrittenReview, setIsAlreadyWrittenReview ] = useState(false);
 
     const [count, setCount] = useState(1);
 
@@ -202,15 +204,38 @@ export default function Page({ params: { id } }: ClothesProps) {
                 setCustomerId(data.id);
             })
             .catch(error => console.error(error));
-        }, [id, loginState.login]);
+
+        if (reviews && customerId) {
+            setIsAlreadyWrittenReview(reviews.some(review => review.customer_id === customerId));
+        }
+    }, [customerId, id, loginState.login, reviews, setIsAlreadyWrittenReview]);
 
     const toggleFavorite = () => {
-        if (isFavorite) {
-            dispatch(removeFromFavorite(customerId, product.id_item));
-            setIsFavorite(false);
-        } else {
-            dispatch(addToFavorite(customerId, product.id_item));
-            setIsFavorite(true);
+        if (!loginState.isLogged){
+            toast.error("You can not add this item to favorite! Please log in first!");
+        }
+        else {
+            if (isFavorite) {
+                dispatch(removeFromFavorite(customerId, product.id_item));
+                setIsFavorite(false);
+            } else {
+                dispatch(addToFavorite(customerId, product.id_item));
+                setIsFavorite(true);
+            }
+        }
+    }
+
+    const handleReviewClick = () => {
+        if (!loginState.isLogged) {
+            toast.error("You can not write a review! Please log in first!");
+        }
+        else if (isAlreadyWrittenReview){
+            toast.error("You can not write a review! You\'ve already written a review for this item!", {
+                icon: '✍️'
+            });
+        }
+        else {
+            setIsWritingReview(true);
         }
     }
 
@@ -228,6 +253,10 @@ export default function Page({ params: { id } }: ClothesProps) {
 
     return (
         <DesktopWrapper>
+            <Toaster
+                position="bottom-right"
+                reverseOrder={false}
+            />
             {product && 
                 <div className={styles.container}>
                     <div className={styles.topContainer}>
@@ -280,7 +309,7 @@ export default function Page({ params: { id } }: ClothesProps) {
                             </div>
                             <div className={styles.reviewsContainer}>
                                 <div className={styles.reviewsTitle}>Reviews</div>
-                                <button className={styles.button} onClick={() => setIsWritingReview(true)} >Write a review</button>
+                                <button className={styles.button} onClick={handleReviewClick} >Write a review</button>
                                 {reviews && 
                                     reviews.map((review, key) => {
                                         return (
@@ -300,5 +329,5 @@ export default function Page({ params: { id } }: ClothesProps) {
                 </div>}
                 {isWritingReview && <ReviewModal isOpen={isWritingReview} onClose={() => setIsWritingReview(false)}  customerId={customerId} id={id}/>}
         </DesktopWrapper>
-    )
+    );
 }
