@@ -233,6 +233,12 @@
     font-size: var(--font-size-xs);
 }
 
+.author{
+    color: var(--black-alpha-56);
+    font-size: var(--font-size-xs);
+    margin-top: -5px;
+}
+
 .text{
     width: 100%;
 }

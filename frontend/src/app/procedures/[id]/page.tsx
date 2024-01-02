@@ -256,9 +256,10 @@ export default function Page({ params: { id } }: ClothesProps) {
                                             <div className={styles.reviewContainer} key={key}>
                                                 <div className={styles.rating}>
                                                     {displayRatingAsStars(review.rating)}
-                                                    {review.customer_id === customerId && <div className={styles.myReview}>my review</div>}    
+                                                    {/* {review.customer_id === customerId && <div className={styles.myReview}>my review</div>}     */}
                                                 </div>
                                                 <div className={styles.text}>{review.content}</div>
+                                                <div className={styles.author}>by {review.surname} {review.name}</div>
                                             </div>
                                         )
                                     })

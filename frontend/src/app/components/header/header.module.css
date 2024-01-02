@@ -60,10 +60,14 @@
 
 .accountContainer{
     justify-content: right;
-    width: 295px;
+    width: 350px;
 }
 
 .hoverPink:hover, .selected{
     color: var(--bright-pink);
     transition: 0.1s ease-in-out;
+}
+
+.status{
+    margin-right: 10px;
 }

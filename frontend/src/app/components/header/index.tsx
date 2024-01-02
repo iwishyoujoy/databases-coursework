@@ -29,7 +29,7 @@ export const Header = () => {
                 </div>
             </div>
             <div className={styles.accountContainer}>
-                {loginState.isLogged ? '' : 'You\'re not logged in yet'}
+                {loginState.isLogged ? '' : <div className={styles.status}>You're not logged in yet girly!</div>}
                 <Link href="/" className={styles.menuLink}>
                     <Image className={styles.menuLogo} src={cart} alt="Cart"/>
                 </Link>
