@@ -23,7 +23,7 @@
 }
 
 .rightContainer{
-    flex-basis: 600px;
+    flex-basis: 900px;
     background-color: var(--light-light-pink);
     border-radius: var(--border-radius-m);
     padding: 24px;

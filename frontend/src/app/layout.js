@@ -1,13 +1,15 @@
 'use client'
-import { Inter } from 'next/font/google'
+
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'] })
 import { ChakraProvider } from '@chakra-ui/react'
-import { BrowserRouter as Router } from 'react-router-dom';
-import { Header } from './components/Header';
 import { Footer } from './components/Footer';
+import { Header } from './components/Header';
+import { Inter } from 'next/font/google'
+import { BrowserRouter as Router } from 'react-router-dom';
 import { StoreProvider } from './redux/storeProvider';
+
+const inter = Inter({ subsets: ['latin'] })
 
 // export const metadata = {
 //   title: 'Bimbo Shop',
@@ -30,7 +32,7 @@ export default function RootLayout({ children }) {
             </div>
           </body>
         </StoreProvider>
-      </Router>,
+      </Router>
       </ChakraProvider>
     </html>
   )

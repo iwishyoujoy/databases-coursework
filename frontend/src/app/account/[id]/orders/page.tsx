@@ -1,15 +1,14 @@
 'use client'
 
 import React, { useEffect, useState } from "react";
-import cn from 'classnames';
 
-import styles from './styles.module.css';
 import { DesktopWrapper } from "../../../components/DesktopWrapper";
 import Link from "next/link";
-import axios from "axios";
-
-import { getItemsListLength } from "../../../utils/text";
 import { OrderCard } from "../../../components/OrderCard";
+import axios from "axios";
+import cn from 'classnames';
+import { getItemsListLength } from "../../../utils/text";
+import styles from './styles.module.css';
 
 export interface IOrderProps {
     id: number;
@@ -56,6 +55,7 @@ export default function Page({ params: { id } }: AccountProps) {
                 </div>
                 <div className={styles.rightContainer}>
                     <div className={styles.counter}>{getItemsListLength(orders, 'order', 'orders')}</div>
+                    {!orders.length && <div className={styles.placeholder}>Seems like you didn't purchased anything!</div>}
                     {orders.map((order, key) => {
                         return (
                            <OrderCard order={order} key={key} login={id}/> 

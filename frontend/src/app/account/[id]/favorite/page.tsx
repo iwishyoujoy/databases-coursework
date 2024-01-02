@@ -63,6 +63,7 @@ export default function Page({ params: { id } }: AccountProps) {
                 </div>
                 <div className={styles.rightContainer}>
                     <div className={styles.counter}>{getItemsListLength(favorites, 'favorite', 'favorites')}</div>
+                    {!favorites.length && <div className={styles.placeholder}>Seems like you didn't add any products to your favorites!</div>}
                     <div className={styles.favoriteContainer}>
                         {favorites.map((favorite, key) => {
                             return (
