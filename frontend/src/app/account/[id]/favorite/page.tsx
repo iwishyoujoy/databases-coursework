@@ -18,7 +18,7 @@ interface AccountProps{
     }
 }
 
-async function getFavoritesByCustomer(id): Promise<any> {
+export async function getFavoritesByCustomer(id): Promise<any> {
     try {
         const response = await axios.get(`http://localhost:3100/api/favorite/all/${id}`);
     
@@ -63,7 +63,11 @@ export default function Page({ params: { id } }: AccountProps) {
                 </div>
                 <div className={styles.rightContainer}>
                     <div className={styles.counter}>{getItemsListLength(favorites, 'favorite', 'favorites')}</div>
-                    {!favorites.length && <div className={styles.placeholder}>Seems like you didn't add any products to your favorites!</div>}
+                    {!favorites.length && 
+                        <div className={styles.placeholder}>
+                            <h1 className={styles.placeholderTitle}>Oopsie...</h1>
+                            Seems like you didn't add any products to your favorites!
+                        </div>}
                     <div className={styles.favoriteContainer}>
                         {favorites.map((favorite, key) => {
                             return (

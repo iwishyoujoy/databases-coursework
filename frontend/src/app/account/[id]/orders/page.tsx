@@ -55,7 +55,11 @@ export default function Page({ params: { id } }: AccountProps) {
                 </div>
                 <div className={styles.rightContainer}>
                     <div className={styles.counter}>{getItemsListLength(orders, 'order', 'orders')}</div>
-                    {!orders.length && <div className={styles.placeholder}>Seems like you didn't purchased anything!</div>}
+                    {!orders.length && 
+                        <div className={styles.placeholder}>
+                            <h1 className={styles.placeholderTitle}>Oopsie...</h1>
+                            Seems like you didn't purchased anything!
+                        </div>}
                     {orders.map((order, key) => {
                         return (
                            <OrderCard order={order} key={key} login={id}/> 

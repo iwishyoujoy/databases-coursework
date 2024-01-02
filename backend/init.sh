@@ -458,7 +458,7 @@ INSERT INTO Review (customer_id, rating, content, item_id)
 VALUES (5, 4, 'The shoes are incredibly comfortable and stylish. I received positive feedback from everyone who saw them.', 10);
 
 INSERT INTO Review (customer_id, rating, content, item_id)
-VALUES (6, 5, 'Just an incredible red crop top, I've never felt so attractive! All the guys were watching me in the club!', 6);
+VALUES (6, 5, 'Just an incredible red crop top, I have never felt so attractive! All the guys were watching me in the club!', 6);
 
 INSERT INTO Review (customer_id, rating, content, item_id)
 VALUES (7, 4, 'What amazing black heels, I went to them on the red carpet of the movie where I was filming and everyone asked where I got them! I said that all the cool stuff can be found on the bimbo shop!', 7);
@@ -497,7 +497,7 @@ INSERT INTO Review (customer_id, rating, content, item_id)
 VALUES (8, 4, 'I was surprised at how realistic my hair looked after this. This was truly a magical experience!', 17);
 
 INSERT INTO Review (customer_id, rating, content, item_id)
-VALUES (9, 5, 'I was completely enchanted by this product. My hair became soft and silky.', 16);
+VALUES (5, 5, 'I was completely enchanted by this product. My hair became soft and silky.', 16);
 
 -- Reviews for "Princess Nails"
 

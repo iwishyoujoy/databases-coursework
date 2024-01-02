@@ -13,6 +13,7 @@ import axios from "axios";
 import blackHeart from 'public/images/blackHeart.svg';
 import cn from 'classnames';
 import { getCustomerData } from "../../account/[id]/profile/page";
+import { getFavoritesByCustomer } from "../../account/[id]/favorite/page";
 import minus from 'public/images/minus.svg';
 import minusDisabled from 'public/images/minusDisabled.svg';
 import pinkHeart from 'public/images/heart.svg';
@@ -199,9 +200,17 @@ export default function Page({ params: { id } }: ClothesProps) {
                     .catch(error => console.error(error));
             })
             .catch(error => console.error(error));
+
         getCustomerData(loginState.login)
             .then(data => {
                 setCustomerId(data.id);
+            })
+            .catch(error => console.error(error));
+
+        getFavoritesByCustomer(loginState.login)
+            .then(data => {
+                const isCurrentProductFavorite = data.some(favorite => favorite.favoriteProductId.item_id == id);
+                setIsFavorite(isCurrentProductFavorite);
             })
             .catch(error => console.error(error));
 
