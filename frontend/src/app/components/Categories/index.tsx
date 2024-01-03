@@ -29,7 +29,7 @@ export const Categories: React.FC<ICategoriesProps> = ({ categoryType = 'product
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState('All');
 
-    const handleCategoryClick = (id, name) => {
+    const handleCategoryClick = (id: number, name: string) => {
         setSelectedCategory(name);
         if (categoryType === 'productCategory'){
             dispatch(setProductCategoryId(id));
@@ -49,7 +49,7 @@ export const Categories: React.FC<ICategoriesProps> = ({ categoryType = 'product
 
     return (
         <div className={styles.container}>
-            <div className={cn(styles.category, styles.hoverPink, selectedCategory === 'All' ? styles.selected : '')} onClick={() => handleCategoryClick('-1', 'All')}>All</div>
+            <div className={cn(styles.category, styles.hoverPink, selectedCategory === 'All' ? styles.selected : '')} onClick={() => handleCategoryClick(-1, 'All')}>All</div>
             {categories.map((category, key) => {
                 const name = capitalizeFirstLetter(category.name);
 
