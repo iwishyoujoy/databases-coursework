@@ -59,6 +59,11 @@ public class ProcedureController {
         return ResponseEntity.ok().body(list);
     }
 
+    @GetMapping("clinic/{seller_id}")
+    public ResponseEntity<List<Procedure>> getProductsBySeller(@PathVariable Long seller_id) {
+        List<Procedure> list = procedureRepo.findAll().stream().filter(user -> user.getClinic_id() == seller_id).toList();
+        return ResponseEntity.ok().body(list);
+    }
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> delete(@PathVariable String id) {

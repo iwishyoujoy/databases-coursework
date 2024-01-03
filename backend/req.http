@@ -1,1 +1,1 @@
-get http://localhost:3100/api/review/item-id/1
+get http://localhost:3100/api/procedure/seller/1

@@ -48,6 +48,12 @@ public class ProductController {
         }
     }
 
+    @GetMapping("seller/{seller_id}")
+    public ResponseEntity<List<Product>> getProductsBySeller(@PathVariable Long seller_id) {
+        List<Product> list = productRepo.findAll().stream().filter(user -> user.getSeller_id() == seller_id).toList();
+        return ResponseEntity.ok().body(list);
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<Product>> getAllProduct() {
         return ResponseEntity.ok().body(productRepo.findAll());
