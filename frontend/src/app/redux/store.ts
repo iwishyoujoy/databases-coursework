@@ -15,6 +15,7 @@ interface LoginState {
 interface BusinessState {
   isLogged: boolean;
   isSeller: boolean;
+  id: number;
   login: string;
   password: string;
   name: string;
@@ -72,6 +73,7 @@ const businessSlice = createSlice({
   initialState: {
     isLogged: false,
     isSeller: true,
+    id: undefined,
     name: undefined,
     email: undefined,
     contact: undefined,
@@ -84,6 +86,9 @@ const businessSlice = createSlice({
     },
     setPasswordBusiness: (state, action: PayloadAction<string>) => {
       state.password = action.payload;
+    },
+    setIdBusiness: (state, action: PayloadAction<number>) => {
+      state.id = action.payload;
     },
     setNameBusiness: (state, action: PayloadAction<string>) => {
       state.name = action.payload;
@@ -146,7 +151,7 @@ export const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export const { setLogin, setPassword, setName, setSurname, setBirthday, setPhoneNumber, setIsLogged } = loginSlice.actions;
-export const { setLoginBusiness, setPasswordBusiness, setNameBusiness, setEmailBusiness, setContactBusiness, setIsSellerBusiness, setIsLoggedBusiness } = businessSlice.actions;
+export const { setLoginBusiness, setPasswordBusiness, setIdBusiness, setNameBusiness, setEmailBusiness, setContactBusiness, setIsSellerBusiness, setIsLoggedBusiness } = businessSlice.actions;
 export const { setProcedureCategoryId, setProductCategoryId } = categorySlice.actions;
 export const { setOrderId } = cartSlice.actions;
 

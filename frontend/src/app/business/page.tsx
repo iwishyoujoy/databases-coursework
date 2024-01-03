@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 
 import { DesktopWrapper } from "../components/DesktopWrapper";
 import { RootState } from "../redux/store";
+import { SignInBusiness } from "../components/SignInSignUpFormBusiness";
 import styles from './styles.module.css';
 import { useRouter } from "next/navigation";
 import { useSelector } from "react-redux";
@@ -21,7 +22,7 @@ export default function Page() {
     return (
         <DesktopWrapper>
             <div className={styles.mainUI}>
-                {/* <SignInBusiness /> */}
+                <SignInBusiness />
             </div>
         </DesktopWrapper>
     );

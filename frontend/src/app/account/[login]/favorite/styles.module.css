@@ -64,13 +64,13 @@
     width: 100%;
     border-radius: var(--border-radius-m);
     background-color: var(--light-light-pink);
-    color: var(--black-alpha-56);
+    color: black;
     font-size: var(--font-size-s);
     text-align: center;
 }
 
 .placeholderTitle{
-    color: var(--black-alpha-56);
+    color: black;
     font-size: var(--font-size-m);
     font-weight: var(--font-weight-l);
 }

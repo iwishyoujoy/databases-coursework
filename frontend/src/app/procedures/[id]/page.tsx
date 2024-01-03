@@ -1,10 +1,10 @@
 'use client'
 
 import { AppDispatch, RootState } from "../../redux/store";
-import { IAppointmentProps, IClinicProps, IProcedureCategoryProps, IProcedureProps, IReviewProps } from "../../utils/types";
+import { IAppointmentProps, ICategoryProps, IProcedureProps, IReviewProps, ISellerOrClinicProps } from "../../utils/types";
 import { capitalizeFirstLetter, getItemsListLength } from "../../utils/text";
 import { displayRatingAsStars, getAverageReviewRating } from "../../utils/review";
-import { getAppointmentsById, getCategoryById, getClinicById, getCustomerData, getProcedureById, getReviewsById } from "../../utils/getQuery";
+import { getAppointmentsById, getCategoryById, getCustomerData, getProcedureById, getReviewsById, getSellerOrClinicById } from "../../utils/getQuery";
 import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -51,7 +51,7 @@ const ReviewModal = ({ isOpen, onClose, customerId, appointments }) => {
             <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
                 <h2 className={styles.modalTitle}>Write a review</h2>
                 <div className={styles.modalInputLabel}>Select appointment to write review on:</div>
-                {appointments && <select className={cn(styles.selectModalContainer, styles.selectContainer)} onChange={(e) => setId(e.target.value)}>
+                {appointments && <select className={styles.selectModalContainer} onChange={(e) => setId(e.target.value)}>
                     {appointments.map((appointment, key) => {
                         return <option className={styles.optionModal} value={appointment.item_id} key={key}>{appointment.date_time}</option>
                     })}
@@ -68,8 +68,8 @@ export default function Page({ params: { id } }: ProcedureProps) {
     const loginState = useSelector((state: RootState) => state.login);
     const [ customerId, setCustomerId ] = useState();
     const [ procedure, setProcedure ] = useState<IProcedureProps>();
-    const [ category, setCategory ] = useState<IProcedureCategoryProps>();
-    const [ clinic, setClinic ] = useState<IClinicProps>();
+    const [ category, setCategory ] = useState<ICategoryProps>();
+    const [ clinic, setClinic ] = useState<ISellerOrClinicProps>();
     const [ appointments, setAppointments ] = useState<IAppointmentProps[]>([]);
     const [ reviews, setReviews ] = useState<IReviewProps[]>();
 
@@ -86,7 +86,7 @@ export default function Page({ params: { id } }: ProcedureProps) {
                     })
                     .catch(error => console.error(error));
                     
-                getClinicById(data.clinic_id)
+                getSellerOrClinicById(data.clinic_id, 'clinic')
                     .then(data => {
                         setClinic(data);
                     })

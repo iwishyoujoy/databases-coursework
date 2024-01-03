@@ -34,28 +34,30 @@ export default function Page({ params: { login } }: AccountProps) {
                     <Link className={styles.link} href={`/account/${login}/orders`}>Orders</Link>
                     <Link className={styles.link} href={`/account/${login}/favorite`}>Favorite</Link>
                 </div>
+                {customer &&
                 <div className={styles.rightContainer}>
                     <div className={styles.data}>
                         <div className={styles.header}>Name:</div>
-                        <div className={styles.text}>{customer ? customer.name : ""}</div>
+                        <div className={styles.text}>{customer.name}</div>
                     </div>
                     <div className={styles.data}>
                         <div className={styles.header}>Surname:</div>
-                        <div className={styles.text}>{customer ? customer.surname : ""}</div>
+                        <div className={styles.text}>{customer.surname}</div>
                     </div>
                     <div className={styles.data}>
                         <div className={styles.header}>Birthday:</div>
-                        <div className={styles.text}>{customer ? customer.birthday: ""}</div>
+                        <div className={styles.text}>{customer.birthday}</div>
                     </div>
                     <div className={styles.data}>
                         <div className={styles.header}>Phone number:</div>
-                        <div className={styles.text}>{customer ? customer.phone_number : ""}</div>
+                        <div className={styles.text}>{customer.phone_number}</div>
                     </div>
                     <div className={styles.data}>
                         <div className={styles.header}>Login:</div>
-                        <div className={styles.text}>{customer ? customer.login : ""}</div>
+                        <div className={styles.text}>{customer.login}</div>
                     </div>
                 </div>
+                }
             </div>
         </DesktopWrapper>
     );

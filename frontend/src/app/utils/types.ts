@@ -18,28 +18,13 @@ export interface IProcedureProps{
     clinic_id: number;
 }
 
-export interface IProcedureCategoryProps {
+export interface ICategoryProps {
     id: number;
     name: string;
     description: string;
 }
 
-export interface IProductCategoryProps {
-    id: number;
-    name: string;
-    description: string;
-}
-
-export interface IClinicProps {
-    id: number;
-    name: string;
-    email: string;
-    contact: string;
-    login: string;
-    password: string;
-}
-
-export interface ISellerProps {
+export interface ISellerOrClinicProps {
     id: number;
     name: string;
     email: string;

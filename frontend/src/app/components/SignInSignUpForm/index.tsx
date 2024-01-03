@@ -100,7 +100,7 @@ export const SignIn = () => {
                         <input className={styles.input} type='text' placeholder='Login' value={loginState.login} onChange={handleLoginChange}/>
                         <input className={styles.input} type='password' placeholder='Password' value={loginState.password} onChange={handlePasswordChange}/>
                     </div>
-                    <div className={styles.description}>If you don't have an account, you can registry any time, click below</div>
+                    <div className={styles.description}>If you already have an account, you can log in any time, click below</div>
                     <div className={styles.buttonContainer}>
                         <button className={cn(styles.button, styles.signin)} onClick={handleSignUpClick}>Sign Up</button>
                         <button className={cn(styles.signup)} onClick={() => setIsSignUp(!isSignUp)}>Sign In</button>

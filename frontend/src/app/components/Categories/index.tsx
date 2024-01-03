@@ -3,25 +3,14 @@
 import { AppDispatch, setProcedureCategoryId, setProductCategoryId } from '../../redux/store';
 import { useEffect, useState } from 'react';
 
-import axios from 'axios';
 import { capitalizeFirstLetter } from '../../utils/text';
 import cn from 'classnames';
+import { getAllCategories } from '../../utils/getQuery';
 import styles from './styles.module.css';
 import { useDispatch } from 'react-redux';
 
 interface ICategoriesProps {
     categoryType?: 'productCategory' | 'procedureCategory';
-}
-
-async function getAllProductCategories(categoryType): Promise<any> {
-    try {
-        const response = await axios.get(`http://localhost:3100/api/${categoryType}/all`);
-     
-        return response.data;
-    } catch (error) {
-        console.error(`Error: ${error}`);
-        throw error;
-    }
 }
 
 export const Categories: React.FC<ICategoriesProps> = ({ categoryType = 'productCategory' }) => {
@@ -40,7 +29,7 @@ export const Categories: React.FC<ICategoriesProps> = ({ categoryType = 'product
     }
 
     useEffect(() => {
-        getAllProductCategories(categoryType)
+        getAllCategories(categoryType)
             .then(data => {
                 setCategories(data);
             })

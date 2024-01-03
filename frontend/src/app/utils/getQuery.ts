@@ -22,9 +22,31 @@ export async function getCategoryById(id: number, type: 'product' | 'procedure')
     }
 }
 
-export async function getSellerById(id: number): Promise<any> {
+export async function getAllCategories(categoryType: 'productCategory' | 'procedureCategory'): Promise<any> {
     try {
-        const response = await axios.get(`http://localhost:3100/api/seller/id/${id}`);
+        const response = await axios.get(`http://localhost:3100/api/${categoryType}/all`);
+     
+        return response.data;
+    } catch (error) {
+        console.error(`Error: ${error}`);
+        throw error;
+    }
+}
+
+export async function getSellerOrClinicById(id: number, type: 'seller' | 'clinic'): Promise<any> {
+    try {
+        const response = await axios.get(`http://localhost:3100/api/${type}/id/${id}`);
+    
+        return response.data;
+    }catch (error) {
+        console.error(`Error: ${error}`);
+        throw error;
+    }
+}
+
+export async function getSellerOrClinicByLogin(login: string, type: 'seller' | 'clinic'): Promise<any> {
+    try {
+        const response = await axios.get(`http://localhost:3100/api/${type}/login/${login}`);
     
         return response.data;
     }catch (error) {
@@ -47,18 +69,6 @@ export async function getReviewsById(id: number): Promise<any> {
 export async function getProcedureById(id: number): Promise<any> {
     try {
         const response = await axios.get(`http://localhost:3100/api/procedure/${id}`);
-    
-        return response.data;
-    }catch (error) {
-        console.error(`Error: ${error}`);
-        throw error;
-    }
-}
-
-
-export async function getClinicById(id: number): Promise<any> {
-    try {
-        const response = await axios.get(`http://localhost:3100/api/clinic/id/${id}`);
     
         return response.data;
     }catch (error) {

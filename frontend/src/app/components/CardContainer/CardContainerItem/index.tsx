@@ -30,7 +30,8 @@ export const Card: React.FC<ICardProps> = (props) => {
     const { item, isProduct = true } = props;
 
     useEffect(() => {
-        getCustomerData(loginState.login)
+        if (loginState.isLogged){
+            getCustomerData(loginState.login)
             .then(data => {
                 setCustomerId(data.id);
                 axios.get(`http://localhost:3100/api/favorite/all/${loginState.login}`)
@@ -41,6 +42,7 @@ export const Card: React.FC<ICardProps> = (props) => {
                 .catch(error => console.error(error));
             })
             .catch(error => console.error(error));
+        }
         }, [item, loginState.login]);
 
     const toggleFavorite = () => {

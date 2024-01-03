@@ -1,11 +1,11 @@
 'use client'
 
 import { AppDispatch, RootState } from "../../redux/store";
-import { IProductCategoryProps, IProductProps, IReviewProps, ISellerProps } from "../../utils/types";
+import { ICategoryProps, IProductProps, IReviewProps, ISellerOrClinicProps } from "../../utils/types";
 import { addReview, addToFavorite } from "../../utils/postQuery";
 import { capitalizeFirstLetter, getItemsListLength } from "../../utils/text";
 import { displayRatingAsStars, getAverageReviewRating } from "../../utils/review";
-import { getCategoryById, getCustomerData, getFavoritesByCustomer, getProductById, getReviewsById, getSellerById } from "../../utils/getQuery";
+import { getCategoryById, getCustomerData, getFavoritesByCustomer, getProductById, getReviewsById, getSellerOrClinicById } from "../../utils/getQuery";
 import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -66,8 +66,8 @@ export default function Page({ params: { id } }: ProductProps) {
     const [ customerId, setCustomerId ] = useState();
     const dispatch = useDispatch<AppDispatch>();
     const [ product, setProduct ] = useState<IProductProps>();
-    const [ category, setCategory ] = useState<IProductCategoryProps>();
-    const [ seller, setSeller ] = useState<ISellerProps>();
+    const [ category, setCategory ] = useState<ICategoryProps>();
+    const [ seller, setSeller ] = useState<ISellerOrClinicProps>();
     const [ reviews, setReviews ] = useState<IReviewProps[]>();
 
     const [ isWritingReview, setIsWritingReview ] = useState(false);
@@ -87,7 +87,7 @@ export default function Page({ params: { id } }: ProductProps) {
                     })
                     .catch(error => console.error(error));
                     
-                getSellerById(data.seller_id)
+                getSellerOrClinicById(data.seller_id, 'seller')
                     .then(data => {
                         setSeller(data);
                     })
