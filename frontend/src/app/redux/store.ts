@@ -23,8 +23,8 @@ interface BusinessState {
 }
 
 interface CategoryState {
-  productCategory: string;
-  procedureCategory: string;
+  productCategoryId: number;
+  procedureCategoryId: number;
 }
 
 interface CartState {
@@ -106,15 +106,15 @@ const businessSlice = createSlice({
 const categorySlice = createSlice({
   name: 'category',
   initialState: {
-    productCategory: '-1',
-    procedureCategory: '-1',
+    productCategoryId: -1,
+    procedureCategoryId: -1,
   } as CategoryState,
   reducers: {
-    setProductCategory: (state, action: PayloadAction<string>) => {
-      state.productCategory = action.payload;
+    setProductCategoryId: (state, action: PayloadAction<number>) => {
+      state.productCategoryId = action.payload;
     },
-    setProcedureCategory: (state, action: PayloadAction<string>) => {
-      state.procedureCategory = action.payload;
+    setProcedureCategoryId: (state, action: PayloadAction<number>) => {
+      state.procedureCategoryId = action.payload;
     },
   }
 });
@@ -147,6 +147,6 @@ export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 export const { setLogin, setPassword, setName, setSurname, setBirthday, setPhoneNumber, setIsLogged } = loginSlice.actions;
 export const { setLoginBusiness, setPasswordBusiness, setNameBusiness, setEmailBusiness, setContactBusiness, setIsSellerBusiness, setIsLoggedBusiness } = businessSlice.actions;
-export const { setProcedureCategory, setProductCategory } = categorySlice.actions;
+export const { setProcedureCategoryId, setProductCategoryId } = categorySlice.actions;
 export const { setOrderId } = cartSlice.actions;
 

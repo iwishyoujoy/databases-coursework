@@ -1,91 +1,23 @@
 'use client'
 
 import { AppDispatch, RootState } from "../../redux/store";
-import { IProcedureProps, IProductProps } from "../../components/CardContainer/CardContainerItem";
-import { IReviewProps, addReview, displayRatingAsStars, getAverageReviewRating, getReviewsById } from "../../products/[id]/page";
+import { IAppointmentProps, IClinicProps, IProcedureCategoryProps, IProcedureProps, IReviewProps } from "../../utils/types";
 import { capitalizeFirstLetter, getItemsListLength } from "../../utils/text";
+import { displayRatingAsStars, getAverageReviewRating } from "../../utils/review";
+import { getAppointmentsById, getCategoryById, getClinicById, getCustomerData, getProcedureById, getReviewsById } from "../../utils/getQuery";
 import toast, { Toaster } from 'react-hot-toast';
-import { use, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 
 import { DesktopWrapper } from "../../components/DesktopWrapper";
 import Image from "next/image";
-import addToCart from 'public/images/cart.svg';
-import axios from "axios";
+import { addReview } from "../../utils/postQuery";
 import cn from 'classnames';
-import { getCustomerData } from "../../account/[id]/profile/page";
-import heart from 'public/images/heart.svg';
 import styles from './styles.module.css';
 
-interface ClothesProps{
+interface ProcedureProps{
     params: {
-        id: string;
-    }
-}
-
-export interface IProcedureCategoryProps {
-    id: number;
-    name: string;
-    description: string;
-}
-
-export interface IClinicProps {
-    id: number;
-    name: string;
-    email: string;
-    contact: string;
-    login: string;
-    password: string;
-}
-
-export interface IAppointmentProps {
-    item_id: number;
-    date_time: string;
-    procedure_id: number;
-    status: boolean;
-}
-
-export async function getProcedureById(id): Promise<any> {
-    try {
-        const response = await axios.get(`http://localhost:3100/api/procedure/${id}`);
-    
-        return response.data;
-    }catch (error) {
-        console.error(`Error: ${error}`);
-        throw error;
-    }
-}
-
-async function getCategoryById(id): Promise<any> {
-    try {
-        const response = await axios.get(`http://localhost:3100/api/procedureCategory/${id}`);
-    
-        return response.data;
-    }catch (error) {
-        console.error(`Error: ${error}`);
-        throw error;
-    }
-}
-
-async function getClinicById(id): Promise<any> {
-    try {
-        const response = await axios.get(`http://localhost:3100/api/clinic/id/${id}`);
-    
-        return response.data;
-    }catch (error) {
-        console.error(`Error: ${error}`);
-        throw error;
-    }
-}
-
-async function getAppointmentsById(id): Promise<any> {
-    try {
-        const response = await axios.get(`http://localhost:3100/api/procedure/${id}/appointments`);
-    
-        return response.data;
-    }catch (error) {
-        console.error(`Error: ${error}`);
-        throw error;
+        id: number;
     }
 }
 
@@ -132,10 +64,9 @@ const ReviewModal = ({ isOpen, onClose, customerId, appointments }) => {
     );
 };
 
-export default function Page({ params: { id } }: ClothesProps) {
+export default function Page({ params: { id } }: ProcedureProps) {
     const loginState = useSelector((state: RootState) => state.login);
     const [ customerId, setCustomerId ] = useState();
-    const dispatch = useDispatch<AppDispatch>();
     const [ procedure, setProcedure ] = useState<IProcedureProps>();
     const [ category, setCategory ] = useState<IProcedureCategoryProps>();
     const [ clinic, setClinic ] = useState<IClinicProps>();
@@ -149,7 +80,7 @@ export default function Page({ params: { id } }: ClothesProps) {
         getProcedureById(id)
             .then(data => {
                 setProcedure(data);
-                getCategoryById(data.procedure_category_id)
+                getCategoryById(data.procedure_category_id, 'procedure')
                     .then(data => {
                         setCategory(data);
                     })

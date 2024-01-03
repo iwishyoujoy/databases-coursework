@@ -1,25 +1,16 @@
-import axios from "axios";
-import { IOrderProps } from "../../account/[id]/orders/page";
-import styles from './styles.module.css';
+import { useEffect, useState } from "react";
+
+import { IOrderProps } from "../../utils/types";
 import Image from "next/image";
 import arrow from 'public/images/arrow.svg';
-import { useEffect, useState } from "react";
+import axios from "axios";
+import { getCheckForOrder } from "../../utils/getQuery";
 import { roundAmount } from "../../utils/text";
+import styles from './styles.module.css';
 
 interface IOrderCardProps {
     order: IOrderProps;
     login: string;
-}
-
-async function getCheckForOrder(id): Promise<any> {
-    try {
-        const response = await axios.get(`http://localhost:3100/api/order/check/${id}`);
-    
-        return response.data;
-    }catch (error) {
-        console.error(`Error: ${error}`);
-        throw error;
-    }
 }
 
 export const OrderCard: React.FC<IOrderCardProps> = (props) => {

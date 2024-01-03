@@ -1,60 +1,16 @@
-import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { getAllProcedures, getAllProducts, getProceduresbyCategory, getProductsbyCategory } from '../../utils/getQuery';
+import { useEffect, useState } from 'react';
 
-import styles from './styles.module.css';
 import { Card } from './CardContainerItem';
 import { RootState } from '../../redux/store';
-import { useSelector } from 'react-redux';
+import axios from 'axios';
 import { getItemsListLength } from '../../utils/text';
+import styles from './styles.module.css';
+import { useSelector } from 'react-redux';
 
 interface ICardContainerProps {
     categoryType?: 'productCategory' | 'procedureCategory';
 }
-
-async function getAllProducts(): Promise<any> {
-    try {
-        const response = await axios.get(`http://localhost:3100/api/product/all`);
-    
-        return response.data;
-    }catch (error) {
-        console.error(`Error: ${error}`);
-        throw error;
-    }
-}
-
-async function getAllProcedures(): Promise<any> {
-    try {
-        const response = await axios.get(`http://localhost:3100/api/procedure/all`);
-    
-        return response.data;
-    }catch (error) {
-        console.error(`Error: ${error}`);
-        throw error;
-    }
-}
-
-async function getProductsbyCategory(selector): Promise<any> {
-    try {
-        const response = await axios.get(`http://localhost:3100/api/productCategory/${selector}/products`);
-     
-        return response.data;
-    } catch (error) {
-        console.error(`Error: ${error}`);
-        throw error;
-    }
- }
-
-async function getProceduresbyCategory(selector): Promise<any> {
-    try {
-        const response = await axios.get(`http://localhost:3100/api/procedureCategory/${selector}/procedures`);
-     
-        return response.data;
-    } catch (error) {
-        console.error(`Error: ${error}`);
-        throw error;
-    }
-}
- 
 
 export const CardContainer: React.FC<ICardContainerProps> = ({ categoryType = 'productCategory' }) => {
    const [products, setProducts] = useState([]);
@@ -62,7 +18,7 @@ export const CardContainer: React.FC<ICardContainerProps> = ({ categoryType = 'p
 
    useEffect(() => {
         if (categoryType === 'productCategory'){
-            if (categoryState.productCategory === '-1'){
+            if (categoryState.productCategoryId === -1){
                 getAllProducts()
                     .then(data => {
                         setProducts(data);
@@ -70,7 +26,7 @@ export const CardContainer: React.FC<ICardContainerProps> = ({ categoryType = 'p
                     .catch(error => console.error(error));
             }
             else{
-                getProductsbyCategory(categoryState.productCategory)
+                getProductsbyCategory(categoryState.productCategoryId)
                     .then(data => {
                         setProducts(data);
                     })
@@ -78,7 +34,7 @@ export const CardContainer: React.FC<ICardContainerProps> = ({ categoryType = 'p
             }
         }
         else{
-            if (categoryState.procedureCategory === '-1'){
+            if (categoryState.procedureCategoryId === -1){
                 getAllProcedures()
                     .then(data => {
                         setProducts(data);
@@ -86,7 +42,7 @@ export const CardContainer: React.FC<ICardContainerProps> = ({ categoryType = 'p
                     .catch(error => console.error(error));
             }
             else{
-                getProceduresbyCategory(categoryState.procedureCategory)
+                getProceduresbyCategory(categoryState.procedureCategoryId)
                     .then(data => {
                         setProducts(data);
                     })
@@ -94,7 +50,7 @@ export const CardContainer: React.FC<ICardContainerProps> = ({ categoryType = 'p
             }
         }
         
-   }, [categoryState.procedureCategory, categoryState.productCategory, categoryType]);
+   }, [categoryState.procedureCategoryId, categoryState.productCategoryId, categoryType]);
 
    return (
        <div className={styles.container}>

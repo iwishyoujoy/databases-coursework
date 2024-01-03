@@ -1,57 +1,38 @@
 'use client'
 
 import React, { useEffect, useState } from "react";
-import cn from 'classnames';
 
-import styles from './styles.module.css';
 import { DesktopWrapper } from "../../../components/DesktopWrapper";
+import { ICustomerProps } from "../../../utils/types";
 import Link from "next/link";
-import axios from "axios";
+import cn from 'classnames';
+import { getCustomerData } from "../../../utils/getQuery";
+import styles from './styles.module.css';
 
-export interface ICustomerProps {
-    id: number;
-    name: string;
-    surname: string;
-    birthday: string;
-    phone_number: string;
-    login: string;
-    password: string;
-}
 interface AccountProps{
     params: {
-        id: string;
+        login: string;
     }
 }
 
-export async function getCustomerData(login): Promise<any> {
-    try {
-        const response = await axios.get(`http://localhost:3100/api/customer/${login}`);
-    
-        return response.data;
-    }catch (error) {
-        console.error(`Error: ${error}`);
-        throw error;
-    }
-}
-
-export default function Page({ params: { id } }: AccountProps) {
+export default function Page({ params: { login } }: AccountProps) {
     const [ customer, setCustomer ] = useState<ICustomerProps>(null);
 
     useEffect(() => {
-        getCustomerData(id)
+        getCustomerData(login)
             .then(data => {
                 setCustomer(data);
             })
             .catch(error => console.error(error));
-        }, [id]);
+        }, [login]);
 
     return(
         <DesktopWrapper>
             <div className={styles.container}>
                 <div className={styles.leftContainer}>
-                    <Link className={cn(styles.link, styles.selected)} href={`/account/${id}/profile`}>Profile</Link>
-                    <Link className={styles.link} href={`/account/${id}/orders`}>Orders</Link>
-                    <Link className={styles.link} href={`/account/${id}/favorite`}>Favorite</Link>
+                    <Link className={cn(styles.link, styles.selected)} href={`/account/${login}/profile`}>Profile</Link>
+                    <Link className={styles.link} href={`/account/${login}/orders`}>Orders</Link>
+                    <Link className={styles.link} href={`/account/${login}/favorite`}>Favorite</Link>
                 </div>
                 <div className={styles.rightContainer}>
                     <div className={styles.data}>

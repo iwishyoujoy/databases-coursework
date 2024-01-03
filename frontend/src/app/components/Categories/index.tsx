@@ -1,11 +1,12 @@
 'use client'
-import axios from 'axios';
-import { useState, useEffect } from 'react';
-import cn from 'classnames';
 
-import styles from './styles.module.css';
+import { AppDispatch, setProcedureCategoryId, setProductCategoryId } from '../../redux/store';
+import { useEffect, useState } from 'react';
+
+import axios from 'axios';
 import { capitalizeFirstLetter } from '../../utils/text';
-import { AppDispatch, setProcedureCategory, setProductCategory } from '../../redux/store';
+import cn from 'classnames';
+import styles from './styles.module.css';
 import { useDispatch } from 'react-redux';
 
 interface ICategoriesProps {
@@ -31,10 +32,10 @@ export const Categories: React.FC<ICategoriesProps> = ({ categoryType = 'product
     const handleCategoryClick = (id, name) => {
         setSelectedCategory(name);
         if (categoryType === 'productCategory'){
-            dispatch(setProductCategory(id));
+            dispatch(setProductCategoryId(id));
         }
         else{
-            dispatch(setProcedureCategory(id));
+            dispatch(setProcedureCategoryId(id));
         }
     }
 

@@ -3,55 +3,38 @@
 import React, { useEffect, useState } from "react";
 
 import { DesktopWrapper } from "../../../components/DesktopWrapper";
+import { IOrderProps } from "../../../utils/types";
 import Link from "next/link";
 import { OrderCard } from "../../../components/OrderCard";
-import axios from "axios";
 import cn from 'classnames';
 import { getItemsListLength } from "../../../utils/text";
+import { getOrdersForCustomer } from "../../../utils/getQuery";
 import styles from './styles.module.css';
-
-export interface IOrderProps {
-    id: number;
-    customer_id: string;
-    status: string;
-    timestamp: string;
-}
 
 interface AccountProps{
     params: {
-        id: string;
+        login: string;
     }
 }
 
-async function getOrdersForCustomer(id): Promise<any> {
-    try {
-        const response = await axios.get(`http://localhost:3100/api/order/customer/${id}`);
-    
-        return response.data;
-    }catch (error) {
-        console.error(`Error: ${error}`);
-        throw error;
-    }
-}
-
-export default function Page({ params: { id } }: AccountProps) {
+export default function Page({ params: { login } }: AccountProps) {
     const [ orders, setOrders ] = useState<IOrderProps[]>([]);
 
     useEffect(() => {
-        getOrdersForCustomer(id)
+        getOrdersForCustomer(login)
             .then(data => {
                 setOrders(data);
             })
             .catch(error => console.error(error));
-        }, [id]);
+        }, [login]);
     
     return(
         <DesktopWrapper>
             <div className={styles.container}>
                 <div className={styles.leftContainer}>
-                    <Link className={styles.link} href={`/account/${id}/profile`}>Profile</Link>
-                    <Link className={cn(styles.link, styles.selected)} href={`/account/${id}/orders`}>Orders</Link>
-                    <Link className={styles.link} href={`/account/${id}/favorite`}>Favorite</Link>
+                    <Link className={styles.link} href={`/account/${login}/profile`}>Profile</Link>
+                    <Link className={cn(styles.link, styles.selected)} href={`/account/${login}/orders`}>Orders</Link>
+                    <Link className={styles.link} href={`/account/${login}/favorite`}>Favorite</Link>
                 </div>
                 <div className={styles.rightContainer}>
                     <div className={styles.counter}>{getItemsListLength(orders, 'order', 'orders')}</div>
@@ -62,7 +45,7 @@ export default function Page({ params: { id } }: AccountProps) {
                         </div>}
                     {orders.map((order, key) => {
                         return (
-                           <OrderCard order={order} key={key} login={id}/> 
+                           <OrderCard order={order} key={key} login={login}/> 
                         )
                     })}
                 </div>

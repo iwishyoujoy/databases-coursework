@@ -1,134 +1,32 @@
 'use client'
 
 import { AppDispatch, RootState } from "../../redux/store";
-import { IProductProps, addToFavorite, removeFromFavorite } from "../../components/CardContainer/CardContainerItem";
+import { IProductCategoryProps, IProductProps, IReviewProps, ISellerProps } from "../../utils/types";
+import { addReview, addToFavorite } from "../../utils/postQuery";
 import { capitalizeFirstLetter, getItemsListLength } from "../../utils/text";
+import { displayRatingAsStars, getAverageReviewRating } from "../../utils/review";
+import { getCategoryById, getCustomerData, getFavoritesByCustomer, getProductById, getReviewsById, getSellerById } from "../../utils/getQuery";
 import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
 import { DesktopWrapper } from "../../components/DesktopWrapper";
 import Image from "next/image";
-import axios from "axios";
 import blackHeart from 'public/images/blackHeart.svg';
 import cn from 'classnames';
-import { getCustomerData } from "../../account/[id]/profile/page";
-import { getFavoritesByCustomer } from "../../account/[id]/favorite/page";
 import minus from 'public/images/minus.svg';
 import minusDisabled from 'public/images/minusDisabled.svg';
 import pinkHeart from 'public/images/heart.svg';
 import plus from 'public/images/plus.svg';
 import plusDisabled from 'public/images/plusDisabled.svg';
+import { removeFromFavorite } from "../../utils/deleteQuery";
 import styles from './styles.module.css';
 
-interface ClothesProps{
+interface ProductProps{
     params: {
-        id: string;
+        id: number;
     }
 }
-
-export interface IProductCategoryProps {
-    id: number;
-    name: string;
-    description: string;
-}
-
-export interface ISellerProps {
-    id: number;
-    name: string;
-    email: string;
-    contact: string;
-    login: string;
-    password: string;
-}
-
-export interface IReviewProps {
-    id: number;
-    customer_id: number;
-    surname: string;
-    name: string;
-    rating: number;
-    content: string;
-    item_id: number;
-}
-
-export async function getProductById(id): Promise<any> {
-    try {
-        const response = await axios.get(`http://localhost:3100/api/product/${id}`);
-    
-        return response.data;
-    }catch (error) {
-        console.error(`Error: ${error}`);
-        throw error;
-    }
-}
-
-async function getCategoryById(id): Promise<any> {
-    try {
-        const response = await axios.get(`http://localhost:3100/api/productCategory/${id}`);
-    
-        return response.data;
-    }catch (error) {
-        console.error(`Error: ${error}`);
-        throw error;
-    }
-}
-
-async function getSellerById(id): Promise<any> {
-    try {
-        const response = await axios.get(`http://localhost:3100/api/seller/id/${id}`);
-    
-        return response.data;
-    }catch (error) {
-        console.error(`Error: ${error}`);
-        throw error;
-    }
-}
-
-export async function getReviewsById(id): Promise<any> {
-    try {
-        const response = await axios.get(`http://localhost:3100/api/review/item-id/${id}`);
-    
-        return response.data;
-    }catch (error) {
-        console.error(`Error: ${error}`);
-        throw error;
-    }
-}
-
-export const addReview = (customer_id, rating, content, item_id) => {
-    console.log(customer_id, rating, content, item_id);
-
-    return (dispatch) => {
-        axios.post('http://localhost:3100/api/review/create/', { customer_id, rating, content, item_id })
-        .then(response => {
-            if (response.status === 200) {
-                dispatch({ type: 'ADD_REVIEW_SUCCESS', payload: response.data });
-            } else {
-                throw new Error('Failed to sign in');
-            }
-            })
-        .catch(error => {
-            dispatch({ type: 'ADD_REVIEW_FAILURE', payload: error.message });
-        });
-    };
-};
-
-export const getAverageReviewRating = (reviews: IReviewProps[]): number => {
-    const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
-
-    return totalRating / reviews.length;
-};
-
-export const displayRatingAsStars = (rating) => {
-    const fullStar = '★';
-    const emptyStar = '☆';
-    const roundedRating = Math.round(rating);
-    const fullStarsCount = roundedRating;
-    const emptyStarsCount = 5 - fullStarsCount;
-
-    return fullStar.repeat(fullStarsCount) + emptyStar.repeat(emptyStarsCount);     
-};
 
 const ReviewModal = ({ isOpen, onClose, customerId, id }) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -162,7 +60,7 @@ const ReviewModal = ({ isOpen, onClose, customerId, id }) => {
     );
 };
 
-export default function Page({ params: { id } }: ClothesProps) {
+export default function Page({ params: { id } }: ProductProps) {
     const loginState = useSelector((state: RootState) => state.login);
 
     const [ customerId, setCustomerId ] = useState();
@@ -183,7 +81,7 @@ export default function Page({ params: { id } }: ClothesProps) {
         getProductById(id)
             .then(data => {
                 setProduct(data);
-                getCategoryById(data.product_category_id)
+                getCategoryById(data.product_category_id, 'product')
                     .then(data => {
                         setCategory(data);
                     })

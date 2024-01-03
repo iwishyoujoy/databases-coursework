@@ -1,17 +1,14 @@
-import axios from 'axios';
+import { AppDispatch, RootState, setBirthday, setIsLogged, setLogin, setName, setPassword, setPhoneNumber, setSurname } from '../../redux/store';
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import cn from 'classnames';
-import Image from 'next/image';
+import { useDispatch, useSelector } from 'react-redux';
 
+import Image from 'next/image';
+import axios from 'axios';
 import background from 'public/images/makeup.jpeg';
 import backgroundSignUp from 'public/images/1.jpeg';
-
+import cn from 'classnames';
 import styles from './styles.module.css';
-import { useSelector, useDispatch } from 'react-redux';
-import { AppDispatch, RootState, setIsLogged, setLogin, setPassword, setName, setSurname, setBirthday, setPhoneNumber } from '../../redux/store';
-
-axios.defaults.baseURL = 'http://localhost:3100';
+import { useRouter } from 'next/navigation';
 
 export const SignIn = () => {
     const [isSignUp, setIsSignUp] = useState(false);
@@ -21,7 +18,7 @@ export const SignIn = () => {
 
     const signIn = (login, password) => {
         return (dispatch) => {
-            axios.post('/api/customer/signin/', { login, password })
+            axios.post('http://localhost:3100/api/customer/signin/', { login, password })
             .then(response => {
                 if (response.status === 200) {
                     dispatch({ type: 'SIGNIN_SUCCESS', payload: response.data });
@@ -39,7 +36,7 @@ export const SignIn = () => {
 
     const signUp = (name, surname, birthday, phoneNumber, login, password) => {
         return (dispatch) => {
-            axios.post('/api/customer/signup/', { 
+            axios.post('http://localhost:3100/api/customer/signup/', { 
                 name,
                 surname,
                 birthday,

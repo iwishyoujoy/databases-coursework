@@ -1,39 +1,27 @@
 'use client'
 
-import { Card, IProductProps } from "../../../components/CardContainer/CardContainerItem";
 import React, { useEffect, useState } from "react";
+import { getFavoritesByCustomer, getProductById } from "../../../utils/getQuery";
 
-import { DesktopWrapper } from "../../../components/desktopWrapper";
+import { Card } from "../../../components/CardContainer/CardContainerItem";
+import { DesktopWrapper } from "../../../components/DesktopWrapper";
+import { IProductProps } from "../../../utils/types";
 import Link from "next/link";
-import { OrderCard } from "../../../components/OrderCard";
-import axios from "axios";
 import cn from 'classnames';
 import { getItemsListLength } from "../../../utils/text";
-import { getProductById } from "../../../products/[id]/page";
 import styles from './styles.module.css';
 
 interface AccountProps{
     params: {
-        id: string;
+        login: string;
     }
 }
 
-export async function getFavoritesByCustomer(id): Promise<any> {
-    try {
-        const response = await axios.get(`http://localhost:3100/api/favorite/all/${id}`);
-    
-        return response.data;
-    }catch (error) {
-        console.error(`Error: ${error}`);
-        throw error;
-    }
-}
-
-export default function Page({ params: { id } }: AccountProps) {
+export default function Page({ params: { login } }: AccountProps) {
     const [ favorites, setFavorites ] = useState<IProductProps[]>([]);
 
     useEffect(() => {
-        getFavoritesByCustomer(id)
+        getFavoritesByCustomer(login)
             .then(data => {
                 const promises = data.map((item) => {
                     const newItemData = item.favoriteProductId;
@@ -51,15 +39,15 @@ export default function Page({ params: { id } }: AccountProps) {
                    });
             })
             .catch(error => console.error(error));
-    }, [favorites, id]);
+    }, [favorites, login]);
 
     return(
         <DesktopWrapper>
             <div className={styles.container}>
                 <div className={styles.leftContainer}>
-                    <Link className={styles.link} href={`/account/${id}/profile`}>Profile</Link>
-                    <Link className={styles.link} href={`/account/${id}/orders`}>Orders</Link>
-                    <Link className={cn(styles.link, styles.selected)} href={`/account/${id}/favorite`}>Favorite</Link>
+                    <Link className={styles.link} href={`/account/${login}/profile`}>Profile</Link>
+                    <Link className={styles.link} href={`/account/${login}/orders`}>Orders</Link>
+                    <Link className={cn(styles.link, styles.selected)} href={`/account/${login}/favorite`}>Favorite</Link>
                 </div>
                 <div className={styles.rightContainer}>
                     <div className={styles.counter}>{getItemsListLength(favorites, 'favorite', 'favorites')}</div>

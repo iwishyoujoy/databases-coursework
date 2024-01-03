@@ -1,4 +1,5 @@
 import { AppDispatch, RootState } from '../../../redux/store';
+import { IProcedureProps, IProductProps } from '../../../utils/types';
 import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
@@ -6,73 +7,20 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import addToCart from 'public/images/cart.svg';
+import { addToFavorite } from '../../../utils/postQuery';
 import axios from 'axios';
 import blackHeart from 'public/images/blackHeart.svg';
 import { capitalizeFirstLetter } from '../../../utils/text';
-import { getCustomerData } from '../../../account/[id]/profile/page';
+import { getCustomerData } from '../../../utils/getQuery';
 import pinkHeart from 'public/images/heart.svg';
+import { removeFromFavorite } from '../../../utils/deleteQuery';
 import styles from './styles.module.css';
-
-export interface IProductProps{
-    id_item: number;
-    name: string;
-    price: number;
-    description: string;
-    photo_url: string;
-    amount_available: number;
-    seller_id: number;
-    product_category_id: number;
-}
-
-export interface IProcedureProps{
-    id: number;
-    photo_url: string;
-    name: string;
-    price: number;
-    procedure_category_id: number;
-    clinic_id: number;
-}
 
 interface ICardProps {
     item: IProductProps | IProcedureProps;
     isProduct?: boolean;
     isInFavorite?: boolean;
 }
-
-export const addToFavorite = (customer_id, item_id) => {
-    return (dispatch) => {
-        axios.post('http://localhost:3100/api/favorite/create/', { 
-            customer_id,
-            item_id
-         })
-        .then(response => {
-            if (response.status === 200) {
-                dispatch({ type: 'ADD_FAVORITE_SUCCESS', payload: response.data });
-            } else {
-                throw new Error('Failed to sign up');
-            }
-        })
-        .catch(error => {
-            dispatch({ type: 'ADD_FAVORITE_FAILURE', payload: error.message });
-        });
-    };
-};
-
-export const removeFromFavorite = (customer_id, item_id) => {
-    return (dispatch) => {
-        axios.delete(`http://localhost:3100/api/favorite/${customer_id}/${item_id}`)
-        .then(response => {
-            if (response.status === 200) {
-                dispatch({ type: 'REMOVE_FAVORITE_SUCCESS', payload: { customer_id, item_id } });
-            } else {
-                throw new Error('Failed to remove from favorites');
-            }
-        })
-        .catch(error => {
-            dispatch({ type: 'REMOVE_FAVORITE_FAILURE', payload: error.message });
-        });
-    };
-};
 
 export const Card: React.FC<ICardProps> = (props) => {
     const loginState = useSelector((state: RootState) => state.login);
