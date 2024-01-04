@@ -1,5 +1,6 @@
 'use client'
 
+import { AppDispatch, setIsLogged } from "../../../redux/store";
 import React, { useEffect, useState } from "react";
 
 import { DesktopWrapper } from "../../../components/DesktopWrapper";
@@ -10,6 +11,8 @@ import cn from 'classnames';
 import { getItemsListLength } from "../../../utils/text";
 import { getOrdersForCustomer } from "../../../utils/getQuery";
 import styles from './styles.module.css';
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 
 interface AccountProps{
     params: {
@@ -19,6 +22,8 @@ interface AccountProps{
 
 export default function Page({ params: { login } }: AccountProps) {
     const [ orders, setOrders ] = useState<IOrderProps[]>([]);
+    const router = useRouter();
+    const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
         getOrdersForCustomer(login)
@@ -27,6 +32,11 @@ export default function Page({ params: { login } }: AccountProps) {
             })
             .catch(error => console.error(error));
         }, [login]);
+
+    const handleLogOutClick = () => {
+        dispatch(setIsLogged(false));
+        router.push(`/account/`);
+    }
     
     return(
         <DesktopWrapper>
@@ -35,6 +45,7 @@ export default function Page({ params: { login } }: AccountProps) {
                     <Link className={styles.link} href={`/account/${login}/profile`}>Profile</Link>
                     <Link className={cn(styles.link, styles.selected)} href={`/account/${login}/orders`}>Orders</Link>
                     <Link className={styles.link} href={`/account/${login}/favorite`}>Favorite</Link>
+                    <button className={styles.logOutButton} onClick={handleLogOutClick}>Log out</button>
                 </div>
                 <div className={styles.rightContainer}>
                     <div className={styles.counter}>{getItemsListLength(orders, 'order', 'orders')}</div>

@@ -1,16 +1,16 @@
 'use client'
 
 import { AppDispatch, RootState, setIsLoggedBusiness } from "../../../redux/store";
-import { ICategoryProps, IProductProps } from "../../../utils/types";
+import { ICategoryProps, IProcedureProps } from "../../../utils/types";
 import React, { useEffect, useState } from "react";
 import { capitalizeFirstLetter, getItemsListLength } from "../../../utils/text";
-import { getAllCategories, getFavoritesByCustomer, getProductById, getProductsBySellerId } from "../../../utils/getQuery";
+import { getAllCategories, getFavoritesByCustomer, getProceduresByClinicId } from "../../../utils/getQuery";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Card } from "../../../components/CardContainer/CardContainerItem";
 import { DesktopWrapper } from "../../../components/DesktopWrapper";
 import Link from "next/link";
-import { addProduct } from "../../../utils/postQuery";
+import { addProcedure } from "../../../utils/postQuery";
 import cn from 'classnames';
 import styles from './styles.module.css';
 import { useRouter } from "next/navigation";
@@ -21,13 +21,12 @@ interface AccountProps{
     }
 }
 
-const NewProductModal = ({ isOpen, onClose, id }) => {
+const NewProcedureModal = ({ isOpen, onClose, id }) => {
     const dispatch = useDispatch<AppDispatch>();
     const [ name, setName ] = useState();
     const [ price, setPrice ] = useState();
-    const [ description, setDescription ] = useState();
     const [ photoUrl, setPhotoUrl ] = useState();
-    const [ amountAvailable, setAmountAvailable ] = useState();
+    // const [ appointments, setAppointments ] = useState(); // добавить иконку что нет аппоинтментов - добавить аппоинтменты
     const [ categories, setCategories ] = useState<ICategoryProps[]>([]);
     const [ categoryId, setCategoryId ] = useState();
 
@@ -37,24 +36,18 @@ const NewProductModal = ({ isOpen, onClose, id }) => {
     const handlePriceChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setPrice(parseFloat(event.target.value));
     };
-    const handleDescriptionChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setDescription(event.target.value);
-    };
     const handlePhotoUrlChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         setPhotoUrl(event.target.value);
     };
-    const handleAmountAvailableChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setAmountAvailable(parseInt(event.target.value));
-    };
 
     const handleSubmitClick = () => {
-        console.log(name, price, description, photoUrl, amountAvailable, id, categoryId)
-        dispatch(addProduct(name, price, description, photoUrl, amountAvailable, id, categoryId));
+        console.log(photoUrl, name, price, categoryId, id)
+        dispatch(addProcedure(photoUrl, name, price, categoryId, id));
         onClose();
     }
 
     useEffect(() => {
-        getAllCategories('productCategory')
+        getAllCategories('procedureCategory')
             .then(data => {
                 setCategories(data);
             })
@@ -69,8 +62,6 @@ const NewProductModal = ({ isOpen, onClose, id }) => {
                 <h2 className={styles.modalTitle}>Add new product</h2>
                 <input className={styles.modalInput} type="text" value={name} onChange={handleNameChange} placeholder="Name"/>
                 <input className={styles.modalInput} type="number" min="1" value={price} onChange={handlePriceChange} placeholder="Price"/>
-                <input className={styles.modalInput} type="text" value={description} onChange={handleDescriptionChange} placeholder="Description"/>
-                <input className={styles.modalInput} type="number" min="1" value={amountAvailable} onChange={handleAmountAvailableChange} placeholder="Amount available"/>
                 <div className={styles.modalInputDescriptionPink}>Choose category for the product:</div>
                 {categories && <select className={cn(styles.selectModalContainer, styles.selectContainer)} onChange={(e) => setCategoryId(e.target.value)}>
                     {categories.map((category, key) => {
@@ -88,15 +79,15 @@ const NewProductModal = ({ isOpen, onClose, id }) => {
 
 export default function Page({ params: { login } }: AccountProps) {
     const businessState = useSelector((state: RootState) => state.business);
-    const [ isAddingNewProduct, setIsAddingNewProduct ] = useState(false);
-    const [ products, setProducts ] = useState<IProductProps[]>([]);
+    const [ isAddingNewProcedure, setIsAddingNewProcedure ] = useState(false);
+    const [ procedures, setProcedures ] = useState<IProcedureProps[]>([]);
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        getProductsBySellerId(businessState.id)
+        getProceduresByClinicId(businessState.id)
             .then(data => {
-                setProducts(data);
+                setProcedures(data);
             })
             .catch(error => console.error(error));
     }, [businessState.id]);
@@ -111,32 +102,32 @@ export default function Page({ params: { login } }: AccountProps) {
             <div className={styles.container}>
                 <div className={styles.leftContainer}>
                     <Link className={styles.link} href={`/business/${login}/profile`}>Profile</Link>
-                    <Link className={cn(styles.link, styles.selected)} href={`/business/${login}/products`}>Products</Link>
+                    <Link className={cn(styles.link, styles.selected)} href={`/business/${login}/procedures`}>Procedures</Link>
                     <Link className={styles.link} href={`/business/${login}/orders`}>Orders</Link>
                     <button className={styles.logOutButton} onClick={handleLogOutClick}>Log out</button>
                 </div>
                 <div className={styles.rightContainer}>
-                    <div className={styles.counter}>{getItemsListLength(products, 'product', 'products')}</div>
+                    <div className={styles.counter}>{getItemsListLength(procedures, 'procedure', 'procedures')}</div>
                     <div className={styles.buttonContainer}>
-                        <button className={styles.button} onClick={() => setIsAddingNewProduct(true)}>Add new product</button>
+                        <button className={styles.button} onClick={() => setIsAddingNewProcedure(true)}>Add new procedure</button>
                     </div>
-                    {!products.length && 
+                    {!procedures.length && 
                         <div className={styles.placeholderContainer}>
                             <h1 className={styles.placeholderTitle}>Let's start!</h1>
-                            You can add your first product by clicking button at the top right corner
+                            You can add your first procedure by clicking button at the top right corner
                         </div>
                     }
                     <div className={styles.favoriteContainer}>
-                        {products.map((product, key) => {
+                        {procedures.map((procedure, key) => {
                             return (
-                            <Card item={product} canBeDeleted={true} isProduct={true} key={key}/>
+                            <Card item={procedure} canBeDeleted={true} isProduct={false} key={key}/>
                             )
                         })}
                     </div>
 
                 </div>
             </div>
-            {isAddingNewProduct && <NewProductModal isOpen={isAddingNewProduct} onClose={() => setIsAddingNewProduct(false)} id={businessState.id}/>}
+            {isAddingNewProcedure && <NewProcedureModal isOpen={isAddingNewProcedure} onClose={() => setIsAddingNewProcedure(false)} id={businessState.id}/>}
         </DesktopWrapper>
     );
 }

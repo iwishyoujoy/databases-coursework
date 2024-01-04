@@ -107,16 +107,19 @@ export default function Page({ params: { id } }: ProcedureProps) {
                     .catch(error => console.error(error));
             })
             .catch(error => console.error(error));
-        getCustomerData(loginState.login)
-            .then(data => {
-                setCustomerId(data.id);
-            })
-            .catch(error => console.error(error));
+
+        if (loginState.isLogged){
+            getCustomerData(loginState.login)
+                .then(data => {
+                    setCustomerId(data.id);
+                })
+                .catch(error => console.error(error));
         
-        if (reviews && customerId) {
-            setIsAlreadyWrittenReview(reviews.some(review => review.customer_id === customerId));
+            if (reviews && customerId) {
+                setIsAlreadyWrittenReview(reviews.some(review => review.customer_id === customerId));
+            }
         }
-        }, [customerId, id, loginState.login, reviews]);
+        }, [customerId, id, loginState.isLogged, loginState.login, reviews]);
 
     const handleReviewClick = () => {
         if (!loginState.isLogged) {

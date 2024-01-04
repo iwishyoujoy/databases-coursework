@@ -40,6 +40,28 @@ export const addProduct = (name: string, price: number, description: string, pho
     };
 };
 
+export const addProcedure = (photo_url: string, name: string, price: number, procedure_category_id: number, clinic_id: number,) => {
+    return (dispatch) => {
+        axios.post('http://localhost:3100/api/procedure/create/', { 
+            photo_url,
+            name,
+            price,
+            procedure_category_id,
+            clinic_id
+         })
+        .then(response => {
+            if (response.status === 200) {
+                dispatch({ type: 'ADD_PROCEDURE_SUCCESS', payload: response.data });
+            } else {
+                throw new Error('Failed to add new item');
+            }
+            })
+        .catch(error => {
+            dispatch({ type: 'ADD_PROCEDURE_FAILURE', payload: error.message });
+        });
+    };
+};
+
 export const addToFavorite = (customer_id: number, item_id: number) => {
     return (dispatch) => {
         axios.post('http://localhost:3100/api/favorite/create/', { 

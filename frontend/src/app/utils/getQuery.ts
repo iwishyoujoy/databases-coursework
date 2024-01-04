@@ -11,6 +11,28 @@ export async function getProductById(id: number): Promise<any> {
     }
 }
 
+export async function getProductsBySellerId(id: number): Promise<any> {
+    try {
+        const response = await axios.get(`http://localhost:3100/api/product/seller/${id}`);
+    
+        return response.data;
+    }catch (error) {
+        console.error(`Error: ${error}`);
+        throw error;
+    }
+}
+
+export async function getProceduresByClinicId(id: number): Promise<any> {
+    try {
+        const response = await axios.get(`http://localhost:3100/api/procedure/clinic/${id}`);
+    
+        return response.data;
+    }catch (error) {
+        console.error(`Error: ${error}`);
+        throw error;
+    }
+}
+
 export async function getCategoryById(id: number, type: 'product' | 'procedure'): Promise<any> {
     try {
         const response = await axios.get(`http://localhost:3100/api/${type}Category/${id}`);
@@ -46,7 +68,7 @@ export async function getSellerOrClinicById(id: number, type: 'seller' | 'clinic
 
 export async function getSellerOrClinicByLogin(login: string, type: 'seller' | 'clinic'): Promise<any> {
     try {
-        const response = await axios.get(`http://localhost:3100/api/${type}/login/${login}`);
+        const response = await axios.get(type === 'seller' ? `http://localhost:3100/api/seller/login/${login}` : `http://localhost:3100/api/clinic/${login}`);
     
         return response.data;
     }catch (error) {

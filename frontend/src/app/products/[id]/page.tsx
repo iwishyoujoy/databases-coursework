@@ -100,24 +100,26 @@ export default function Page({ params: { id } }: ProductProps) {
                     .catch(error => console.error(error));
             })
             .catch(error => console.error(error));
+            
+        if (loginState.isLogged){
+            getCustomerData(loginState.login)
+                .then(data => {
+                    setCustomerId(data.id);
+                })
+                .catch(error => console.error(error));
 
-        getCustomerData(loginState.login)
-            .then(data => {
-                setCustomerId(data.id);
-            })
-            .catch(error => console.error(error));
+            getFavoritesByCustomer(loginState.login)
+                .then(data => {
+                    const isCurrentProductFavorite = data.some(favorite => favorite.favoriteProductId.item_id == id);
+                    setIsFavorite(isCurrentProductFavorite);
+                })
+                .catch(error => console.error(error));
 
-        getFavoritesByCustomer(loginState.login)
-            .then(data => {
-                const isCurrentProductFavorite = data.some(favorite => favorite.favoriteProductId.item_id == id);
-                setIsFavorite(isCurrentProductFavorite);
-            })
-            .catch(error => console.error(error));
-
-        if (reviews && customerId) {
-            setIsAlreadyWrittenReview(reviews.some(review => review.customer_id === customerId));
+            if (reviews && customerId) {
+                setIsAlreadyWrittenReview(reviews.some(review => review.customer_id === customerId));
+            }
         }
-    }, [customerId, id, loginState.login, reviews, setIsAlreadyWrittenReview]);
+    }, [customerId, id, loginState.isLogged, loginState.login, reviews, setIsAlreadyWrittenReview]);
 
     const toggleFavorite = () => {
         if (!loginState.isLogged){

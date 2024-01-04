@@ -1,5 +1,6 @@
 import { AppDispatch, RootState } from '../../../redux/store';
 import { IProcedureProps, IProductProps } from '../../../utils/types';
+import { deleteProcedureById, deleteProductById, removeFromFavorite } from '../../../utils/deleteQuery';
 import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
@@ -13,13 +14,13 @@ import blackHeart from 'public/images/blackHeart.svg';
 import { capitalizeFirstLetter } from '../../../utils/text';
 import { getCustomerData } from '../../../utils/getQuery';
 import pinkHeart from 'public/images/heart.svg';
-import { removeFromFavorite } from '../../../utils/deleteQuery';
 import styles from './styles.module.css';
+import trash from 'public/images/trash.svg';
 
 interface ICardProps {
     item: IProductProps | IProcedureProps;
     isProduct?: boolean;
-    isInFavorite?: boolean;
+    canBeDeleted?: boolean
 }
 
 export const Card: React.FC<ICardProps> = (props) => {
@@ -27,7 +28,7 @@ export const Card: React.FC<ICardProps> = (props) => {
     const dispatch = useDispatch<AppDispatch>();
     const [ customerId, setCustomerId ] = useState();
     const [isFavorite, setIsFavorite] = useState(false);
-    const { item, isProduct = true } = props;
+    const { item, isProduct = true, canBeDeleted = false } = props;
 
     useEffect(() => {
         if (loginState.isLogged){
@@ -43,7 +44,7 @@ export const Card: React.FC<ICardProps> = (props) => {
             })
             .catch(error => console.error(error));
         }
-        }, [item, loginState.login]);
+        }, [item, loginState.isLogged, loginState.login]);
 
     const toggleFavorite = () => {
         if (!loginState.isLogged){
@@ -60,6 +61,15 @@ export const Card: React.FC<ICardProps> = (props) => {
         }
     }
 
+    const handleDeleteClick = () => {
+        if (isProduct){
+            dispatch(deleteProductById((item as IProductProps).id_item));
+        }
+        else {
+            dispatch(deleteProcedureById((item as IProcedureProps).id));
+        }
+    };
+
     return (
         <>
         <Toaster
@@ -75,14 +85,22 @@ export const Card: React.FC<ICardProps> = (props) => {
                 <div className={styles.priceContainer}>
                     <div className={styles.price}>{item.price} $</div>
                     <div className={styles.buttonContainer}>
-                        {isProduct && 
-                            <div className={styles.button} onClick={toggleFavorite}>
-                                <Image className={styles.badge} src={isFavorite ? blackHeart : pinkHeart} alt='Add to favorite'/>
+                        {canBeDeleted ? (
+                            <div className={styles.button}>
+                                <Image className={styles.badge} onClick={handleDeleteClick} src={trash} alt='Delete item'/>
                             </div>
-                        }
-                        <div className={styles.button}>
-                            <Image className={styles.badge} src={addToCart} alt='Add to cart'/>
-                        </div>
+                        ) : (
+                            <>
+                                {isProduct && 
+                                    <div className={styles.button} onClick={toggleFavorite}>
+                                        <Image className={styles.badge} src={isFavorite ? blackHeart : pinkHeart} alt='Add to favorite'/>
+                                    </div>
+                                }
+                                <div className={styles.button}>
+                                    <Image className={styles.badge} src={addToCart} alt='Add to cart'/>
+                                </div>
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

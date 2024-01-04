@@ -94,9 +94,9 @@ export const SignInBusiness = () => {
                         <div className={styles.inputDescription}>Choose who you want to sign up as:</div>
                         <div className={styles.radioInputContainer}>
                             <input className={styles.radioInput} type="radio" name="type" value="seller" checked={businessState.isSeller} onChange={() => handleIsSellerChange(true)} />
-                            <label className={styles.radioInputLabel} htmlFor="seller">Seller</label>
+                            <label className={styles.radioInputLabel} htmlFor="seller" onClick={() => handleIsSellerChange(true)}>Seller</label>
                             <input className={styles.radioInput} type="radio" name="type" value="clinic" checked={!businessState.isSeller} onChange={() => handleIsSellerChange(false)} />
-                            <label className={styles.radioInputLabel} htmlFor="clinic">Clinic</label>
+                            <label className={styles.radioInputLabel} htmlFor="clinic" onClick={() => handleIsSellerChange(false)}>Clinic</label>
                         </div>
                         <input className={styles.input} type='text' placeholder='Name' value={businessState.name} onChange={handleNameChange}/>
                         <input className={styles.input} type='text' placeholder='Email' value={businessState.email} onChange={handleEmailChange}/>
@@ -126,9 +126,9 @@ export const SignInBusiness = () => {
                         <div className={styles.inputDescription}>Choose who you want to log in as:</div>
                         <div className={styles.radioInputContainer}>
                             <input className={styles.radioInput} type="radio" name="type" value="seller" checked={businessState.isSeller} onChange={() => handleIsSellerChange(true)} />
-                            <label className={styles.radioInputLabel} htmlFor="seller">Seller</label>
+                            <label className={styles.radioInputLabel} htmlFor="seller" onClick={() => handleIsSellerChange(true)}>Seller</label>
                             <input className={styles.radioInput} type="radio" name="type" value="clinic" checked={!businessState.isSeller} onChange={() => handleIsSellerChange(false)} />
-                            <label className={styles.radioInputLabel} htmlFor="clinic">Clinic</label>
+                            <label className={styles.radioInputLabel} htmlFor="clinic" onClick={() => handleIsSellerChange(false)}>Clinic</label>
                         </div>
                         <input className={styles.input} type='text' placeholder='Login' value={businessState.login} onChange={handleLoginChange}/>
                         <input className={styles.input} type='password' placeholder='Password' value={businessState.password} onChange={handlePasswordChange}/>

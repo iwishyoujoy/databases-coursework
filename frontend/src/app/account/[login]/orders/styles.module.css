@@ -66,3 +66,12 @@
     font-size: var(--font-size-m);
     font-weight: var(--font-weight-l);
 }
+
+.logOutButton{
+    width: 100%;
+    /* text-decoration: underline; */
+    font-size: var(--font-size-s);
+    background-color: var(--light-light-pink);
+    border-radius: var(--border-radius-m);
+    padding: 5px 10px;
+}

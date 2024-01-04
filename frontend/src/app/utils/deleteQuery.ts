@@ -15,3 +15,35 @@ export const removeFromFavorite = (customer_id: number, item_id: number) => {
         });
     };
 };
+
+export const deleteProductById = (id: number) => {
+    return (dispatch) => {
+        axios.delete(`http://localhost:3100/api/product/${id}`)
+        .then(response => {
+            if (response.status === 200) {
+                dispatch({ type: 'DELETE_PRODUCT_SUCCESS', payload: { id } });
+            } else {
+                throw new Error('Failed to remove from favorites');
+            }
+        })
+        .catch(error => {
+            dispatch({ type: 'DELETE_PRODUCT_FAILURE', payload: error.message });
+        });
+    };
+};
+
+export const deleteProcedureById = (id: number) => {
+    return (dispatch) => {
+        axios.delete(`http://localhost:3100/api/procedure/${id}`)
+        .then(response => {
+            if (response.status === 200) {
+                dispatch({ type: 'DELETE_PRODUCT_SUCCESS', payload: { id } });
+            } else {
+                throw new Error('Failed to remove from favorites');
+            }
+        })
+        .catch(error => {
+            dispatch({ type: 'DELETE_PRODUCT_FAILURE', payload: error.message });
+        });
+    };
+};
