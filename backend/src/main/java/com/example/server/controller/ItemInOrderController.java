@@ -2,6 +2,7 @@ package com.example.server.controller;
 
 import com.example.server.model.*;
 import com.example.server.repo.*;
+import com.example.server.service.ItemInOrderWithAmount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,14 +59,15 @@ public class ItemInOrderController {
 
 
     @GetMapping("/all/{order_id}")
-    public ResponseEntity<List<Item>> getItemOfOrder(@PathVariable Long order_id) {
+    public ResponseEntity<List<ItemInOrderWithAmount>> getItemOfOrder(@PathVariable Long order_id) {
         try {
             List<ItemInOrder> list = itemInOrderRepo.findAll();
-            List<Item> to_ret = new ArrayList<>();
+            List<ItemInOrderWithAmount> to_ret = new ArrayList<>();
             for (ItemInOrder itemInOrder : list)
                 if (itemInOrder.getItemInOrderId().getOrder_id().equals(order_id)){
                     Item item = itemRepo.findAll().stream().filter(user -> user.getId() == itemInOrder.getItemInOrderId().getItem_id()).findFirst().get();
-                    to_ret.add(item);
+                    ItemInOrderWithAmount itemInOrderWithAmount = new ItemInOrderWithAmount(itemInOrder.getItemInOrderId().getOrder_id(), itemInOrder.getItemInOrderId().getItem_id(), item.getType(), itemInOrder.getItemInOrderId().getCurrent_amount());
+                    to_ret.add(itemInOrderWithAmount);
                 }
             return ResponseEntity.ok().body(to_ret);
         } catch (NoSuchElementException e) {

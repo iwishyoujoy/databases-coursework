@@ -2,14 +2,18 @@ package com.example.server.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+
 @Embeddable
 @Data
-public
-class itemInOrderId implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+public class itemInOrderId implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -21,5 +25,7 @@ class itemInOrderId implements Serializable {
 
     @Column(name = "current_amount", nullable = false)
     private Integer current_amount;
+
+
 
 }
