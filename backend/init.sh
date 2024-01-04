@@ -5,8 +5,8 @@ psql -v ON_ERROR_STOP=1 --username "postgres" --dbname "postgres" <<-EOSQL
 
 
 CREATE TABLE if not exists Customer (
-                                        id SERIAL PRIMARY KEY not null,
-                                        name VARCHAR(32) not null,
+    id SERIAL PRIMARY KEY not null,
+    name VARCHAR(32) not null,
     surname VARCHAR(32) not null,
     birthday DATE not null,
     phone_number VARCHAR(15) not null,
@@ -15,20 +15,20 @@ CREATE TABLE if not exists Customer (
     );
 
 CREATE TABLE if not exists Bimbo_order(
-                                          id SERIAL PRIMARY KEY not null,
-                                          customer_id INTEGER REFERENCES Customer(id) not null,
+    id SERIAL PRIMARY KEY not null,
+    customer_id INTEGER REFERENCES Customer(id) not null,
     timestamp TIMESTAMP not null,
     status VARCHAR(32) not null
     );
 
 CREATE TABLE if not exists Item (
-                                    id SERIAL PRIMARY KEY,
-                                    type VARCHAR(32) not null
+    id SERIAL PRIMARY KEY,
+    type VARCHAR(32) not null
     );
 
 CREATE TABLE if not exists Seller (
-                                      id SERIAL PRIMARY KEY,
-                                      name VARCHAR(64) not null,
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(64) not null,
     email VARCHAR(32) not null,
     contact VARCHAR(64) not null,
     login VARCHAR(32) UNIQUE not null,
@@ -37,14 +37,14 @@ CREATE TABLE if not exists Seller (
 
 
 CREATE TABLE if not exists Product_Category (
-                                                id SERIAL PRIMARY KEY not null,
-                                                name VARCHAR(32) not null,
+    id SERIAL PRIMARY KEY not null,
+    name VARCHAR(32) not null,
     description TEXT not null
     );
 
 CREATE TABLE if not exists Product (
-                                       id_item integer PRIMARY KEY,
-                                       name VARCHAR(64) not null,
+    id_item integer PRIMARY KEY,
+    name VARCHAR(64) not null,
     price FLOAT not null,
     description TEXT not null,
     photo_url TEXT not null,
@@ -56,14 +56,14 @@ CREATE TABLE if not exists Product (
 
 
 CREATE TABLE if not exists Procedure_Category (
-                                                  id SERIAL PRIMARY KEY,
-                                                  name VARCHAR(32) not null,
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(32) not null,
     description TEXT not null
     );
 
 CREATE TABLE if not exists Clinic (
-                                      id SERIAL PRIMARY KEY,
-                                      name VARCHAR(32) not null,
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(32) not null,
     email VARCHAR(32) not null,
     contact VARCHAR(32) not null,
     login VARCHAR(32) UNIQUE not null,
@@ -72,9 +72,9 @@ CREATE TABLE if not exists Clinic (
 
 
 CREATE TABLE if not exists Procedure (
-                                         id SERIAL PRIMARY KEY,
-                                         photo_url TEXT not null,
-                                         name VARCHAR(64) not null,
+    id SERIAL PRIMARY KEY,
+    photo_url TEXT not null,
+    name VARCHAR(64) not null,
     price FLOAT not null,
     procedure_category_id INTEGER REFERENCES Procedure_Category(id),
     clinic_id INTEGER REFERENCES Clinic(id)
@@ -82,9 +82,9 @@ CREATE TABLE if not exists Procedure (
 
 
 CREATE TABLE if not exists Appointment (
-                                           item_id integer PRIMARY KEY,
-                                           date_time timestamp not null,
-                                           procedure_id INTEGER REFERENCES Procedure(id),
+    item_id integer PRIMARY KEY,
+    date_time timestamp not null,
+    procedure_id INTEGER REFERENCES Procedure(id),
     status boolean not null default false
     );
 
@@ -96,8 +96,8 @@ CREATE TABLE if not exists Favorite_Product (
     );
 
 CREATE TABLE if not exists Review (
-                                      id SERIAL PRIMARY KEY,
-                                      customer_id INTEGER REFERENCES Customer(id),
+    id SERIAL PRIMARY KEY,
+    customer_id INTEGER REFERENCES Customer(id),
     rating INTEGER not null,
     content TEXT not null,
     item_id INTEGER REFERENCES Item(id)

@@ -30,11 +30,10 @@ export const Header = () => {
                 </div>
             </div>
             <div className={styles.accountContainer}>
-                {loginState.isLogged ? '' : <div className={styles.status}>You're not logged in yet girly!</div>}
                 <Link href="/business" className={styles.menuLink}>
                     <Image className={styles.menuLogo} src={business} alt="For business"/>
                 </Link>
-                <Link href="/" className={styles.menuLink}>
+                <Link href="/cart" className={styles.menuLink}>
                     <Image className={styles.menuLogo} src={cart} alt="Cart"/>
                 </Link>
                 <Link href="/account" className={styles.menuLink}>

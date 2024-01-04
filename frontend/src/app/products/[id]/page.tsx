@@ -2,7 +2,7 @@
 
 import { AppDispatch, RootState } from "../../redux/store";
 import { ICategoryProps, IProductProps, IReviewProps, ISellerOrClinicProps } from "../../utils/types";
-import { addReview, addToFavorite } from "../../utils/postQuery";
+import { addProductToCart, addReview, addToFavorite } from "../../utils/postQuery";
 import { capitalizeFirstLetter, getItemsListLength } from "../../utils/text";
 import { displayRatingAsStars, getAverageReviewRating } from "../../utils/review";
 import { getCategoryById, getCustomerData, getFavoritesByCustomer, getProductById, getReviewsById, getSellerOrClinicById } from "../../utils/getQuery";
@@ -62,6 +62,7 @@ const ReviewModal = ({ isOpen, onClose, customerId, id }) => {
 
 export default function Page({ params: { id } }: ProductProps) {
     const loginState = useSelector((state: RootState) => state.login);
+    const cartState = useSelector((state: RootState) => state.cart);
 
     const [ customerId, setCustomerId ] = useState();
     const dispatch = useDispatch<AppDispatch>();
@@ -162,6 +163,10 @@ export default function Page({ params: { id } }: ProductProps) {
         }
     }
 
+    const handleAddToCartClick = () => {
+        dispatch(addProductToCart(cartState.orderId, product.id_item, count));
+    }
+
     return (
         <DesktopWrapper>
             <Toaster
@@ -195,7 +200,7 @@ export default function Page({ params: { id } }: ProductProps) {
                                             <div className={styles.counter}>{count}</div>
                                             <Image className={cn(styles.badge, count === product.amount_available ? styles.badgeDisabled : styles.badgeEnabled)} src={count === product.amount_available ? plusDisabled : plus} alt='Plus' onClick={increaseCount}/>
                                         </div>
-                                        <button className={styles.button}>{`Add to cart - ${product.price * count} $`}</button>
+                                        <button className={styles.button} onClick={handleAddToCartClick}>{`Add to cart - ${product.price * count} $`}</button>
                                     </div>
                                     <div className={styles.amountLeft}>{`${product.amount_available} ${product.amount_available === 1 ? 'piece' : 'pieces'} left`}</div>
                                 </div>

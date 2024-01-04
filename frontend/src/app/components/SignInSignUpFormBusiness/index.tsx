@@ -1,5 +1,6 @@
 import { AppDispatch, RootState, setContactBusiness, setEmailBusiness, setIsLoggedBusiness, setIsSellerBusiness, setLoginBusiness, setNameBusiness, setPasswordBusiness } from '../../redux/store';
 import React, { useState } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Image from 'next/image';
@@ -78,6 +79,19 @@ export const SignInBusiness = () => {
     }; 
 
     const handleSignUpClick = () => {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (!businessState.email || !emailRegex.test(businessState.email)) {
+            toast.error('Invalid email format');
+
+            return;
+        }
+        
+        if (!businessState.password || businessState.password.length < 8) {
+            toast.error('Password must be at least 8 characters long');
+    
+            return;
+        }
         dispatch(signUpBusiness(businessState.name, businessState.email, businessState.contact, businessState.login, businessState.password, businessState.isSeller ? 'seller' : 'clinic'));
     }
        
@@ -86,7 +100,12 @@ export const SignInBusiness = () => {
     }
 
     return (
-        isSignUp ? (
+        <>  
+            <Toaster
+                position="bottom-right"
+                reverseOrder={false}
+            />
+            {isSignUp ? (
             <div className={styles.containerSignUp}>
                 <div className={styles.leftContainer}>
                     <div className={styles.title}>Create business <br/> account bestie!</div>
@@ -143,6 +162,7 @@ export const SignInBusiness = () => {
                     <Image className={styles.background} src={background} alt='Girl with makeup'/>
                 </div>
             </div>
-        )  
+        )}
+        </>
     );
 }

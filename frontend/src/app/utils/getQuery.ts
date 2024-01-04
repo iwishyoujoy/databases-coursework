@@ -198,3 +198,25 @@ export async function getFavoritesByCustomer(login: string): Promise<any> {
         throw error;
     }
 }
+
+export async function getItemsFromOrder(order_id: number): Promise<any> {
+    try {
+        const response = await axios.get(`http://localhost:3100/api/item_in_order/all/${order_id}`);
+    
+        return response.data;
+    }catch (error) {
+        console.error(`Error: ${error}`);
+        throw error;
+    }
+}
+
+export async function getOrderById(id: number): Promise<any> {
+    try {
+        const response = await axios.get(`http://localhost:3100/api/order/one/${id}`);
+    
+        return response.data;
+    }catch (error) {
+        console.error(`Error: ${error}`);
+        throw error;
+    }
+}

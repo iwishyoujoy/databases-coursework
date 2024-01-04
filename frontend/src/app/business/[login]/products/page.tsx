@@ -69,7 +69,7 @@ const NewProductModal = ({ isOpen, onClose, id }) => {
                 <h2 className={styles.modalTitle}>Add new product</h2>
                 <input className={styles.modalInput} type="text" value={name} onChange={handleNameChange} placeholder="Name"/>
                 <input className={styles.modalInput} type="number" min="1" value={price} onChange={handlePriceChange} placeholder="Price"/>
-                <input className={styles.modalInput} type="text" value={description} onChange={handleDescriptionChange} placeholder="Description"/>
+                <textarea className={cn(styles.modalInput, styles.modalDescriptionInput)} value={description} onChange={handleDescriptionChange} placeholder="Description"/>
                 <input className={styles.modalInput} type="number" min="1" value={amountAvailable} onChange={handleAmountAvailableChange} placeholder="Amount available"/>
                 <div className={styles.modalInputDescriptionPink}>Choose category for the product:</div>
                 {categories && <select className={cn(styles.selectModalContainer, styles.selectContainer)} onChange={(e) => setCategoryId(e.target.value)}>

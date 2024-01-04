@@ -1,3 +1,4 @@
+import { OrderStatus } from "./types";
 import axios from "axios";
 
 export const addReview = (customer_id: number, rating: number, content: string, item_id: number) => {
@@ -77,6 +78,47 @@ export const addToFavorite = (customer_id: number, item_id: number) => {
         })
         .catch(error => {
             dispatch({ type: 'ADD_FAVORITE_FAILURE', payload: error.message });
+        });
+    };
+};
+
+export const createOrder = (customer_id: number, customer_login: string, timestamp: string, status: OrderStatus) => {
+    return (dispatch) => {
+        axios.post('http://localhost:3100/api/order/create/', { 
+            customer_id,
+            customer_login,
+            timestamp,
+            status
+         })
+        .then(response => {
+            if (response.status === 200) {
+                dispatch({ type: 'CREATE_ORDER_SUCCESS', payload: response.data });
+            } else {
+                throw new Error('Failed to create order');
+            }
+        })
+        .catch(error => {
+            dispatch({ type: 'CREATE_ORDER_FAILURE', payload: error.message });
+        });
+    };
+};
+
+export const addProductToCart = (order_id: number, item_id: number, current_amount: number) => {
+    return (dispatch) => {
+        axios.post('http://localhost:3100/api/item_in_order/create/', { 
+            order_id,
+            item_id,
+            current_amount
+         })
+        .then(response => {
+            if (response.status === 200) {
+                dispatch({ type: 'ADD_PRODUCT_TO_CART_SUCCESS', payload: response.data });
+            } else {
+                throw new Error('Failed to add item to cart');
+            }
+            })
+        .catch(error => {
+            dispatch({ type: 'ADD_PRODUCT_TO_CART_FAILURE', payload: error.message });
         });
     };
 };

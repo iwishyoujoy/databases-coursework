@@ -66,3 +66,5 @@ export interface ICustomerProps {
     login: string;
     password: string;
 }
+
+export type OrderStatus = 'Starting to Sparkle' | 'Glam in Progress' | 'Glowing and Going' | 'Ready to Slay';

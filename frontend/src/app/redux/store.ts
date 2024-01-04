@@ -30,6 +30,7 @@ interface CategoryState {
 
 interface CartState {
   orderId: number;
+  timestamp: string;
 }
 
 const loginSlice = createSlice({
@@ -128,10 +129,14 @@ const cartSlice = createSlice({
   name: 'cart',
   initialState: {
     orderId: undefined,
+    timestamp: undefined,
   } as CartState,
   reducers: {
     setOrderId: (state, action: PayloadAction<number>) => {
       state.orderId = action.payload;
+    },
+    setTimestamp: (state, action: PayloadAction<string>) => {
+      state.timestamp = action.payload;
     },
   }
 });
@@ -153,5 +158,5 @@ export type AppDispatch = typeof store.dispatch;
 export const { setLogin, setPassword, setName, setSurname, setBirthday, setPhoneNumber, setIsLogged } = loginSlice.actions;
 export const { setLoginBusiness, setPasswordBusiness, setIdBusiness, setNameBusiness, setEmailBusiness, setContactBusiness, setIsSellerBusiness, setIsLoggedBusiness } = businessSlice.actions;
 export const { setProcedureCategoryId, setProductCategoryId } = categorySlice.actions;
-export const { setOrderId } = cartSlice.actions;
+export const { setOrderId, setTimestamp } = cartSlice.actions;
 
