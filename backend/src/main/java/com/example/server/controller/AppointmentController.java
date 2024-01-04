@@ -39,11 +39,10 @@ public class AppointmentController {
     }
 
 
-    @GetMapping("{item_id}/{timestamp}")
-    public ResponseEntity<Appointment> getAppointment(@PathVariable String item_id, @PathVariable String timestamp) {
-        String newtimestamp = timestamp.split("\"")[1] + ".0";
+    @GetMapping("{item_id}")
+    public ResponseEntity<Appointment> getAppointment(@PathVariable String item_id) {
         try {
-            Appointment appointment = appointmentRepo.findAll().stream().filter(user -> user.getDate_time().toString().equals(newtimestamp)).filter(user -> user.getItem_id() == Integer.parseInt(item_id)).findFirst().get();
+            Appointment appointment = appointmentRepo.findAll().stream().filter(user -> user.getItem_id() == Integer.parseInt(item_id)).findFirst().get();
             return ResponseEntity.ok().body(appointment);
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body(null);

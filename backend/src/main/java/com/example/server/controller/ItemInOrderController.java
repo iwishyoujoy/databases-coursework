@@ -58,13 +58,15 @@ public class ItemInOrderController {
 
 
     @GetMapping("/all/{order_id}")
-    public ResponseEntity<List<ItemInOrder>> getItemOfOrder(@PathVariable Long order_id) {
+    public ResponseEntity<List<Item>> getItemOfOrder(@PathVariable Long order_id) {
         try {
             List<ItemInOrder> list = itemInOrderRepo.findAll();
-            List<ItemInOrder> to_ret = new ArrayList<>();
+            List<Item> to_ret = new ArrayList<>();
             for (ItemInOrder itemInOrder : list)
-                if (itemInOrder.getItemInOrderId().getOrder_id().equals(order_id))
-                    to_ret.add(itemInOrder);
+                if (itemInOrder.getItemInOrderId().getOrder_id().equals(order_id)){
+                    Item item = itemRepo.findAll().stream().filter(user -> user.getId() == itemInOrder.getItemInOrderId().getItem_id()).findFirst().get();
+                    to_ret.add(item);
+                }
             return ResponseEntity.ok().body(to_ret);
         } catch (NoSuchElementException e) {
             return ResponseEntity.badRequest().body(null);

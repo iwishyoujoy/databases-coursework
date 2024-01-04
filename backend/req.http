@@ -1,1 +1,1 @@
-get http://localhost:3100/api/procedure/seller/1
+get http://localhost:3100/api/appointment/15
