@@ -67,9 +67,11 @@ export interface ICustomerProps {
     password: string;
 }
 
-export interface IItemProps {
-    id: number;
-    type: 'product' | 'appointment'
+export interface IItemInOrderProps {
+    order_id: number;
+    item_id: number;
+    type: 'product' | 'appointment';
+    current_amount: number;
 }
 
 export type OrderStatus = 'Starting to Sparkle' | 'Glam in Progress' | 'Glowing and Going' | 'Ready to Slay';

@@ -103,7 +103,7 @@ export const createOrder = (customer_id: number, customer_login: string, timesta
     };
 };
 
-export const addProductToCart = (order_id: number, item_id: number, current_amount: number) => {
+export const addItemToCart = (order_id: number, item_id: number, current_amount: number) => {
     return (dispatch) => {
         axios.post('http://localhost:3100/api/item_in_order/create/', { 
             order_id,
@@ -112,13 +112,13 @@ export const addProductToCart = (order_id: number, item_id: number, current_amou
          })
         .then(response => {
             if (response.status === 200) {
-                dispatch({ type: 'ADD_PRODUCT_TO_CART_SUCCESS', payload: response.data });
+                dispatch({ type: 'ADD_ITEM_TO_CART_SUCCESS', payload: response.data });
             } else {
                 throw new Error('Failed to add item to cart');
             }
             })
         .catch(error => {
-            dispatch({ type: 'ADD_PRODUCT_TO_CART_FAILURE', payload: error.message });
+            dispatch({ type: 'ADD_ITEM_TO_CART_FAILURE', payload: error.message });
         });
     };
 };
