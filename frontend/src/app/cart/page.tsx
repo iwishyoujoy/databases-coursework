@@ -12,9 +12,12 @@ import Image from 'next/image';
 import cn from 'classnames';
 import { deleteItemFromOrder } from "../utils/deleteQuery";
 import minus from 'public/images/minus.svg';
+import minusDisabled from 'public/images/minusDisabled.svg';
 import plus from 'public/images/plus.svg';
+import plusDisabled from 'public/images/plusDisabled.svg';
 import styles from './styles.module.css';
 import trash from 'public/images/trash.svg';
+import { updateAmountForItemInOrder } from "../utils/putQuery";
 import { useRouter } from "next/navigation";
 
 export default function Page() {  
@@ -29,6 +32,7 @@ export default function Page() {
     const [ appointments, setAppointments ] = useState<IAppointmentProps[]>();
     const [ procedures, setProcedures ] = useState<IProcedureProps[]>();
     const [ amount, setAmount ] = useState<number>();
+    const [ count, setCount ] = useState<number>();
 
     // const router = useRouter();
 
@@ -108,6 +112,18 @@ export default function Page() {
     const handleDeleteFromCartClick = (id: number) => {
         dispatch(deleteItemFromOrder(cartState.orderId, id));
     }
+
+    const increaseCount = (product: IProductWithAmountProps, count: number) => {
+        if (count < product.amount_available) {
+            dispatch(updateAmountForItemInOrder(cartState.orderId, product.id_item, count + 1));
+        }
+    };
+
+    const decreaseCount = (product: IProductWithAmountProps, count: number) => {
+        if (count > 1) {
+            dispatch(updateAmountForItemInOrder(cartState.orderId, product.id_item, count - 1));
+        }
+    }
      
     return (
         <DesktopWrapper>
@@ -125,9 +141,9 @@ export default function Page() {
                                 <Image className={styles.productImage} src={product.photo_url} alt={product.description} height='300' width='300'/>
                                 <div className={styles.productTitle}>{capitalizeFirstLetter(product.name)}</div>
                                 <div className={styles.amountContainer}>
-                                    <Image className={cn(styles.badge)} src={minus} alt='Minus' />
+                                    <Image className={cn(styles.badge)} src={product.amount === 1 ? minusDisabled : minus} onClick={() => decreaseCount(product, product.amount)} alt='Minus' />
                                         <div className={styles.counter}>{product.amount}</div>
-                                    <Image className={cn(styles.badge)} src={plus} alt='Plus' />
+                                    <Image className={cn(styles.badge)} src={product.amount === product.amount_available ? plusDisabled : plus} onClick={() => increaseCount(product, product.amount)} alt='Plus' />
                                 </div>
                                 <div className={styles.lastContainer}>
                                     <Image className={styles.deleteButton} onClick={() => handleDeleteFromCartClick(product.id_item)} src={trash} alt='Delete' />
