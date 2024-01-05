@@ -67,4 +67,9 @@ export interface ICustomerProps {
     password: string;
 }
 
+export interface IItemProps {
+    id: number;
+    type: 'product' | 'appointment'
+}
+
 export type OrderStatus = 'Starting to Sparkle' | 'Glam in Progress' | 'Glowing and Going' | 'Ready to Slay';

@@ -99,7 +99,7 @@ export async function getProcedureById(id: number): Promise<any> {
     }
 }
 
-export async function getAppointmentsById(id: number): Promise<any> {
+export async function getAppointmentsByProcedureId(id: number): Promise<any> {
     try {
         const response = await axios.get(`http://localhost:3100/api/procedure/${id}/appointments`);
     
@@ -213,6 +213,17 @@ export async function getItemsFromOrder(order_id: number): Promise<any> {
 export async function getOrderById(id: number): Promise<any> {
     try {
         const response = await axios.get(`http://localhost:3100/api/order/one/${id}`);
+    
+        return response.data;
+    }catch (error) {
+        console.error(`Error: ${error}`);
+        throw error;
+    }
+}
+
+export async function getAppointmentById(id: number): Promise<any> {
+    try {
+        const response = await axios.get(`http://localhost:3100/api/appointment/${id}`);
     
         return response.data;
     }catch (error) {

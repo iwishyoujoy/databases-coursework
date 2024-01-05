@@ -4,7 +4,7 @@ import { AppDispatch, RootState } from "../../redux/store";
 import { IAppointmentProps, ICategoryProps, IProcedureProps, IReviewProps, ISellerOrClinicProps } from "../../utils/types";
 import { capitalizeFirstLetter, getItemsListLength } from "../../utils/text";
 import { displayRatingAsStars, getAverageReviewRating } from "../../utils/review";
-import { getAppointmentsById, getCategoryById, getCustomerData, getProcedureById, getReviewsById, getSellerOrClinicById } from "../../utils/getQuery";
+import { getAppointmentsByProcedureId, getCategoryById, getCustomerData, getProcedureById, getReviewsById, getSellerOrClinicById } from "../../utils/getQuery";
 import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
@@ -92,7 +92,7 @@ export default function Page({ params: { id } }: ProcedureProps) {
                     })
                     .catch(error => console.error(error));
                 
-                getAppointmentsById(data.id)
+                getAppointmentsByProcedureId(data.id)
                     .then(data => {
                         setAppointments(data);
                         const reviewsPromises = data.map(appointment => getReviewsById(appointment.item_id));
