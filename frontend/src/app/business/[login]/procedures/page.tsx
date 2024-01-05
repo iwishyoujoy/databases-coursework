@@ -50,6 +50,7 @@ const NewProcedureModal = ({ isOpen, onClose, id }) => {
         getAllCategories('procedureCategory')
             .then(data => {
                 setCategories(data);
+                setCategoryId(data[0].id);
             })
             .catch(error => console.error(error));
     }, []);

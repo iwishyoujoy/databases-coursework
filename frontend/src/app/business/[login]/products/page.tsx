@@ -57,6 +57,7 @@ const NewProductModal = ({ isOpen, onClose, id }) => {
         getAllCategories('productCategory')
             .then(data => {
                 setCategories(data);
+                setCategoryId(data[0].id);
             })
             .catch(error => console.error(error));
     }, []);
