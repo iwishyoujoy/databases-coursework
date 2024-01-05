@@ -88,7 +88,7 @@ public class BimboOrderController {
                 if (itemInOrder.getItemInOrderId().getOrder_id().equals(id)){
                     Item item = itemRepo.findAll().stream().filter(user -> user.getId() == itemInOrder.getItemInOrderId().getItem_id()).findFirst().get();
                     if(item.getType().equals("product")) 
-                        check += productRepo.findAll().stream().filter(user -> user.getId_item().equals(item.getId())).findFirst().get().getPrice();
+                        check += productRepo.findAll().stream().filter(user -> user.getId_item().equals(item.getId())).findFirst().get().getPrice() * itemInOrder.getItemInOrderId().getCurrent_amount();
                     else {
                         Long procedure_id = appointmentRepo.findAll().stream().filter(user->user.getItem_id() == item.getId()).findFirst().get().getProcedure_id();
                         check += procedureRepo.findAll().stream().filter(user -> user.getId().equals(procedure_id)).findFirst().get().getPrice();
