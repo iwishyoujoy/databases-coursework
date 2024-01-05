@@ -15,7 +15,7 @@ export default function Page() {
 
     useEffect(() => {
         if (loginState.isLogged) {
-            router.push(`/account/${loginState.login}/profile`);
+            router.push(`/account/${loginState.login}/orders`);
         }
     }, [loginState.isLogged, loginState.login, router]);
      
