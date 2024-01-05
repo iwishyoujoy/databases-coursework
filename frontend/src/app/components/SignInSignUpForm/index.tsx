@@ -26,7 +26,7 @@ export const SignIn = () => {
                 if (response.status === 200) {
                     dispatch({ type: 'SIGNIN_SUCCESS', payload: response.data });
                     dispatch(setIsLogged(true));
-                    router.push(`/account/${loginState.login}/profile`);
+                    router.push(`/account/${loginState.login}/orders`);
                 } else {
                     throw new Error('Failed to sign in');
                 }
@@ -97,7 +97,8 @@ export const SignIn = () => {
         dispatch(setPhoneNumber(event.target.value));
     };  
 
-    const handleSignUpClick = () => {
+    const handleSignUpClick = (e) => {
+        e.preventDefault();
         const phoneNumberRegex = /^((\+79)|(89))\d{9}$/;
 
         if (!loginState.phoneNumber || !phoneNumberRegex.test(loginState.phoneNumber)) {
@@ -114,7 +115,8 @@ export const SignIn = () => {
         dispatch(signUp(loginState.name, loginState.surname, loginState.birthday, loginState.phoneNumber, loginState.login, loginState.password));
     }
        
-    const handleSignInClick = () => {
+    const handleSignInClick = (e) => {
+        e.preventDefault();
         dispatch(signIn(loginState.login, loginState.password));
     }
 
@@ -128,20 +130,22 @@ export const SignIn = () => {
                 <div className={styles.containerSignUp}>
                     <div className={styles.leftContainer}>
                         <div className={styles.title}>Create account bestie!</div>
-                        <div className={styles.inputContainer}>
-                            <input className={styles.input} type='text' placeholder='Name' value={loginState.name} onChange={handleNameChange}/>
-                            <input className={styles.input} type='text' placeholder='Surname' value={loginState.surname} onChange={handleSurnameChange}/>
-                            <div className={styles.inputDescription}>Your birthday:</div>
-                            <input className={styles.input} type='date' max='2005-01-01' value={loginState.birthday} onChange={handleBirthdayChange}/>
-                            <input className={styles.input} type='text' placeholder='Phone number' value={loginState.phoneNumber} onChange={handlePhoneNumberChange}/>
-                            <input className={styles.input} type='text' placeholder='Login' value={loginState.login} onChange={handleLoginChange}/>
-                            <input className={styles.input} type='password' placeholder='Password' value={loginState.password} onChange={handlePasswordChange}/>
-                        </div>
-                        <div className={styles.description}>If you already have an account, you can log in any time, click below</div>
-                        <div className={styles.buttonContainer}>
-                            <button className={cn(styles.button, styles.signin)} onClick={handleSignUpClick}>Sign Up</button>
-                            <button className={cn(styles.signup)} onClick={() => setIsSignUp(!isSignUp)}>Sign In</button>
-                        </div>
+                        <form onSubmit={handleSignUpClick}>
+                            <div className={styles.inputContainer}>
+                                <input className={styles.input} type='text' placeholder='Name' value={loginState.name} onChange={handleNameChange}/>
+                                <input className={styles.input} type='text' placeholder='Surname' value={loginState.surname} onChange={handleSurnameChange}/>
+                                <div className={styles.inputDescription}>Your birthday:</div>
+                                <input className={styles.input} type='date' max='2005-01-01' value={loginState.birthday} onChange={handleBirthdayChange}/>
+                                <input className={styles.input} type='text' placeholder='Phone number' value={loginState.phoneNumber} onChange={handlePhoneNumberChange}/>
+                                <input className={styles.input} type='text' placeholder='Login' value={loginState.login} onChange={handleLoginChange}/>
+                                <input className={styles.input} type='password' placeholder='Password' value={loginState.password} onChange={handlePasswordChange}/>
+                            </div>
+                            <div className={styles.description}>If you already have an account, you can log in any time, click below</div>
+                            <div className={styles.buttonContainer}>
+                                <button className={cn(styles.button, styles.signin)} type='submit'>Sign Up</button>
+                                <button className={cn(styles.signup)} onClick={() => setIsSignUp(!isSignUp)}>Sign In</button>
+                            </div>
+                        </form>
                     </div>
                     <div className={styles.rightContainer}>
                         <Image className={styles.backgroundSignUp} src={backgroundSignUp} alt='Girl with makeup'/>
@@ -154,15 +158,17 @@ export const SignIn = () => {
                         <div className={styles.subtitle}>
                             Enter login and password, <br /> that's all we need girlie
                         </div>
-                        <div className={styles.inputContainer}>
-                            <input className={styles.input} type='text' placeholder='Login' value={loginState.login} onChange={handleLoginChange}/>
-                            <input className={styles.input} type='password' placeholder='Password' value={loginState.password} onChange={handlePasswordChange}/>
-                        </div>
-                        <div className={styles.description}>If you don't have an account, you can registry any time, click below</div>
-                        <div className={styles.buttonContainer}>
-                            <button className={cn(styles.button, styles.signin)} onClick={handleSignInClick}>Sign In</button>
-                            <button className={cn(styles.signup)} onClick={() => setIsSignUp(!isSignUp)}>Sign Up</button>
-                        </div>
+                        <form onSubmit={handleSignInClick}>
+                            <div className={styles.inputContainer}>
+                                <input className={styles.input} type='text' placeholder='Login' value={loginState.login} onChange={handleLoginChange}/>
+                                <input className={styles.input} type='password' placeholder='Password' value={loginState.password} onChange={handlePasswordChange}/>
+                            </div>
+                            <div className={styles.description}>If you don't have an account, you can registry any time, click below</div>
+                            <div className={styles.buttonContainer}>
+                                <button className={cn(styles.button, styles.signin)} type='submit'>Sign In</button>
+                                <button className={cn(styles.signup)} onClick={() => setIsSignUp(!isSignUp)}>Sign Up</button>
+                            </div>
+                        </form>
                     </div>
                     <div className={styles.rightContainer}>
                         <Image className={styles.background} src={background} alt='Girl with makeup'/>

@@ -48,6 +48,7 @@
     row-gap: 10px;
     align-items: flex-start;
     justify-content: flex-start;
+    margin-bottom: 20px;
 }
 
 .input{
@@ -106,6 +107,7 @@
 
 .description{
     margin-top: 10px;
+    margin-bottom: 20px;
 }
 
 .error{

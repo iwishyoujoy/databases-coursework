@@ -78,7 +78,8 @@ export const SignInBusiness = () => {
         dispatch(setIsSellerBusiness(value));
     }; 
 
-    const handleSignUpClick = () => {
+    const handleSignUpClick = (e) => {
+        e.preventDefault();
         const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
         if (!businessState.email || !emailRegex.test(businessState.email)) {
@@ -95,7 +96,8 @@ export const SignInBusiness = () => {
         dispatch(signUpBusiness(businessState.name, businessState.email, businessState.contact, businessState.login, businessState.password, businessState.isSeller ? 'seller' : 'clinic'));
     }
        
-    const handleSignInClick = () => {
+    const handleSignInClick = (e) => {
+        e.preventDefault();
         dispatch(signInBusiness(businessState.login, businessState.password, businessState.isSeller ? 'seller' : 'clinic'));
     }
 
@@ -109,26 +111,28 @@ export const SignInBusiness = () => {
             <div className={styles.containerSignUp}>
                 <div className={styles.leftContainer}>
                     <div className={styles.title}>Create business <br/> account bestie!</div>
-                    <div className={styles.inputContainer}>
-                        <div className={styles.inputDescription}>Choose who you want to sign up as:</div>
-                        <div className={styles.radioInputContainer}>
-                            <input className={styles.radioInput} type="radio" name="type" value="seller" checked={businessState.isSeller} onChange={() => handleIsSellerChange(true)} />
-                            <label className={styles.radioInputLabel} htmlFor="seller" onClick={() => handleIsSellerChange(true)}>Seller</label>
-                            <input className={styles.radioInput} type="radio" name="type" value="clinic" checked={!businessState.isSeller} onChange={() => handleIsSellerChange(false)} />
-                            <label className={styles.radioInputLabel} htmlFor="clinic" onClick={() => handleIsSellerChange(false)}>Clinic</label>
+                    <form onSubmit={handleSignUpClick}>
+                        <div className={styles.inputContainer}>
+                            <div className={styles.inputDescription}>Choose who you want to sign up as:</div>
+                            <div className={styles.radioInputContainer}>
+                                <input className={styles.radioInput} type="radio" name="type" value="seller" checked={businessState.isSeller} onChange={() => handleIsSellerChange(true)} />
+                                <label className={styles.radioInputLabel} htmlFor="seller" onClick={() => handleIsSellerChange(true)}>Seller</label>
+                                <input className={styles.radioInput} type="radio" name="type" value="clinic" checked={!businessState.isSeller} onChange={() => handleIsSellerChange(false)} />
+                                <label className={styles.radioInputLabel} htmlFor="clinic" onClick={() => handleIsSellerChange(false)}>Clinic</label>
+                            </div>
+                            <input className={styles.input} type='text' placeholder='Name' value={businessState.name} onChange={handleNameChange}/>
+                            <input className={styles.input} type='text' placeholder='Email' value={businessState.email} onChange={handleEmailChange}/>
+                            <div className={styles.inputDescription}>Contact person's name:</div>
+                            <input className={styles.input} type='text' placeholder='Contact' value={businessState.contact} onChange={handleContactChange}/>
+                            <input className={styles.input} type='text' placeholder='Login' value={businessState.login} onChange={handleLoginChange}/>
+                            <input className={styles.input} type='password' placeholder='Password' value={businessState.password} onChange={handlePasswordChange}/>
                         </div>
-                        <input className={styles.input} type='text' placeholder='Name' value={businessState.name} onChange={handleNameChange}/>
-                        <input className={styles.input} type='text' placeholder='Email' value={businessState.email} onChange={handleEmailChange}/>
-                        <div className={styles.inputDescription}>Contact person's name:</div>
-                        <input className={styles.input} type='text' placeholder='Contact' value={businessState.contact} onChange={handleContactChange}/>
-                        <input className={styles.input} type='text' placeholder='Login' value={businessState.login} onChange={handleLoginChange}/>
-                        <input className={styles.input} type='password' placeholder='Password' value={businessState.password} onChange={handlePasswordChange}/>
-                    </div>
-                    <div className={styles.description}>If you already have an account, you can log in any time, click below</div>
-                    <div className={styles.buttonContainer}>
-                        <button className={cn(styles.button, styles.signin)} onClick={handleSignUpClick}>Sign Up</button>
-                        <button className={cn(styles.signup)} onClick={() => setIsSignUp(!isSignUp)}>Sign In</button>
-                    </div>
+                        <div className={styles.description}>If you already have an account, you can log in any time, click below</div>
+                        <div className={styles.buttonContainer}>
+                            <button className={cn(styles.button, styles.signin)} type='submit'>Sign Up</button>
+                            <button className={cn(styles.signup)} onClick={() => setIsSignUp(!isSignUp)}>Sign In</button>
+                        </div>
+                    </form>
                 </div>
                 <div className={styles.rightContainer}>
                     <Image className={styles.backgroundSignUp} src={backgroundSignUp} alt='Girl with makeup'/>
@@ -141,22 +145,24 @@ export const SignInBusiness = () => {
                     <div className={styles.subtitle}>
                         Enter login and password, <br /> that's all we need
                     </div>
-                    <div className={styles.inputContainer}>
-                        <div className={styles.inputDescription}>Choose who you want to log in as:</div>
-                        <div className={styles.radioInputContainer}>
-                            <input className={styles.radioInput} type="radio" name="type" value="seller" checked={businessState.isSeller} onChange={() => handleIsSellerChange(true)} />
-                            <label className={styles.radioInputLabel} htmlFor="seller" onClick={() => handleIsSellerChange(true)}>Seller</label>
-                            <input className={styles.radioInput} type="radio" name="type" value="clinic" checked={!businessState.isSeller} onChange={() => handleIsSellerChange(false)} />
-                            <label className={styles.radioInputLabel} htmlFor="clinic" onClick={() => handleIsSellerChange(false)}>Clinic</label>
+                    <form onSubmit={handleSignInClick}>
+                        <div className={styles.inputContainer}>
+                            <div className={styles.inputDescription}>Choose who you want to log in as:</div>
+                            <div className={styles.radioInputContainer}>
+                                <input className={styles.radioInput} type="radio" name="type" value="seller" checked={businessState.isSeller} onChange={() => handleIsSellerChange(true)} />
+                                <label className={styles.radioInputLabel} htmlFor="seller" onClick={() => handleIsSellerChange(true)}>Seller</label>
+                                <input className={styles.radioInput} type="radio" name="type" value="clinic" checked={!businessState.isSeller} onChange={() => handleIsSellerChange(false)} />
+                                <label className={styles.radioInputLabel} htmlFor="clinic" onClick={() => handleIsSellerChange(false)}>Clinic</label>
+                            </div>
+                            <input className={styles.input} type='text' placeholder='Login' value={businessState.login} onChange={handleLoginChange}/>
+                            <input className={styles.input} type='password' placeholder='Password' value={businessState.password} onChange={handlePasswordChange}/>
                         </div>
-                        <input className={styles.input} type='text' placeholder='Login' value={businessState.login} onChange={handleLoginChange}/>
-                        <input className={styles.input} type='password' placeholder='Password' value={businessState.password} onChange={handlePasswordChange}/>
-                    </div>
-                    <div className={styles.description}>If you don't have an account, you can registry any time, click below</div>
-                    <div className={styles.buttonContainer}>
-                        <button className={cn(styles.button, styles.signin)} onClick={handleSignInClick}>Sign In</button>
-                        <button className={cn(styles.signup)} onClick={() => setIsSignUp(!isSignUp)}>Sign Up</button>
-                    </div>
+                        <div className={styles.description}>If you don't have an account, you can registry any time, click below</div>
+                        <div className={styles.buttonContainer}>
+                            <button className={cn(styles.button, styles.signin)} type='submit'>Sign In</button>
+                            <button className={cn(styles.signup)} onClick={() => setIsSignUp(!isSignUp)}>Sign Up</button>
+                        </div>
+                    </form>
                 </div>
                 <div className={styles.rightContainer}>
                     <Image className={styles.background} src={background} alt='Girl with makeup'/>
