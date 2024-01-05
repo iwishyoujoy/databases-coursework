@@ -1,24 +1,28 @@
 'use client'
 
+import { AppDispatch, RootState } from "../redux/store";
 import { IAppointmentProps, IItemInOrderProps, IOrderProps, IProcedureProps, IProductWithAmountProps } from "../utils/types";
 import React, { useEffect, useState } from "react";
-import { capitalizeFirstLetter, getItemsListLength, getItemsListLengthOnlyLength } from "../utils/text";
+import { capitalizeFirstLetter, getItemsListLength, getItemsListLengthOnlyLength, roundAmount } from "../utils/text";
 import { getAppointmentById, getCheckForOrder, getItemsFromOrder, getOrderById, getProcedureById, getProductById } from "../utils/getQuery";
+import { useDispatch, useSelector } from "react-redux";
 
 import { DesktopWrapper } from "../components/DesktopWrapper";
 import Image from 'next/image';
-import { RootState } from "../redux/store";
 import cn from 'classnames';
+import { deleteItemFromOrder } from "../utils/deleteQuery";
 import minus from 'public/images/minus.svg';
 import plus from 'public/images/plus.svg';
 import styles from './styles.module.css';
 import trash from 'public/images/trash.svg';
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
 
 export default function Page() {  
     const loginState = useSelector((state: RootState) => state.login);
     const cartState = useSelector((state: RootState) => state.cart);
+
+    const dispatch = useDispatch<AppDispatch>();
+
     const [ items, setItems ] = useState<IItemInOrderProps[]>([]);
     const [ order, setOrder ] = useState<IOrderProps>();
     const [ products, setProducts ] = useState<IProductWithAmountProps[]>();
@@ -100,7 +104,10 @@ export default function Page() {
     function sumAmounts(products: IProductWithAmountProps[]): number {
         return products.reduce((sum, product) => sum + product.amount, 0);
     }
-     
+    
+    const handleDeleteFromCartClick = (id: number) => {
+        dispatch(deleteItemFromOrder(cartState.orderId, id));
+    }
      
     return (
         <DesktopWrapper>
@@ -123,7 +130,7 @@ export default function Page() {
                                     <Image className={cn(styles.badge)} src={plus} alt='Plus' />
                                 </div>
                                 <div className={styles.lastContainer}>
-                                    <Image className={styles.deleteButton} src={trash} alt='Delete' />
+                                    <Image className={styles.deleteButton} onClick={() => handleDeleteFromCartClick(product.id_item)} src={trash} alt='Delete' />
                                     <div className={styles.productPrice}>{product.price} $</div>
                                 </div>
                             </div>
@@ -144,14 +151,14 @@ export default function Page() {
                                 <div className={styles.productTitle}>{capitalizeFirstLetter(procedure.name)}</div>
                                 <div className={styles.appointmentTime}>{appointments[key].date_time}</div>
                                 <div className={styles.lastContainer}>
-                                    <Image className={styles.deleteButton} src={trash} alt='Delete' />
+                                    <Image className={styles.deleteButton} src={trash} onClick={() => handleDeleteFromCartClick(appointments[key].item_id)} alt='Delete' />
                                     <div className={styles.productPrice}>{procedure.price} $</div>
                                 </div>
                             </div>
                         );
                     })}
                     </div>
-                    </>
+                    </> 
                 }
             </div>
             <div className={styles.rightContainer}>
@@ -166,8 +173,9 @@ export default function Page() {
                 </div>
                 <div className={styles.cartTotal}>
                     <div className={styles.cartTotalTitle}>Total</div>
-                    <div className={styles.cartTotalAmount}>{amount ?? '0'} $</div>
+                    <div className={styles.cartTotalAmount}>{amount ? roundAmount(amount) : '0'} $</div>
                 </div>
+                <button className={styles.button}>{`Place an order`}</button>
             </div>
         </div>
     </DesktopWrapper>

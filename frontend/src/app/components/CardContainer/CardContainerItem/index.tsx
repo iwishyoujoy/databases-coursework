@@ -1,6 +1,8 @@
 import { AppDispatch, RootState } from '../../../redux/store';
-import { IProcedureProps, IProductProps } from '../../../utils/types';
+import { IAppointmentProps, IProcedureProps, IProductProps } from '../../../utils/types';
+import { addItemToCart, addToFavorite } from '../../../utils/postQuery';
 import { deleteProcedureById, deleteProductById, removeFromFavorite } from '../../../utils/deleteQuery';
+import { getAppointmentsByProcedureId, getCustomerData } from '../../../utils/getQuery';
 import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
@@ -8,11 +10,9 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import addToCart from 'public/images/cart.svg';
-import { addToFavorite } from '../../../utils/postQuery';
 import axios from 'axios';
 import blackHeart from 'public/images/blackHeart.svg';
 import { capitalizeFirstLetter } from '../../../utils/text';
-import { getCustomerData } from '../../../utils/getQuery';
 import pinkHeart from 'public/images/heart.svg';
 import styles from './styles.module.css';
 import trash from 'public/images/trash.svg';
@@ -24,11 +24,16 @@ interface ICardProps {
 }
 
 export const Card: React.FC<ICardProps> = (props) => {
+    const { item, isProduct = true, canBeDeleted = false } = props;
+
     const loginState = useSelector((state: RootState) => state.login);
+    const cartState = useSelector((state: RootState) => state.cart);
+
     const dispatch = useDispatch<AppDispatch>();
+
     const [ customerId, setCustomerId ] = useState();
     const [isFavorite, setIsFavorite] = useState(false);
-    const { item, isProduct = true, canBeDeleted = false } = props;
+    const [ appointmentId, setAppointmentId ] = useState<number>();
 
     useEffect(() => {
         if (loginState.isLogged){
@@ -43,8 +48,16 @@ export const Card: React.FC<ICardProps> = (props) => {
                 .catch(error => console.error(error));
             })
             .catch(error => console.error(error));
+
+            if (!isProduct){
+                getAppointmentsByProcedureId((item as IProcedureProps).id)
+                    .then(data => {
+                        setAppointmentId(data[0].item_id);
+                    })
+                    .catch(error => console.error(error));
+            }
         }
-        }, [item, loginState.isLogged, loginState.login]);
+        }, [isProduct, item, loginState.isLogged, loginState.login]);
 
     const toggleFavorite = () => {
         if (!loginState.isLogged){
@@ -69,6 +82,21 @@ export const Card: React.FC<ICardProps> = (props) => {
             dispatch(deleteProcedureById((item as IProcedureProps).id));
         }
     };
+
+    const handleAddToCartClick = () => {
+        if (!loginState.isLogged){
+            toast.error("You can not add this item to cart! Please log in first!");
+        }
+        else{
+            if (isProduct){
+                dispatch(addItemToCart(cartState.orderId, (item as IProductProps).id_item, 1));
+            }
+            else{
+                
+                dispatch(addItemToCart(cartState.orderId, appointmentId, 1));
+            }
+        }
+    }
 
     return (
         <>
@@ -97,7 +125,7 @@ export const Card: React.FC<ICardProps> = (props) => {
                                     </div>
                                 }
                                 <div className={styles.button}>
-                                    <Image className={styles.badge} src={addToCart} alt='Add to cart'/>
+                                    <Image className={styles.badge} onClick={handleAddToCartClick} src={addToCart} alt='Add to cart'/>
                                 </div>
                             </>
                         )}

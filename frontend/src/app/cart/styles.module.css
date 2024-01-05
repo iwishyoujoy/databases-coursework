@@ -15,7 +15,7 @@
 }
 
 .leftContainer {
-    flex-basis: 780px;
+    flex: 0 0 780px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -23,10 +23,10 @@
 }
 
 .rightContainer{
-    flex-basis: 400px;
+    flex: 0 0 400px;
     margin-top: 40px;
     background-color: var(--light-light-pink);
-    padding: 24px 16px;
+    padding: 24px 16px 16px 16px;
     border-radius: var(--border-radius-m);
 
     display: flex;
@@ -81,6 +81,7 @@
 .badge{
     height: 15px;
     width: 15px;
+    cursor: pointer;
 }
 
 .productTitle{
@@ -120,6 +121,7 @@
     height: 20px;
     width: 20px;
     margin-bottom: 28px;
+    cursor: pointer;
 }
 
 .producedureTitle{
@@ -159,4 +161,19 @@
 .cartTotalTitle, .cartTotalAmount{
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-m);
+}
+
+.button{
+    margin-top: 5px;
+    width: 100%;
+    border-radius: var(--border-radius-m);
+    padding: 5px 10px;
+    border: 1px solid var(--bright-pink);
+    background-color: var(--bright-pink);
+    color: var(--light-light-pink);
+}
+
+.button:hover{
+    background-color: var(--light-light-pink);
+    color: var(--bright-pink);
 }

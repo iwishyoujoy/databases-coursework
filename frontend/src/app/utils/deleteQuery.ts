@@ -47,3 +47,19 @@ export const deleteProcedureById = (id: number) => {
         });
     };
 };
+
+export const deleteItemFromOrder = (order_id: number, item_id: number) => {
+    return (dispatch) => {
+        axios.delete(`http://localhost:3100/api/item_in_order/${order_id}/${item_id}`)
+        .then(response => {
+            if (response.status === 200) {
+                dispatch({ type: 'DELETE_ITEM_FROM_ORDER_SUCCESS', payload: { order_id, item_id } });
+            } else {
+                throw new Error('Failed to remove from favorites');
+            }
+        })
+        .catch(error => {
+            dispatch({ type: 'DELETE_ITEM_FROM_ORDER_FAILURE', payload: error.message });
+        });
+    };
+};
