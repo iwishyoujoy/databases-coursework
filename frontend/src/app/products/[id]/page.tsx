@@ -2,7 +2,7 @@
 
 import { AppDispatch, RootState } from "../../redux/store";
 import { ICategoryProps, IProductProps, IReviewProps, ISellerOrClinicProps } from "../../utils/types";
-import { addProductToCart, addReview, addToFavorite } from "../../utils/postQuery";
+import { addItemToCart, addReview, addToFavorite } from "../../utils/postQuery";
 import { capitalizeFirstLetter, getItemsListLength } from "../../utils/text";
 import { displayRatingAsStars, getAverageReviewRating } from "../../utils/review";
 import { getCategoryById, getCustomerData, getFavoritesByCustomer, getProductById, getReviewsById, getSellerOrClinicById } from "../../utils/getQuery";
@@ -164,7 +164,7 @@ export default function Page({ params: { id } }: ProductProps) {
     }
 
     const handleAddToCartClick = () => {
-        dispatch(addProductToCart(cartState.orderId, product.id_item, count));
+        dispatch(addItemToCart(cartState.orderId, product.id_item, count));
     }
 
     return (

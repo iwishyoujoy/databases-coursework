@@ -2,6 +2,7 @@
 
 import { AppDispatch, RootState } from "../../redux/store";
 import { IAppointmentProps, ICategoryProps, IProcedureProps, IReviewProps, ISellerOrClinicProps } from "../../utils/types";
+import { addItemToCart, addReview } from "../../utils/postQuery";
 import { capitalizeFirstLetter, getItemsListLength } from "../../utils/text";
 import { displayRatingAsStars, getAverageReviewRating } from "../../utils/review";
 import { getAppointmentsByProcedureId, getCategoryById, getCustomerData, getProcedureById, getReviewsById, getSellerOrClinicById } from "../../utils/getQuery";
@@ -11,7 +12,6 @@ import { useEffect, useState } from "react";
 
 import { DesktopWrapper } from "../../components/DesktopWrapper";
 import Image from "next/image";
-import { addReview } from "../../utils/postQuery";
 import cn from 'classnames';
 import styles from './styles.module.css';
 
@@ -66,11 +66,15 @@ const ReviewModal = ({ isOpen, onClose, customerId, appointments }) => {
 
 export default function Page({ params: { id } }: ProcedureProps) {
     const loginState = useSelector((state: RootState) => state.login);
+    const cartState = useSelector((state: RootState) => state.cart);
+    const dispatch = useDispatch<AppDispatch>();
+
     const [ customerId, setCustomerId ] = useState();
     const [ procedure, setProcedure ] = useState<IProcedureProps>();
     const [ category, setCategory ] = useState<ICategoryProps>();
     const [ clinic, setClinic ] = useState<ISellerOrClinicProps>();
     const [ appointments, setAppointments ] = useState<IAppointmentProps[]>([]);
+    const [ appointmentId, setAppointmentId ] = useState<number>();
     const [ reviews, setReviews ] = useState<IReviewProps[]>();
 
     const [ isWritingReview, setIsWritingReview ] = useState(false);
@@ -95,6 +99,7 @@ export default function Page({ params: { id } }: ProcedureProps) {
                 getAppointmentsByProcedureId(data.id)
                     .then(data => {
                         setAppointments(data);
+                        setAppointmentId(data[0].item_id);
                         const reviewsPromises = data.map(appointment => getReviewsById(appointment.item_id));
 
                         Promise.all(reviewsPromises)
@@ -135,6 +140,10 @@ export default function Page({ params: { id } }: ProcedureProps) {
         }
     }
 
+    const handleAddToCartClick = () => {
+        dispatch(addItemToCart(cartState.orderId, appointmentId, 1));
+    }
+
     return (
         <DesktopWrapper>
             <Toaster
@@ -162,12 +171,12 @@ export default function Page({ params: { id } }: ProcedureProps) {
                                 </div>
                                 <div className={styles.addToCartContainer}>
                                     <div className={styles.buttonContainer}>
-                                        {appointments && <select className={styles.selectContainer}>
+                                        {appointments && <select className={styles.selectContainer} onChange={(e) => setAppointmentId(e.target.value)}>
                                             {appointments.map((appointment, key) => {
-                                                return <option className={styles.option} key={key}>{appointment.date_time}</option>
+                                                return <option className={styles.option} value={appointment.item_id} key={key}>{appointment.date_time}</option>
                                             })}
                                         </select>}
-                                        <button className={styles.button}>{`Add to cart - ${procedure.price} $`}</button>
+                                        <button className={styles.button} onClick={handleAddToCartClick}>{`Add to cart - ${procedure.price} $`}</button>
                                     </div>
                                     {appointments && <div className={styles.amountLeft}>{`${appointments.length} ${appointments.length === 1 ? 'appointment' : 'appointments'} available`}</div>}
                                 </div>
