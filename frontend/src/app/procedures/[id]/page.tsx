@@ -3,7 +3,7 @@
 import { AppDispatch, RootState } from "../../redux/store";
 import { IAppointmentProps, ICategoryProps, IProcedureProps, IReviewProps, ISellerOrClinicProps } from "../../utils/types";
 import { addItemToCart, addReview } from "../../utils/postQuery";
-import { capitalizeFirstLetter, getItemsListLength } from "../../utils/text";
+import { capitalizeFirstLetter, getItemsListLength, roundAmount } from "../../utils/text";
 import { displayRatingAsStars, getAverageReviewRating } from "../../utils/review";
 import { getAppointmentsByProcedureId, getCategoryById, getCustomerData, getProcedureById, getReviewsById, getSellerOrClinicById } from "../../utils/getQuery";
 import toast, { Toaster } from 'react-hot-toast';
@@ -176,7 +176,7 @@ export default function Page({ params: { id } }: ProcedureProps) {
                                                 return <option className={styles.option} value={appointment.item_id} key={key}>{appointment.date_time}</option>
                                             })}
                                         </select>}
-                                        <button className={styles.button} onClick={handleAddToCartClick}>{`Add to cart - ${procedure.price} $`}</button>
+                                        <button className={styles.button} onClick={handleAddToCartClick}>{`Add to cart - ${roundAmount(procedure.price)} $`}</button>
                                     </div>
                                     {appointments && <div className={styles.amountLeft}>{`${appointments.length} ${appointments.length === 1 ? 'appointment' : 'appointments'} available`}</div>}
                                 </div>

@@ -21,5 +21,5 @@ export const getItemsListLengthOnlyLength = (length: number, one: string, more: 
 }
 
 export const roundAmount = (amount) => {
-    return Math.round(amount);
+    return amount.toFixed(2);
 }
