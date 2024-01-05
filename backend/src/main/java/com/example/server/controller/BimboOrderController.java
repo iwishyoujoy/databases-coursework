@@ -1,13 +1,7 @@
 package com.example.server.controller;
 
-import com.example.server.model.BimboOrder;
-import com.example.server.model.ItemInOrder;
-import com.example.server.model.Item;
-import com.example.server.repo.BimboOrderRepo;
-import com.example.server.repo.CustomerRepo;
-import com.example.server.repo.ItemInOrderRepo;
-import com.example.server.repo.ItemRepo;
-import com.example.server.repo.ProductRepo;
+import com.example.server.model.*;
+import com.example.server.repo.*;
 import com.example.server.service.BimboIdentifier;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,16 +22,26 @@ public class BimboOrderController {
     private final BimboOrderRepo bimboOrderRepo;
     private final CustomerRepo customerRepo;
     private final ProductRepo productRepo;
+    private final ProcedureRepo procedureRepo;
+    private final AppointmentRepo appointmentRepo;
     private final ItemInOrderRepo itemInOrderRepo;
     private final ItemRepo itemRepo;
 
     @Autowired
-    public BimboOrderController(BimboOrderRepo bimboOrderRepo, CustomerRepo customerRepo, ItemInOrderRepo itemInOrderRepo, ItemRepo itemRepo, ProductRepo productRepo) throws NoSuchAlgorithmException {
+    public BimboOrderController(BimboOrderRepo bimboOrderRepo, 
+                                CustomerRepo customerRepo, 
+                                ItemInOrderRepo itemInOrderRepo, 
+                                ItemRepo itemRepo, 
+                                ProductRepo productRepo,
+                                ProcedureRepo procedureRepo,
+                                AppointmentRepo appointmentRepo) throws NoSuchAlgorithmException {
         this.bimboOrderRepo = bimboOrderRepo;
         this.customerRepo = customerRepo;
         this.itemInOrderRepo = itemInOrderRepo;
         this.itemRepo = itemRepo;
         this.productRepo = productRepo;
+        this.appointmentRepo = appointmentRepo;
+        this.procedureRepo = procedureRepo;
     }
 
     @PostMapping("create/")
@@ -85,8 +89,10 @@ public class BimboOrderController {
                     Item item = itemRepo.findAll().stream().filter(user -> user.getId() == itemInOrder.getItemInOrderId().getItem_id()).findFirst().get();
                     if(item.getType().equals("product")) 
                         check += productRepo.findAll().stream().filter(user -> user.getId_item().equals(item.getId())).findFirst().get().getPrice();
-                    else 
-                        check += productRepo.findAll().stream().filter(user -> user.getId_item().equals(item.getId())).findFirst().get().getPrice();
+                    else {
+                        Long procedure_id = appointmentRepo.findAll().stream().filter(user->user.getItem_id() == item.getId()).findFirst().get().getProcedure_id();
+                        check += procedureRepo.findAll().stream().filter(user -> user.getId().equals(procedure_id)).findFirst().get().getPrice();
+                    }
                 }
             return ResponseEntity.ok().body(check);
         } catch (NoSuchElementException e) {

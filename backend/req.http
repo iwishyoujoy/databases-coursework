@@ -1,1 +1,1 @@
-get http://localhost:3100/api/item_in_order/all/5
+get http://localhost:3100/api/order/check/5
