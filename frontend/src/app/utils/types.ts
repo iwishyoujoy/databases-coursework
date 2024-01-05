@@ -9,6 +9,18 @@ export interface IProductProps{
     product_category_id: number;
 }
 
+export interface IProductWithAmountProps{
+    id_item: number;
+    name: string;
+    price: number;
+    description: string;
+    photo_url: string;
+    amount_available: number;
+    seller_id: number;
+    product_category_id: number;
+    amount: number;
+}
+
 export interface IProcedureProps{
     id: number;
     photo_url: string;
