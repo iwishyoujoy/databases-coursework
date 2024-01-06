@@ -91,11 +91,11 @@ export const Card: React.FC<ICardProps> = (props) => {
         }
         else{
             if (isProduct){
-                dispatch(addItemToCart(cartState.orderId, (item as IProductProps).id_item, 1));
+                dispatch(addItemToCart(cartState.orderId, (item as IProductProps).id_item, 1, 'Starting to Sparkle'));
             }
             else{
                 
-                dispatch(addItemToCart(cartState.orderId, appointmentId, 1));
+                dispatch(addItemToCart(cartState.orderId, appointmentId, 1, 'Starting to Sparkle'));
             }
         }
     }
