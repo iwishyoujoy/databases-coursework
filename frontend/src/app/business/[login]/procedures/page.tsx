@@ -3,6 +3,7 @@
 import { AppDispatch, RootState, setIsLoggedBusiness } from "../../../redux/store";
 import { ICategoryProps, IProcedureProps } from "../../../utils/types";
 import React, { useEffect, useState } from "react";
+import { addAppointment, addProcedure } from "../../../utils/postQuery";
 import { capitalizeFirstLetter, getItemsListLength } from "../../../utils/text";
 import { getAllCategories, getFavoritesByCustomer, getProceduresByClinicId } from "../../../utils/getQuery";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,7 +11,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Card } from "../../../components/CardContainer/CardContainerItem";
 import { DesktopWrapper } from "../../../components/DesktopWrapper";
 import Link from "next/link";
-import { addProcedure } from "../../../utils/postQuery";
 import cn from 'classnames';
 import styles from './styles.module.css';
 import { useRouter } from "next/navigation";
@@ -23,10 +23,10 @@ interface AccountProps{
 
 const NewProcedureModal = ({ isOpen, onClose, id }) => {
     const dispatch = useDispatch<AppDispatch>();
+
     const [ name, setName ] = useState();
     const [ price, setPrice ] = useState();
     const [ photoUrl, setPhotoUrl ] = useState();
-    // const [ appointments, setAppointments ] = useState(); // добавить иконку что нет аппоинтментов - добавить аппоинтменты
     const [ categories, setCategories ] = useState<ICategoryProps[]>([]);
     const [ categoryId, setCategoryId ] = useState();
 
@@ -78,10 +78,72 @@ const NewProcedureModal = ({ isOpen, onClose, id }) => {
     );
 };
 
+const AddAppointmentsModal = ({ isOpen, onClose, id, procedures }) => {
+    const dispatch = useDispatch<AppDispatch>();
+
+    const [dates, setDates] = useState([{ date_time: '' }]);
+    const [ procedureId, setProcedureId ] = useState<number>(procedures[0].id);
+
+    const handleChange = (i, event) => {
+        const values = [...dates];
+        values[i].date_time = event.target.value;
+        setDates(values);
+    };
+   
+    const handleAddFields = () => {
+        const values = [...dates];
+        values.push({ date_time: '' });
+        setDates(values);
+    };
+   
+    const handleSubmit = (event) => {
+        event.preventDefault();
+      
+        dates.forEach((date) => {
+            const formattedDateTime = new Date(date.date_time).toISOString().replace('T', ' ').substring(0, 19);
+            dispatch(addAppointment(formattedDateTime, procedureId, false));
+        })
+        onClose();
+    };
+   
+    return (
+        <div className={styles.modalOverlay} onClick={onClose}>
+            <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+                <h2 className={styles.modalTitle}>Add appointments</h2>
+                {procedures && <select className={cn(styles.selectModalContainer, styles.selectContainer)} onChange={(e) => setProcedureId(e.target.value)}>
+                    {procedures.map((procedure, key) => {
+                        return <option className={styles.optionModal} value={procedure.id} key={key}>{capitalizeFirstLetter(procedure.name)}</option>
+                    })}
+                </select>}
+                <div className={styles.modalInputDescriptionPink}>You can add as many appointments as you want:</div>
+                <form className={styles.modalDateInputContainer} onSubmit={handleSubmit}>
+                    {dates.map((date, idx) => {
+                    return (
+                        <input
+                            className={styles.modalInput}
+                            type="datetime-local"
+                            value={date.date_time}
+                            key={idx}
+                            onChange={(event) => handleChange(idx, event)}
+                        />
+                    );
+                    })}
+                    <button className={styles.modalButtonAdd} type="button" onClick={handleAddFields}>Add one more appointment</button>
+                    <button className={styles.buttonInverted} type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+        
+    );
+};
+
 export default function Page({ params: { login } }: AccountProps) {
     const businessState = useSelector((state: RootState) => state.business);
+    
     const [ isAddingNewProcedure, setIsAddingNewProcedure ] = useState(false);
+    const [ isAddingAppointments, setIsAddingAppointments ] = useState(false);
     const [ procedures, setProcedures ] = useState<IProcedureProps[]>([]);
+
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
 
@@ -91,7 +153,7 @@ export default function Page({ params: { login } }: AccountProps) {
                 setProcedures(data);
             })
             .catch(error => console.error(error));
-    }, [businessState.id]);
+    }, [businessState.id, isAddingNewProcedure, isAddingAppointments]);
 
     const handleLogOutClick = () => {
         dispatch(setIsLoggedBusiness(false));
@@ -110,6 +172,7 @@ export default function Page({ params: { login } }: AccountProps) {
                 <div className={styles.rightContainer}>
                     <div className={styles.counter}>{getItemsListLength(procedures, 'procedure', 'procedures')}</div>
                     <div className={styles.buttonContainer}>
+                        <button className={styles.button} onClick={() => setIsAddingAppointments(true)}>Add appointments</button>
                         <button className={styles.button} onClick={() => setIsAddingNewProcedure(true)}>Add new procedure</button>
                     </div>
                     {!procedures.length && 
@@ -129,6 +192,7 @@ export default function Page({ params: { login } }: AccountProps) {
                 </div>
             </div>
             {isAddingNewProcedure && <NewProcedureModal isOpen={isAddingNewProcedure} onClose={() => setIsAddingNewProcedure(false)} id={businessState.id}/>}
+            {isAddingAppointments && <AddAppointmentsModal isOpen={isAddingAppointments} onClose={() => setIsAddingAppointments(false)} id={businessState.id} procedures={procedures}/>}
         </DesktopWrapper>
     );
 }

@@ -122,3 +122,23 @@ export const addItemToCart = (order_id: number, item_id: number, current_amount:
         });
     };
 };
+
+export const addAppointment = (date_time: string, procedure_id: number, status: boolean) => {
+    return (dispatch) => {
+        axios.post('http://localhost:3100/api/appointment/create/', { 
+            date_time,
+            procedure_id,
+            status
+         })
+        .then(response => {
+            if (response.status === 200) {
+                dispatch({ type: 'ADD_APPOINTMENT_SUCCESS', payload: response.data });
+            } else {
+                throw new Error('Failed to add an appointment');
+            }
+            })
+        .catch(error => {
+            dispatch({ type: 'ADD_APPOINTMENT_FAILURE', payload: error.message });
+        });
+    };
+};
