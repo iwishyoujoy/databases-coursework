@@ -37,13 +37,13 @@ export const deleteProcedureById = (id: number) => {
         axios.delete(`http://localhost:3100/api/procedure/${id}`)
         .then(response => {
             if (response.status === 200) {
-                dispatch({ type: 'DELETE_PRODUCT_SUCCESS', payload: { id } });
+                dispatch({ type: 'DELETE_PROCEDURE_SUCCESS', payload: { id } });
             } else {
-                throw new Error('Failed to remove from favorites');
+                throw new Error('Failed to delete procedure');
             }
         })
         .catch(error => {
-            dispatch({ type: 'DELETE_PRODUCT_FAILURE', payload: error.message });
+            dispatch({ type: 'DELETE_PROCEDURE_FAILURE', payload: error.message });
         });
     };
 };
