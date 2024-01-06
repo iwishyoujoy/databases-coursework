@@ -1,7 +1,10 @@
 package com.example.server.controller;
 
 import com.example.server.model.Product;
+import com.example.server.model.Appointment;
 import com.example.server.model.Item;
+import com.example.server.model.ItemInOrder;
+import com.example.server.model.Procedure;
 import com.example.server.repo.ItemRepo;
 import com.example.server.repo.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +74,29 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    // @DeleteMapping("{id}")
+    // public ResponseEntity<Void> delete(@PathVariable Long id) {
+    //     try {
+    //         Procedure procedure = procedureRepo.findAll().stream().filter(user -> user.getId() == id).findFirst().get();
+    //         List<Appointment> appointments = appointmentRepo.findAll().stream().filter(user -> user.getProcedure_id().equals(id)).toList();
+    //         List<Long> appointmentsIds = new ArrayList<>();
+    //         for(Appointment appointment : appointments)
+    //             appointmentsIds.add(appointment.getItem_id());
+    //         List<ItemInOrder> itemInOrders = itemInOrderRepo.findAll().stream().filter(user -> appointmentsIds.contains(user.getItemInOrderId().getItem_id())).toList(); 
+    //         for(ItemInOrder itemInOrder: itemInOrders)
+    //             itemInOrderRepo.delete(itemInOrder);
+    //         for(Appointment appointment : appointments)
+    //             appointmentRepo.delete(appointment);
+            
+    //         procedureRepo.delete(procedure);
+    //         return ResponseEntity.status(HttpStatus.OK).build();
+    //     } catch (NoSuchElementException e) {
+    //         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+    //     }
+    // }
+
+
 
     @PutMapping("{id}")
     public ResponseEntity<Void> update(@RequestBody Product product, @PathVariable String id) {

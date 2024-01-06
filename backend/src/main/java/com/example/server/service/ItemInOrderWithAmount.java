@@ -16,5 +16,6 @@ public class ItemInOrderWithAmount implements Serializable {
     private Long item_id;
     private String type;
     private Integer current_amount;
+    private String status;
 
 }

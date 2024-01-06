@@ -26,6 +26,7 @@ public class itemInOrderId implements Serializable {
     @Column(name = "current_amount", nullable = false)
     private Integer current_amount;
 
-
+    @Column(name = "status", nullable = false)
+    private String status;
 
 }

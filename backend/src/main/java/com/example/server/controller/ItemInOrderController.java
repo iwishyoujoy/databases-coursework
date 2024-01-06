@@ -58,6 +58,7 @@ public class ItemInOrderController {
     }
 
 
+    //TODO: добавить статус
     @GetMapping("/all/{order_id}")
     public ResponseEntity<List<ItemInOrderWithAmount>> getItemOfOrder(@PathVariable Long order_id) {
         try {
@@ -66,7 +67,7 @@ public class ItemInOrderController {
             for (ItemInOrder itemInOrder : list)
                 if (itemInOrder.getItemInOrderId().getOrder_id().equals(order_id)){
                     Item item = itemRepo.findAll().stream().filter(user -> user.getId() == itemInOrder.getItemInOrderId().getItem_id()).findFirst().get();
-                    ItemInOrderWithAmount itemInOrderWithAmount = new ItemInOrderWithAmount(itemInOrder.getItemInOrderId().getOrder_id(), itemInOrder.getItemInOrderId().getItem_id(), item.getType(), itemInOrder.getItemInOrderId().getCurrent_amount());
+                    ItemInOrderWithAmount itemInOrderWithAmount = new ItemInOrderWithAmount(itemInOrder.getItemInOrderId().getOrder_id(), itemInOrder.getItemInOrderId().getItem_id(), item.getType(), itemInOrder.getItemInOrderId().getCurrent_amount(), itemInOrder.getItemInOrderId().getStatus());
                     to_ret.add(itemInOrderWithAmount);
                 }
             return ResponseEntity.ok().body(to_ret);
