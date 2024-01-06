@@ -89,6 +89,8 @@ const NewProductModal = ({ isOpen, onClose, id }) => {
 
 export default function Page({ params: { login } }: AccountProps) {
     const businessState = useSelector((state: RootState) => state.business);
+    const deletedProductId = useSelector((state: RootState) => state.product.deletedProductId);
+
     const [ isAddingNewProduct, setIsAddingNewProduct ] = useState(false);
     const [ products, setProducts ] = useState<IProductProps[]>([]);
     const router = useRouter();
@@ -100,7 +102,7 @@ export default function Page({ params: { login } }: AccountProps) {
                 setProducts(data);
             })
             .catch(error => console.error(error));
-    }, [businessState.id, isAddingNewProduct]);
+    }, [businessState.id, deletedProductId, isAddingNewProduct]);
 
     const handleLogOutClick = () => {
         dispatch(setIsLoggedBusiness(false));

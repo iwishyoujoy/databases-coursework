@@ -1,4 +1,4 @@
-import { AppDispatch, RootState } from '../../../redux/store';
+import { AppDispatch, RootState, productDeleted } from '../../../redux/store';
 import { IAppointmentProps, IProcedureProps, IProductProps } from '../../../utils/types';
 import { addItemToCart, addToFavorite } from '../../../utils/postQuery';
 import { deleteProcedureById, deleteProductById, removeFromFavorite } from '../../../utils/deleteQuery';
@@ -77,9 +77,11 @@ export const Card: React.FC<ICardProps> = (props) => {
     const handleDeleteClick = () => {
         if (isProduct){
             dispatch(deleteProductById((item as IProductProps).id_item));
+            dispatch(productDeleted((item as IProductProps).id_item));
         }
         else {
             dispatch(deleteProcedureById((item as IProcedureProps).id));
+            dispatch(productDeleted((item as IProcedureProps).id));
         }
     };
 

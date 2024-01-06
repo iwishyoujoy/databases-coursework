@@ -139,6 +139,7 @@ const AddAppointmentsModal = ({ isOpen, onClose, id, procedures }) => {
 
 export default function Page({ params: { login } }: AccountProps) {
     const businessState = useSelector((state: RootState) => state.business);
+    const deletedProductId = useSelector((state: RootState) => state.product.deletedProductId);
     
     const [ isAddingNewProcedure, setIsAddingNewProcedure ] = useState(false);
     const [ isAddingAppointments, setIsAddingAppointments ] = useState(false);
@@ -153,7 +154,7 @@ export default function Page({ params: { login } }: AccountProps) {
                 setProcedures(data);
             })
             .catch(error => console.error(error));
-    }, [businessState.id, isAddingNewProcedure, isAddingAppointments]);
+    }, [businessState.id, isAddingNewProcedure, isAddingAppointments, deletedProductId]);
 
     const handleLogOutClick = () => {
         dispatch(setIsLoggedBusiness(false));

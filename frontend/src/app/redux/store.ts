@@ -33,6 +33,10 @@ interface CartState {
   timestamp: string;
 }
 
+interface ProductState {
+  deletedProductId: number;
+}
+
 const loginSlice = createSlice({
   name: 'login',
   initialState: {
@@ -141,12 +145,27 @@ const cartSlice = createSlice({
   }
 });
 
+// productSlice
+const productSlice = createSlice({
+  name: 'product',
+  initialState: {
+    deletedProductId: null,
+  } as ProductState,
+  reducers: {
+    productDeleted: (state, action: PayloadAction<number>) => {
+      state.deletedProductId = action.payload;
+    },
+  }
+ });
+ 
+
 export const store = configureStore({
   reducer: {
     login: loginSlice.reducer,
     business: businessSlice.reducer,
     category: categorySlice.reducer,
     cart: cartSlice.reducer,
+    product: productSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(logger),
@@ -159,4 +178,5 @@ export const { setLogin, setPassword, setName, setSurname, setBirthday, setPhone
 export const { setLoginBusiness, setPasswordBusiness, setIdBusiness, setNameBusiness, setEmailBusiness, setContactBusiness, setIsSellerBusiness, setIsLoggedBusiness } = businessSlice.actions;
 export const { setProcedureCategoryId, setProductCategoryId } = categorySlice.actions;
 export const { setOrderId, setTimestamp } = cartSlice.actions;
+export const { productDeleted } = productSlice.actions;
 
