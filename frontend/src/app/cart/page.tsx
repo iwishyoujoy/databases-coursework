@@ -33,7 +33,7 @@ export default function Page() {
     const [ appointments, setAppointments ] = useState<IAppointmentProps[]>();
     const [ procedures, setProcedures ] = useState<IProcedureProps[]>();
     const [ amount, setAmount ] = useState<number>(0);
-    const [ rerenderFlag, setRerenderFlag ] = useState<string>();
+    const [ rerenderFlag, setRerenderFlag ] = useState<number>(0);
 
     // const router = useRouter();
 
@@ -122,7 +122,7 @@ export default function Page() {
     const handleDeleteFromCartClick = (id: number) => {
         dispatch(deleteItemFromOrder(cartState.orderId, id))
             .then(() => {
-                setRerenderFlag("deleted something from cart");
+                setRerenderFlag(rerenderFlag - 1);
             })
     }
 
@@ -130,7 +130,7 @@ export default function Page() {
         if (product.amount_available > 0) {
             dispatch(updateAmountForItemInOrder(cartState.orderId, product.id_item, count + 1))
                 .then(() => {
-                    setRerenderFlag("increased count in a cart");
+                    setRerenderFlag(rerenderFlag + 1);
                 })
         }
     };
@@ -139,7 +139,7 @@ export default function Page() {
         if (count > 1) {
             dispatch(updateAmountForItemInOrder(cartState.orderId, product.id_item, count - 1))
                 .then(() => {
-                    setRerenderFlag("decreased count in a cart");
+                    setRerenderFlag(rerenderFlag - 1);
                 })
         }
     }
