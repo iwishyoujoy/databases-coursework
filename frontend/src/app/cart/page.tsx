@@ -4,13 +4,15 @@ import { AppDispatch, RootState } from "../redux/store";
 import { IAppointmentProps, IItemInOrderProps, IOrderProps, IProcedureProps, IProductWithAmountProps } from "../utils/types";
 import React, { useEffect, useState } from "react";
 import { capitalizeFirstLetter, getItemsListLength, getItemsListLengthOnlyLength, roundAmount } from "../utils/text";
-import { getAppointmentById, getCheckForOrder, getItemsFromOrder, getOrderById, getProcedureById, getProductById } from "../utils/getQuery";
+import { getAppointmentById, getCheckForOrder, getCustomerData, getItemsFromOrder, getOrderById, getProcedureById, getProductById } from "../utils/getQuery";
+import { placeOrderFromCart, updateAmountForItemInOrder } from "../utils/putQuery";
 import { useDispatch, useSelector } from "react-redux";
 
 import { DesktopWrapper } from "../components/DesktopWrapper";
 import Image from 'next/image';
 import Link from "next/link";
 import cn from 'classnames';
+import { createOrder } from "../utils/postQuery";
 import { deleteItemFromOrder } from "../utils/deleteQuery";
 import minus from 'public/images/minus.svg';
 import minusDisabled from 'public/images/minusDisabled.svg';
@@ -18,7 +20,6 @@ import plus from 'public/images/plus.svg';
 import plusDisabled from 'public/images/plusDisabled.svg';
 import styles from './styles.module.css';
 import trash from 'public/images/trash.svg';
-import { updateAmountForItemInOrder } from "../utils/putQuery";
 import { useRouter } from "next/navigation";
 
 export default function Page() {  
@@ -26,16 +27,46 @@ export default function Page() {
     const cartState = useSelector((state: RootState) => state.cart);
 
     const dispatch = useDispatch<AppDispatch>();
+    const router = useRouter();
 
     const [ items, setItems ] = useState<IItemInOrderProps[]>([]);
     const [ order, setOrder ] = useState<IOrderProps>();
+    const [ customerId, setCustomerId ] = useState<number>();
     const [ products, setProducts ] = useState<IProductWithAmountProps[]>();
     const [ appointments, setAppointments ] = useState<IAppointmentProps[]>();
     const [ procedures, setProcedures ] = useState<IProcedureProps[]>();
     const [ amount, setAmount ] = useState<number>(0);
     const [ rerenderFlag, setRerenderFlag ] = useState<number>(0);
 
-    // const router = useRouter();
+    const sortProducts = (products) => {
+        return products.sort((a, b) => {
+            const nameA = a.name.toUpperCase(); 
+            const nameB = b.name.toUpperCase(); 
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+
+            return 0;
+        });
+    }
+      
+    const sortProcedures = (procedures) => {
+        return procedures.sort((a, b) => {
+            const nameA = a.name.toUpperCase(); 
+            const nameB = b.name.toUpperCase(); 
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+
+            return 0;
+        });
+    }
 
     useEffect(() => {
         if (loginState.isLogged){
@@ -68,8 +99,7 @@ export default function Page() {
                     Promise.all(promisesProducts)
                        .then(products => {
                             if (products.length){
-                                console.log(products);
-                                setProducts(products);
+                                setProducts(sortProducts(products));
                             }
                        });
      
@@ -88,7 +118,7 @@ export default function Page() {
                 
                                 Promise.all(promisesProcedures)
                                 .then(procedures => {
-                                    setProcedures(procedures);
+                                    setProcedures(sortProcedures(procedures));
                                 });
                             }
                         });
@@ -111,9 +141,15 @@ export default function Page() {
                     setAmount(data);
                 })
                 .catch(error => console.error(error));
+
+            getCustomerData(loginState.login)
+                .then(data => {
+                    setCustomerId(data.id);
+                })
+                .catch(error => console.error(error));
         }
         
-    }, [cartState.orderId, rerenderFlag, loginState.isLogged]);
+    }, [cartState.orderId, rerenderFlag, loginState.isLogged, loginState.login]);
 
     function sumAmounts(products: IProductWithAmountProps[]): number {
         return products.reduce((sum, product) => sum + product.amount, 0);
@@ -128,7 +164,7 @@ export default function Page() {
 
     const increaseCount = (product: IProductWithAmountProps, count: number) => {
         if (product.amount_available > 0) {
-            dispatch(updateAmountForItemInOrder(cartState.orderId, product.id_item, count + 1))
+            dispatch(updateAmountForItemInOrder(cartState.orderId, product.id_item, count + 1, 'Starting to Sparkle'))
                 .then(() => {
                     setRerenderFlag(rerenderFlag + 1);
                 })
@@ -137,11 +173,31 @@ export default function Page() {
 
     const decreaseCount = (product: IProductWithAmountProps, count: number) => {
         if (count > 1) {
-            dispatch(updateAmountForItemInOrder(cartState.orderId, product.id_item, count - 1))
+            dispatch(updateAmountForItemInOrder(cartState.orderId, product.id_item, count - 1, 'Starting to Sparkle'))
                 .then(() => {
                     setRerenderFlag(rerenderFlag - 1);
                 })
         }
+    }
+
+    const handlePlaceOrderClick = () => {
+        // console.log(cartState.orderId, customerId, loginState.login, cartState.timestamp, 'Glam in Progress');
+        dispatch(placeOrderFromCart(cartState.orderId, customerId, loginState.login, cartState.timestamp, 'Glam in Progress'))
+            .then(() => {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = ('0' + (now.getMonth() + 1)).slice(-2);
+                const date = ('0' + now.getDate()).slice(-2);
+                const hours = ('0' + now.getHours()).slice(-2);
+                const minutes = ('0' + now.getMinutes()).slice(-2);
+                const seconds = ('0' + now.getSeconds()).slice(-2);
+
+                const formattedDate = `${year}-${month}-${date} ${hours}:${minutes}:${seconds}`;
+                dispatch(createOrder(customerId, loginState.login, formattedDate, 'Starting to Sparkle'))
+                    .then(() => {
+                        router.push(`/account/${loginState.login}/orders`);
+                    })
+            })
     }
      
     return (
@@ -223,7 +279,7 @@ export default function Page() {
                     <div className={styles.cartTotalTitle}>Total</div>
                     <div className={styles.cartTotalAmount}>{amount !== 0 ? roundAmount(amount) : '0'} $</div>
                 </div>
-                <button className={styles.button}>{`Place an order`}</button>
+                <button className={styles.button} onClick={handlePlaceOrderClick}>{`Place an order`}</button>
             </div>
         </div>
     </DesktopWrapper>
