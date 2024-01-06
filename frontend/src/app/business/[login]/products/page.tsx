@@ -100,7 +100,7 @@ export default function Page({ params: { login } }: AccountProps) {
                 setProducts(data);
             })
             .catch(error => console.error(error));
-    }, [businessState.id]);
+    }, [businessState.id, isAddingNewProduct]);
 
     const handleLogOutClick = () => {
         dispatch(setIsLoggedBusiness(false));

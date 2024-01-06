@@ -33,7 +33,7 @@ export default function Page() {
     const [ appointments, setAppointments ] = useState<IAppointmentProps[]>();
     const [ procedures, setProcedures ] = useState<IProcedureProps[]>();
     const [ amount, setAmount ] = useState<number>(0);
-    const [ countItems, setCountItems ] = useState<number>(10);
+    const [ rerenderFlag, setRerenderFlag ] = useState<string>();
 
     // const router = useRouter();
 
@@ -113,7 +113,7 @@ export default function Page() {
                 .catch(error => console.error(error));
         }
         
-    }, [cartState.orderId, countItems, loginState.isLogged]);
+    }, [cartState.orderId, rerenderFlag, loginState.isLogged]);
 
     function sumAmounts(products: IProductWithAmountProps[]): number {
         return products.reduce((sum, product) => sum + product.amount, 0);
@@ -122,7 +122,7 @@ export default function Page() {
     const handleDeleteFromCartClick = (id: number) => {
         dispatch(deleteItemFromOrder(cartState.orderId, id))
             .then(() => {
-                setCountItems(countItems - 1);
+                setRerenderFlag("deleted something from cart");
             })
     }
 
@@ -130,7 +130,7 @@ export default function Page() {
         if (product.amount_available > 0) {
             dispatch(updateAmountForItemInOrder(cartState.orderId, product.id_item, count + 1))
                 .then(() => {
-                    setCountItems(countItems + 1);
+                    setRerenderFlag("increased count in a cart");
                 })
         }
     };
@@ -139,7 +139,7 @@ export default function Page() {
         if (count > 1) {
             dispatch(updateAmountForItemInOrder(cartState.orderId, product.id_item, count - 1))
                 .then(() => {
-                    setCountItems(countItems - 1);
+                    setRerenderFlag("decreased count in a cart");
                 })
         }
     }

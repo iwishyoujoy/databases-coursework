@@ -120,7 +120,7 @@ export default function Page({ params: { id } }: ProductProps) {
                 setIsAlreadyWrittenReview(reviews.some(review => review.customer_id === customerId));
             }
         }
-    }, [customerId, id, loginState.isLogged, loginState.login, reviews, setIsAlreadyWrittenReview]);
+    }, [customerId, id, loginState.isLogged, loginState.login, reviews, isWritingReview]);
 
     const toggleFavorite = () => {
         if (!loginState.isLogged){

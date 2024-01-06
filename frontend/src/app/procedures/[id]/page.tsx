@@ -124,7 +124,7 @@ export default function Page({ params: { id } }: ProcedureProps) {
                 setIsAlreadyWrittenReview(reviews.some(review => review.customer_id === customerId));
             }
         }
-        }, [customerId, id, loginState.isLogged, loginState.login, reviews]);
+        }, [customerId, id, loginState.isLogged, loginState.login, reviews, isWritingReview]);
 
     const handleReviewClick = () => {
         if (!loginState.isLogged) {
