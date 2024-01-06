@@ -28,7 +28,14 @@ export default function Page({ params: { login } }: AccountProps) {
     useEffect(() => {
         getOrdersForCustomer(login)
             .then(data => {
-                setOrders(data);
+                const sortedOrders = data.sort((a, b) => {
+                    if (a.status === 'Starting to Sparkle') return -1;
+                    if (b.status === 'Starting to Sparkle') return 1;
+
+                    return 0;
+                });
+                 
+                setOrders(sortedOrders);
             })
             .catch(error => console.error(error));
         }, [login]);
