@@ -80,11 +80,12 @@
 }
 
 .button{
-    width: 300px;
+    width: 285px;
     border-radius: var(--border-radius-m);
     padding: 5px 10px;
     border: 1px solid var(--bright-pink);
     color: var(--bright-pink);
+    margin-right: 5px;
 }
 
 .button:hover{
