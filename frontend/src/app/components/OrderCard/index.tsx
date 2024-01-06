@@ -1,10 +1,10 @@
-import { AppDispatch, setOrderId } from "../../redux/store";
+import { AppDispatch, setOrderId, setTimestamp } from "../../redux/store";
+import { getCheckForOrder, getOrderById } from "../../utils/getQuery";
 import { useEffect, useState } from "react";
 
 import { IOrderProps } from "../../utils/types";
 import Image from "next/image";
 import arrow from 'public/images/arrow.svg';
-import { getCheckForOrder } from "../../utils/getQuery";
 import { roundAmount } from "../../utils/text";
 import styles from './styles.module.css';
 import { useDispatch } from "react-redux";
@@ -31,6 +31,11 @@ export const OrderCard: React.FC<IOrderCardProps> = (props) => {
 
     if (order.status === 'Starting to Sparkle'){
         dispatch(setOrderId(order.id));
+        getOrderById(order.id)
+            .then((data) => {
+                dispatch(setTimestamp(data.timestamp));
+            })
+            .catch(error => console.error(error));
     }
 
     const handleArrowClick = () => {
