@@ -236,3 +236,10 @@
     justify-content: flex-start;
     row-gap: 10px;
 }
+
+.title{
+    margin-top: 20px;
+    font-size: var(--font-size-l);
+    font-weight: var(--font-weight-m);
+    text-align: center;
+}

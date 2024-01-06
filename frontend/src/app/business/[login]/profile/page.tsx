@@ -48,6 +48,7 @@ export default function Page({ params: { login } }: AccountProps) {
 
     return(
         <DesktopWrapper>
+            <div className={styles.title}>Business account</div>
             <div className={styles.container}>
                 <div className={styles.leftContainer}>
                     <Link className={cn(styles.link, styles.selected)} href={`/business/${login}/profile`}>Profile</Link>
