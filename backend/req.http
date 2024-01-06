@@ -13,41 +13,34 @@
 #     "current_amount": 5
 # }
 
-# post http://localhost:3100/api/procedure/create/
+# post http://localhost:3100/api/product/create/
 # Content-Type: application/json
 
 # {
-#     "photo_url": "https://www.co.uk/wp-content/uploads/2020/07/lip-fillers-by-camille-beaute-image00001.jpeg",
 #     "name": "test",
-#     "price": 250.0,
-#     "procedure_category_id": 1,
-#     "clinic_id": 1
+#     "price": 1500.0,
+#     "description": "test",
+#     "photo_url": "test",
+#     "amount_available": 100,
+#     "seller_id": 1,
+#     "product_category_id": 1
 # }
 
-# get http://localhost:3100/api/procedure/all
-#id = 16
-
-#get http://localhost:3100/api/appointment/all
-# post http://localhost:3100/api/appointment/create/
-# Content-Type: application/json
-
-# {
-#     "date_time": "2022-13-12 11:00:00",
-#     "procedure_id": 16,
-#     "status": false
-# }
-#id == 46,47,48
+#get http://localhost:3100/api/product/all
+#id = 49
 
 
 
-#get http://localhost:3100/api/item_in_order/all/2
+
+get http://localhost:3100/api/item_in_order/all/1
 # post http://localhost:3100/api/item_in_order/create/
 # Content-Type: application/json
 
 # {
 #     "order_id": 2,
-#     "item_id": 48,
+#     "item_id": 49,
 #     "current_amount": 1,
 #     "status": "Starting to Sparkle"
 # }
-#delete http://localhost:3100/api/procedure/16
+
+#delete http://localhost:3100/api/product/49
