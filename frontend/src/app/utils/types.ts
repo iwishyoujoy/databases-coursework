@@ -65,7 +65,7 @@ export interface IReviewProps {
 export interface IOrderProps {
     id: number;
     customer_id: string;
-    status: string;
+    status: OrderStatus;
     timestamp: string;
 }
 
@@ -82,8 +82,9 @@ export interface ICustomerProps {
 export interface IItemInOrderProps {
     order_id: number;
     item_id: number;
-    type: 'product' | 'appointment';
+    type: 'appointment' | 'product';
     current_amount: number;
+    status: OrderStatus;
 }
 
 export type OrderStatus = 'Starting to Sparkle' | 'Glam in Progress' | 'Glowing and Going' | 'Ready to Slay';

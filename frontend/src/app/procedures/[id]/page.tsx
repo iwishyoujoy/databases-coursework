@@ -141,7 +141,7 @@ export default function Page({ params: { id } }: ProcedureProps) {
     }
 
     const handleAddToCartClick = () => {
-        dispatch(addItemToCart(cartState.orderId, appointmentId, 1));
+        dispatch(addItemToCart(cartState.orderId, appointmentId, 1, 'Starting to Sparkle'));
     }
 
     return (

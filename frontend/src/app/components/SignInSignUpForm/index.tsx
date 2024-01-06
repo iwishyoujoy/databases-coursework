@@ -64,8 +64,10 @@ export const SignIn = () => {
                     dispatch(setTimestamp(formattedDate));
                     getCustomerData(loginState.login)
                         .then((data) => {
-                            dispatch(createOrder(data.id, loginState.login, formattedDate, 'Starting to Sparkle'));
-                            router.push(`/account/${loginState.login}/profile`);
+                            dispatch(createOrder(data.id, loginState.login, formattedDate, 'Starting to Sparkle'))
+                                .then(() => {
+                                    router.push(`/account/${loginState.login}/profile`);
+                                })
                         })
                         .catch(error => console.error(error));
                 } else {

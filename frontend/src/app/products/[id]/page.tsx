@@ -164,7 +164,7 @@ export default function Page({ params: { id } }: ProductProps) {
     }
 
     const handleAddToCartClick = () => {
-        dispatch(addItemToCart(cartState.orderId, product.id_item, count));
+        dispatch(addItemToCart(cartState.orderId, product.id_item, count, 'Starting to Sparkle'));
     }
 
     return (
