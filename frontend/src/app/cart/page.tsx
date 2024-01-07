@@ -239,7 +239,7 @@ export default function Page() {
                         </div>
                         </>
                     }
-                    {procedures && 
+                    {procedures.length !== 0 ?  
                         <>
                         <div className={styles.producedureTitle}>Procedures</div>
                         <div className={styles.productsContainer}>
@@ -261,7 +261,7 @@ export default function Page() {
                         })}
                         </div>
                         </> 
-                    }
+                    : ("")}
                     </>
                 )}
             </div>
