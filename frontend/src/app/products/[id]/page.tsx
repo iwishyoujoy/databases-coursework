@@ -164,7 +164,12 @@ export default function Page({ params: { id } }: ProductProps) {
     }
 
     const handleAddToCartClick = () => {
-        dispatch(addItemToCart(cartState.orderId, product.id_item, count, 'Starting to Sparkle'));
+        if (!loginState.isLogged){
+            toast.error("You can not add item to cart! Please log in first");
+        }
+        else {
+            dispatch(addItemToCart(cartState.orderId, product.id_item, count, 'Starting to Sparkle'));
+        }
     }
 
     return (

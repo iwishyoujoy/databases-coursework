@@ -141,7 +141,12 @@ export default function Page({ params: { id } }: ProcedureProps) {
     }
 
     const handleAddToCartClick = () => {
-        dispatch(addItemToCart(cartState.orderId, appointmentId, 1, 'Starting to Sparkle'));
+        if (!loginState.isLogged){
+            toast.error("You can not add item to cart! Please log in first");
+        }
+        else {
+            dispatch(addItemToCart(cartState.orderId, appointmentId, 1, 'Starting to Sparkle'));
+        }
     }
 
     return (
