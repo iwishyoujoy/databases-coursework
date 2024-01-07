@@ -43,8 +43,7 @@ export const OrderCard: React.FC<IOrderCardProps> = (props) => {
             router.push(`http://localhost:3000/cart`);
         }
         else{
-            // TODO: delete later
-            console.log("delete later")
+            router.push(`http://localhost:3000/account/${login}/orders/${order.id}`);
         }
     }
 
