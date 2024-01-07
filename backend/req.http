@@ -32,7 +32,7 @@
 
 
 
-get http://localhost:3100/api/item_in_order/all/1
+# get http://localhost:3100/api/item_in_order/all/1
 # post http://localhost:3100/api/item_in_order/create/
 # Content-Type: application/json
 
@@ -44,3 +44,6 @@ get http://localhost:3100/api/item_in_order/all/1
 # }
 
 #delete http://localhost:3100/api/product/49
+
+
+get http://localhost:3100/api/seller/order/4
