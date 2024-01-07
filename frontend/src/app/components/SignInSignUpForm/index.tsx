@@ -21,25 +21,30 @@ export const SignIn = () => {
 
     const signIn = (login, password) => {
         return (dispatch) => {
-            axios.post('http://localhost:3100/api/customer/signin/', { login, password })
-            .then(response => {
-                if (response.status === 200) {
-                    dispatch({ type: 'SIGNIN_SUCCESS', payload: response.data });
-                    dispatch(setIsLogged(true));
-                    router.push(`/account/${loginState.login}/orders`);
-                } else {
-                    throw new Error('Failed to sign in');
-                }
-                })
-            .catch(error => {
-                dispatch({ type: 'SIGNIN_FAILURE', payload: error.message });
-            });
+            return new Promise<void>((resolve, reject) => {
+                axios.post('http://localhost:3100/api/customer/signin/', { login, password })
+                .then(response => {
+                    if (response.status === 200) {
+                        dispatch({ type: 'SIGNIN_SUCCESS', payload: response.data });
+                        dispatch(setIsLogged(true));
+                        router.push(`/account/${loginState.login}/orders`);
+                        resolve();
+                    } else {
+                        reject(new Error('Failed to sign in'));
+                    }
+                    })
+                .catch(error => {
+                    dispatch({ type: 'SIGNIN_FAILURE', payload: error.message });
+                    reject(error);
+                });
+            })
         };
     };
 
     const signUp = (name, surname, birthday, phoneNumber, login, password) => {
         return (dispatch) => {
-            axios.post('http://localhost:3100/api/customer/signup/', { 
+            return new Promise<void>((resolve, reject) =>{
+                axios.post('http://localhost:3100/api/customer/signup/', { 
                 name,
                 surname,
                 birthday,
@@ -69,14 +74,19 @@ export const SignIn = () => {
                                     router.push(`/account/${loginState.login}/profile`);
                                 })
                         })
-                        .catch(error => console.error(error));
+                        .catch((error) => {
+                            console.error(error);
+                        });
+                    resolve();
                 } else {
-                    throw new Error('Failed to sign up');
+                    reject(new Error('Failed to sign up'));
                 }
             })
             .catch(error => {
                 dispatch({ type: 'SIGNUP_FAILURE', payload: error.message });
+                reject(error);
             });
+            })   
         };
     };
    
@@ -114,12 +124,18 @@ export const SignIn = () => {
     
             return;
         }
-        dispatch(signUp(loginState.name, loginState.surname, loginState.birthday, loginState.phoneNumber, loginState.login, loginState.password));
+        dispatch(signUp(loginState.name, loginState.surname, loginState.birthday, loginState.phoneNumber, loginState.login, loginState.password))
+            .catch(() => {
+                toast.error("Failed to sign up, login is already taken");
+            });
     }
        
     const handleSignInClick = (e) => {
         e.preventDefault();
-        dispatch(signIn(loginState.login, loginState.password));
+        dispatch(signIn(loginState.login, loginState.password))
+            .catch(() => {
+                toast.error("Failed to sign in, either the login or the password contain an error");
+            });
     }
 
     return (

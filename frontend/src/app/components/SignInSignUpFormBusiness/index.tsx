@@ -19,42 +19,50 @@ export const SignInBusiness = () => {
 
     const signInBusiness = (login: string, password: string, type: string) => {
         return (dispatch) => {
-            axios.post(`http://localhost:3100/api/${type}/signin/`, { login, password })
-            .then(response => {
-                if (response.status === 200) {
-                    dispatch({ type: 'SIGNIN_SUCCESS', payload: response.data });
-                    dispatch(setIsLoggedBusiness(true));
-                    router.push(`/business/${businessState.login}/profile`);
-                } else {
-                    throw new Error('Failed to sign in');
-                }
-                })
-            .catch(error => {
-                dispatch({ type: 'SIGNIN_FAILURE', payload: error.message });
-            });
+            return new Promise<void>((resolve, reject) => {
+                axios.post(`http://localhost:3100/api/${type}/signin/`, { login, password })
+                    .then(response => {
+                        if (response.status === 200) {
+                            dispatch({ type: 'SIGNIN_SUCCESS', payload: response.data });
+                            dispatch(setIsLoggedBusiness(true));
+                            router.push(`/business/${businessState.login}/profile`);
+                            resolve();
+                        } else {
+                            reject(new Error('Failed to sign in'));
+                        }
+                        })
+                    .catch(error => {
+                        dispatch({ type: 'SIGNIN_FAILURE', payload: error.message });
+                        reject(error);
+                    });
+            })
         };
     };
 
     const signUpBusiness = (name: string, email: string, contact: string, login: string, password: string, type: string) => {
         return (dispatch) => {
-            axios.post(`http://localhost:3100/api/${type}/signup/`, { 
-                name,
-                email,
-                contact,
-                login,
-                password
-             })
-            .then(response => {
-                if (response.status === 200) {
-                    dispatch({ type: 'SIGNUP_SUCCESS', payload: response.data });
-                    dispatch(setIsLoggedBusiness(true));
-                    router.push(`/business/${businessState.login}/profile`);
-                } else {
-                    throw new Error('Failed to sign up');
-                }
-            })
-            .catch(error => {
-                dispatch({ type: 'SIGNUP_FAILURE', payload: error.message });
+            return new Promise<void>((resolve, reject) => {
+                axios.post(`http://localhost:3100/api/${type}/signup/`, { 
+                    name,
+                    email,
+                    contact,
+                    login,
+                    password
+                })
+                .then(response => {
+                    if (response.status === 200) {
+                        dispatch({ type: 'SIGNUP_SUCCESS', payload: response.data });
+                        dispatch(setIsLoggedBusiness(true));
+                        router.push(`/business/${businessState.login}/profile`);
+                        resolve();
+                    } else {
+                        reject(new Error('Failed to sign up'));
+                    }
+                })
+                .catch(error => {
+                    dispatch({ type: 'SIGNUP_FAILURE', payload: error.message });
+                    reject(error);
+                });
             });
         };
     };
@@ -93,12 +101,18 @@ export const SignInBusiness = () => {
     
             return;
         }
-        dispatch(signUpBusiness(businessState.name, businessState.email, businessState.contact, businessState.login, businessState.password, businessState.isSeller ? 'seller' : 'clinic'));
+        dispatch(signUpBusiness(businessState.name, businessState.email, businessState.contact, businessState.login, businessState.password, businessState.isSeller ? 'seller' : 'clinic'))
+            .catch(() => {
+                toast.error("Failed to sign up, login is already taken");
+            });
     }
        
     const handleSignInClick = (e) => {
         e.preventDefault();
-        dispatch(signInBusiness(businessState.login, businessState.password, businessState.isSeller ? 'seller' : 'clinic'));
+        dispatch(signInBusiness(businessState.login, businessState.password, businessState.isSeller ? 'seller' : 'clinic'))
+            .catch(() => {
+                toast.error("Failed to sign in, either the login or the password contain an error");
+            })
     }
 
     return (
