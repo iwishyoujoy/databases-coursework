@@ -1,25 +1,27 @@
 'use client'
 
-import { AppDispatch, setProcedureCategoryId, setProductCategoryId } from '../../redux/store';
+import { AppDispatch, RootState, setProcedureCategoryId, setProductCategoryId } from '../../redux/store';
 import { useEffect, useState } from 'react';
 
 import { capitalizeFirstLetter } from '../../utils/text';
 import cn from 'classnames';
 import { getAllCategories } from '../../utils/getQuery';
 import styles from './styles.module.css';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 interface ICategoriesProps {
     categoryType?: 'productCategory' | 'procedureCategory';
 }
 
 export const Categories: React.FC<ICategoriesProps> = ({ categoryType = 'productCategory' }) => {
+    const categoryState = useSelector((state: RootState) => state.category);
+    const [ selectedCategoryId, setSelectedCategoryId ] = useState<number>()
+
     const dispatch = useDispatch<AppDispatch>();
     const [categories, setCategories] = useState([]);
-    const [selectedCategory, setSelectedCategory] = useState('All');
 
-    const handleCategoryClick = (id: number, name: string) => {
-        setSelectedCategory(name);
+    const handleCategoryClick = (id: number) => {
+        setSelectedCategoryId(id);
         if (categoryType === 'productCategory'){
             dispatch(setProductCategoryId(id));
         }
@@ -29,6 +31,12 @@ export const Categories: React.FC<ICategoriesProps> = ({ categoryType = 'product
     }
 
     useEffect(() => {
+        if (categoryType === 'productCategory'){
+            setSelectedCategoryId(categoryState.productCategoryId);
+        }
+        else {
+            setSelectedCategoryId(categoryState.procedureCategoryId);
+        }
         getAllCategories(categoryType)
             .then(data => {
                 setCategories(data);
@@ -38,11 +46,11 @@ export const Categories: React.FC<ICategoriesProps> = ({ categoryType = 'product
 
     return (
         <div className={styles.container}>
-            <div className={cn(styles.category, styles.hoverPink, selectedCategory === 'All' ? styles.selected : '')} onClick={() => handleCategoryClick(-1, 'All')}>All</div>
+            <div className={cn(styles.category, styles.hoverPink, selectedCategoryId === -1 ? styles.selected : '')} onClick={() => handleCategoryClick(-1)}>All</div>
             {categories.map((category, key) => {
                 const name = capitalizeFirstLetter(category.name);
 
-                return (<div className={cn(styles.category, styles.hoverPink, selectedCategory === name ? styles.selected : '')} onClick={() => handleCategoryClick(category.id, name)} key={key}>{name}</div>)
+                return (<div className={cn(styles.category, styles.hoverPink, selectedCategoryId === Number(category.id) ? styles.selected : '')} onClick={() => handleCategoryClick(category.id)} key={key}>{name}</div>)
             })}
         </div>
     )
