@@ -30,7 +30,6 @@ export default function Page({ params: { login } }: AccountProps) {
             if (businessState.isSeller){
                 getOrderForSellerById(businessState.id)
                     .then(data => {
-                        console.log(data);
                         setOrders(data);
                     })
                     .catch(error => console.error(error));
@@ -38,7 +37,6 @@ export default function Page({ params: { login } }: AccountProps) {
             else {
                 getOrderForClinicById(businessState.id)
                     .then(data => {
-                        console.log(data);
                         setOrders(data);
                     })
                     .catch(error => console.error(error));

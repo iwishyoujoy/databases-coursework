@@ -28,7 +28,6 @@ export default function Page({ params: { login } }: AccountProps) {
         if (businessState.isLogged){
             getSellerOrClinicByLogin(login, businessState.isSeller ? 'seller' : 'clinic')
                 .then(data => {
-                    console.log(data);
                     setBusiness(data);
                     dispatch(setIdBusiness(data.id));
                 })

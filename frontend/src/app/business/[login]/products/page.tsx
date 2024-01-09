@@ -48,7 +48,6 @@ const NewProductModal = ({ isOpen, onClose, id }) => {
     };
 
     const handleSubmitClick = () => {
-        console.log(name, price, description, photoUrl, amountAvailable, id, categoryId)
         dispatch(addProduct(name, price, description, photoUrl, amountAvailable, id, categoryId));
         onClose();
     }

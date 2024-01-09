@@ -41,7 +41,6 @@ const NewProcedureModal = ({ isOpen, onClose, id }) => {
     };
 
     const handleSubmitClick = () => {
-        console.log(photoUrl, name, price, categoryId, id)
         dispatch(addProcedure(photoUrl, name, price, categoryId, id));
         onClose();
     }

@@ -125,7 +125,7 @@ export default function Page() {
                         });
     
                 } catch (error) {
-                    console.log(error);
+                    console.error(error);
                 }
             };
     
@@ -135,7 +135,7 @@ export default function Page() {
                 .then((data) => {
                     setOrder(data);
                 })
-                .catch(error => console.log(error));
+                .catch(error => console.error(error));
     
             getCheckForOrder(cartState.orderId)
                 .then(data => {
