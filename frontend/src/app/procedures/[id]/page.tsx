@@ -176,14 +176,22 @@ export default function Page({ params: { id } }: ProcedureProps) {
                                 </div>
                                 <div className={styles.addToCartContainer}>
                                     <div className={styles.buttonContainer}>
-                                        {appointments && <select className={styles.selectContainer} onChange={(e) => setAppointmentId(e.target.value)}>
-                                            {appointments.map((appointment, key) => {
-                                                return <option className={styles.option} value={appointment.item_id} key={key}>{appointment.date_time}</option>
-                                            })}
-                                        </select>}
+                                        {appointments.filter(appointment => !appointment.status).length > 0 ? (
+                                            <>
+                                                {appointments && <select className={styles.selectContainer} onChange={(e) => setAppointmentId(e.target.value)}>
+                                                    {appointments.filter(appointment => !appointment.status).map((appointment, key) => {
+                                                        return <option className={styles.option} value={appointment.item_id} key={key}>{appointment.date_time}</option>
+                                                    })}
+                                                </select>}
+                                            </>
+                                        ) : (
+                                            <select className={styles.selectContainer}>
+                                                <option className={styles.option}>Nothing available</option>
+                                            </select>
+                                        )}
                                         <button className={styles.button} onClick={handleAddToCartClick}>{`Add to cart - ${roundAmount(procedure.price)} $`}</button>
                                     </div>
-                                    {appointments && <div className={styles.amountLeft}>{`${appointments.length} ${appointments.length === 1 ? 'appointment' : 'appointments'} available`}</div>}
+                                    {appointments && <div className={styles.amountLeft}>{`${appointments.filter(appointment => !appointment.status).length} ${appointments.filter(appointment => !appointment.status).length === 1 ? 'appointment' : 'appointments'} available`}</div>}
                                 </div>
                                 <div className={styles.descriptionContainer}>
                                     {category && 
