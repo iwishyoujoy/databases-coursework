@@ -5,8 +5,10 @@ import React, { useEffect, useState } from "react";
 
 import { DesktopWrapper } from "../../../../components/DesktopWrapper";
 import { IItemInOrderProps } from "../../../../utils/types";
+import Image from 'next/image';
 import { ItemInOrderCard } from "../../../../components/ItemInOrderCard";
 import Link from "next/link";
+import arrow from 'public/images/arrowLeft.svg';
 import cn from 'classnames';
 import { getItemsFromOrder } from "../../../../utils/getQuery";
 import styles from './styles.module.css';
@@ -40,6 +42,10 @@ export default function Page({ params: { login, id } }: OrderProps) {
         dispatch(setIsLogged(false));
         router.push(`/account/`);
     }
+
+    const handleArrowClick = () => {
+        router.push(`http://localhost:3000/account/${login}/orders`);
+    }
     
     return(
         <DesktopWrapper>
@@ -52,7 +58,10 @@ export default function Page({ params: { login, id } }: OrderProps) {
                     <button className={styles.logOutButton} onClick={handleLogOutClick}>Log out</button>
                 </div>
                 <div className={styles.rightContainer}>
-                    <div className={styles.rightContainerTitle}>Items in order # {id}</div>
+                    <div className={styles.rightContainerTitle}>
+                        <Image className={styles.arrow} onClick={handleArrowClick} src={arrow} alt='Open the order'/>                
+                        Items in order # {id}
+                    </div>
                     {items && 
                         items.map((item, key) => {
                             return (
