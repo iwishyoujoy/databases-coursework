@@ -1,12 +1,13 @@
 import { AppDispatch, setOrderId, setTimestamp } from "../../redux/store";
-import { getCheckForOrder, getOrderById } from "../../utils/getQuery";
+import { IItemInOrderProps, IOrderProps, OrderStatus } from "../../utils/types";
+import { getCheckForOrder, getItemsFromOrder, getOrderById } from "../../utils/getQuery";
 import { useEffect, useState } from "react";
 
-import { IOrderProps } from "../../utils/types";
 import Image from "next/image";
 import arrow from 'public/images/arrow.svg';
 import { roundAmount } from "../../utils/text";
 import styles from './styles.module.css';
+import { updateOrderStatus } from "../../utils/putQuery";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 
@@ -18,6 +19,7 @@ interface IOrderCardProps {
 export const OrderCard: React.FC<IOrderCardProps> = (props) => {
     const { order, login } = props;
     const [ amount, setAmount ] = useState(0);
+    const [ items, setItems ] = useState<IItemInOrderProps[]>();
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
 
@@ -27,7 +29,29 @@ export const OrderCard: React.FC<IOrderCardProps> = (props) => {
                 setAmount(data);
             })
             .catch(error => console.error(error));
-        }, [order.id]);
+
+            getItemsFromOrder(order.id)
+            .then((data) => {
+                setItems(data);
+                
+                if (order.status !== 'Starting to Sparkle'){
+                    let newStatus: OrderStatus = 'Ready to Slay';
+                    if (data.some(item => item.status === 'Glam in Progress')) {
+                        newStatus = 'Glam in Progress';
+                    } else if (data.some(item => item.status === 'Glowing and Going')) {
+                        newStatus = 'Glowing and Going';
+                    }
+        
+                    if (newStatus !== order.status) {
+                        dispatch(updateOrderStatus(order.id, order.customer_id, login, order.timestamp, newStatus));
+                    }
+                }
+                
+            })
+            .catch((error) => {
+                console.error(error);
+            })
+        }, [dispatch, login, order.customer_id, order.id, order.status, order.timestamp]);
 
     if (order.status === 'Starting to Sparkle'){
         dispatch(setOrderId(order.id));
@@ -46,6 +70,8 @@ export const OrderCard: React.FC<IOrderCardProps> = (props) => {
             router.push(`http://localhost:3000/account/${login}/orders/${order.id}`);
         }
     }
+
+    
 
     return (
         <div className={styles.orderContainer}>
