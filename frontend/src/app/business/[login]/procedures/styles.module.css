@@ -55,26 +55,6 @@
     row-gap: 20px;
 }
 
-.placeholder{
-    height: 365px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    border-radius: var(--border-radius-m);
-    background-color: var(--light-light-pink);
-    color: var(--black-alpha-56);
-    font-size: var(--font-size-s);
-    text-align: center;
-}
-
-.placeholderTitle{
-    color: var(--black-alpha-56);
-    font-size: var(--font-size-m);
-    font-weight: var(--font-weight-l);
-}
-
 .buttonContainer{
     align-self: flex-end;
     display: flex;
