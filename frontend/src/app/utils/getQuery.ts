@@ -231,3 +231,25 @@ export async function getAppointmentById(id: number): Promise<any> {
         throw error;
     }
 }
+
+export async function getOrderForSellerById(id: number): Promise<any> {
+    try {
+        const response = await axios.get(`http://localhost:3100/api/seller/order/${id}`);
+    
+        return response.data;
+    }catch (error) {
+        console.error(`Error: ${error}`);
+        throw error;
+    }
+}
+
+export async function getOrderForClinicById(id: number): Promise<any> {
+    try {
+        const response = await axios.get(`http://localhost:3100/api/clinic/order/${id}`);
+    
+        return response.data;
+    }catch (error) {
+        console.error(`Error: ${error}`);
+        throw error;
+    }
+}
