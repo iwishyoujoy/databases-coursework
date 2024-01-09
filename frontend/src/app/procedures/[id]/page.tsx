@@ -99,16 +99,18 @@ export default function Page({ params: { id } }: ProcedureProps) {
                 getAppointmentsByProcedureId(data.id)
                     .then(data => {
                         setAppointments(data);
-                        setAppointmentId(data[0].item_id);
-                        const reviewsPromises = data.map(appointment => getReviewsById(appointment.item_id));
+                        if (data.length > 0){
+                            setAppointmentId(data[0].item_id);
+                            const reviewsPromises = data.map(appointment => getReviewsById(appointment.item_id));
 
-                        Promise.all(reviewsPromises)
-                            .then(reviewsArrays => {
-                                const allReviews = [].concat(...reviewsArrays);
-                                setReviews(allReviews);
-                            })
-                            .catch(error => console.error(error));
-                            })
+                            Promise.all(reviewsPromises)
+                                .then(reviewsArrays => {
+                                    const allReviews = [].concat(...reviewsArrays);
+                                    setReviews(allReviews);
+                                })
+                                .catch(error => console.error(error));
+                        
+                        }})                        
                     .catch(error => console.error(error));
             })
             .catch(error => console.error(error));
@@ -170,7 +172,10 @@ export default function Page({ params: { id } }: ProcedureProps) {
                                             <div className={styles.avgRating}>
                                                 {reviews && displayRatingAsStars(getAverageReviewRating(reviews))}
                                             </div>
-                                            <div className={styles.numberOfReviews}>{reviews && getItemsListLength(reviews, 'review', 'reviews')}</div>
+                                            <div className={styles.numberOfReviews}>{
+                                                appointments.length > 0 ?
+                                                (reviews && getItemsListLength(reviews, 'review', 'reviews')) : ("0 reviews")
+                                            }</div>
                                         </div>
                                     </div>
                                 </div>
