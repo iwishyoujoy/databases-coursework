@@ -11,11 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.NoSuchElementException;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Map;
 
 @RestController
@@ -24,22 +22,16 @@ import java.util.Map;
 public class SellerController {
 
     private final SellerRepo sellerRepo;
-    private final BimboOrderRepo bimboOrderRepo;
     private final ProductRepo productRepo;
-    private final ItemRepo itemRepo;
     private final ItemInOrderRepo itemInOrderRepo;
     private final MessageDigest md = MessageDigest.getInstance("SHA-512");
 
     @Autowired
     public SellerController(SellerRepo sellerRepo, 
-                            BimboOrderRepo bimboOrderRepo, 
                             ProductRepo productRepo, 
-                            ItemRepo itemRepo, 
                             ItemInOrderRepo itemInOrderRepo) throws NoSuchAlgorithmException {
         this.sellerRepo = sellerRepo;
-        this.bimboOrderRepo = bimboOrderRepo;
         this.productRepo = productRepo;
-        this.itemRepo = itemRepo;
         this.itemInOrderRepo = itemInOrderRepo;
     }
 
