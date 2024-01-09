@@ -64,7 +64,7 @@ export interface IReviewProps {
 
 export interface IOrderProps {
     id: number;
-    customer_id: string;
+    customer_id: number;
     status: OrderStatus;
     timestamp: string;
 }
