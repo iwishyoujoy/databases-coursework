@@ -2,10 +2,11 @@
 
 import { AppDispatch, RootState, setIsLoggedBusiness } from "../../../redux/store";
 import React, { useEffect, useState } from "react";
+import { getOrderForClinicById, getOrderForSellerById } from "../../../utils/getQuery";
 import { useDispatch, useSelector } from "react-redux";
 
 import { DesktopWrapper } from "../../../components/DesktopWrapper";
-import { IProcedureProps } from "../../../utils/types";
+import { ItemInOrderCard } from "../../../components/ItemInOrderCard";
 import Link from "next/link";
 import cn from 'classnames';
 import styles from './styles.module.css';
@@ -19,17 +20,29 @@ interface AccountProps{
 
 export default function Page({ params: { login } }: AccountProps) {
     const businessState = useSelector((state: RootState) => state.business);
+    const [ orders, setOrders ] = useState();
 
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        // getProceduresByClinicId(businessState.id)
-        //     .then(data => {
-        //         setProcedures(data);
-        //     })
-        //     .catch(error => console.error(error));
-    }, []);
+        if (businessState.isSeller){
+            getOrderForSellerById(businessState.id)
+                .then(data => {
+                    console.log(data);
+                    setOrders(data);
+                })
+                .catch(error => console.error(error));
+        }
+        else {
+            getOrderForClinicById(businessState.id)
+                .then(data => {
+                    console.log(data);
+                    setOrders(data);
+                })
+                .catch(error => console.error(error));
+        }
+    }, [businessState.id, businessState.isSeller]);
 
     const handleLogOutClick = () => {
         dispatch(setIsLoggedBusiness(false));
@@ -47,7 +60,25 @@ export default function Page({ params: { login } }: AccountProps) {
                     <button className={styles.logOutButton} onClick={handleLogOutClick}>Log out</button>
                 </div>
                 <div className={styles.rightContainer}>
-
+                    {orders ?
+                        <>
+                            {Object.entries(orders).map(([orderNumber, orderItems]) => (
+                                <div key={orderNumber} className={styles.orderContainer}>
+                                    <div className={styles.orderTitle}>Order Number: {orderNumber}</div>
+                                    {orderItems.map((item, index) => (
+                                        <ItemInOrderCard view={businessState.isSeller ? 'seller' : 'clinic'} key={index} item={{...item.itemInOrderId, type: businessState.isSeller ? 'product' : 'appointment'}} canBeChanged={true} num={index + 1}/>
+                                    ))}
+                                </div>
+                            ))}
+                            <div className={styles.note}>Note: After assembly, as well as after sending the product, please change the status on the right.</div>
+                        </>
+                    : (
+                        <div className={styles.placeholder}>
+                            <h1 className={styles.placeholderTitle}>No orders yet</h1>
+                            Either you haven't placed your items, or no one has placed an order yet
+                        </div>
+                    )
+                    }
                 </div>
             </div>
         </DesktopWrapper>
