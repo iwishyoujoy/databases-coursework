@@ -4,7 +4,7 @@ import { AppDispatch, RootState, setIsLoggedBusiness } from "../../../redux/stor
 import { ICategoryProps, IProductProps } from "../../../utils/types";
 import React, { useEffect, useState } from "react";
 import { capitalizeFirstLetter, getItemsListLength } from "../../../utils/text";
-import { getAllCategories, getFavoritesByCustomer, getProductById, getProductsBySellerId } from "../../../utils/getQuery";
+import { getAllCategories, getProductsBySellerId } from "../../../utils/getQuery";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Card } from "../../../components/CardContainer/CardContainerItem";
@@ -97,11 +97,13 @@ export default function Page({ params: { login } }: AccountProps) {
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        getProductsBySellerId(businessState.id)
-            .then(data => {
-                setProducts(data);
-            })
-            .catch(error => console.error(error));
+        if (businessState.isLogged){
+            getProductsBySellerId(businessState.id)
+                .then(data => {
+                    setProducts(data);
+                })
+                .catch(error => console.error(error));
+        }
     }, [businessState.id, deletedProductId, isAddingNewProduct]);
 
     const handleLogOutClick = () => {

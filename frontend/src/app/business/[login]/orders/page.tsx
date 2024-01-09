@@ -26,21 +26,23 @@ export default function Page({ params: { login } }: AccountProps) {
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        if (businessState.isSeller){
-            getOrderForSellerById(businessState.id)
-                .then(data => {
-                    console.log(data);
-                    setOrders(data);
-                })
-                .catch(error => console.error(error));
-        }
-        else {
-            getOrderForClinicById(businessState.id)
-                .then(data => {
-                    console.log(data);
-                    setOrders(data);
-                })
-                .catch(error => console.error(error));
+        if (businessState.isLogged){
+            if (businessState.isSeller){
+                getOrderForSellerById(businessState.id)
+                    .then(data => {
+                        console.log(data);
+                        setOrders(data);
+                    })
+                    .catch(error => console.error(error));
+            }
+            else {
+                getOrderForClinicById(businessState.id)
+                    .then(data => {
+                        console.log(data);
+                        setOrders(data);
+                    })
+                    .catch(error => console.error(error));
+            }
         }
     }, [businessState.id, businessState.isSeller]);
 

@@ -149,11 +149,13 @@ export default function Page({ params: { login } }: AccountProps) {
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        getProceduresByClinicId(businessState.id)
-            .then(data => {
-                setProcedures(data);
-            })
-            .catch(error => console.error(error));
+        if (businessState.isLogged){
+            getProceduresByClinicId(businessState.id)
+                .then(data => {
+                    setProcedures(data);
+                })
+                .catch(error => console.error(error));
+        }
     }, [businessState.id, isAddingNewProcedure, isAddingAppointments, deletedProductId]);
 
     const handleLogOutClick = () => {

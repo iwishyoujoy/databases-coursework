@@ -1,6 +1,6 @@
 'use client'
 
-import { AppDispatch, setIsLogged } from "../../../redux/store";
+import { AppDispatch, RootState, setIsLogged } from "../../../redux/store";
 import React, { useEffect, useState } from "react";
 
 import { DesktopWrapper } from "../../../components/DesktopWrapper";
@@ -9,7 +9,7 @@ import Link from "next/link";
 import cn from 'classnames';
 import { getCustomerData } from "../../../utils/getQuery";
 import styles from './styles.module.css';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 
 interface AccountProps{
@@ -19,16 +19,19 @@ interface AccountProps{
 }
 
 export default function Page({ params: { login } }: AccountProps) {
+    const loginState = useSelector((state: RootState) => state.login);
     const [ customer, setCustomer ] = useState<ICustomerProps>(null);
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        getCustomerData(login)
-            .then(data => {
-                setCustomer(data);
-            })
-            .catch(error => console.error(error));
+        if (loginState.isLogged){
+            getCustomerData(login)
+                .then(data => {
+                    setCustomer(data);
+                })
+                .catch(error => console.error(error));
+        }
         }, [login]);
 
     const handleLogOutClick = () => {

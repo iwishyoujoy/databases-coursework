@@ -1,6 +1,6 @@
 'use client'
 
-import { AppDispatch, setIsLogged } from "../../../../redux/store";
+import { AppDispatch, RootState, setIsLogged } from "../../../../redux/store";
 import React, { useEffect, useState } from "react";
 
 import { DesktopWrapper } from "../../../../components/DesktopWrapper";
@@ -12,7 +12,7 @@ import arrow from 'public/images/arrowLeft.svg';
 import cn from 'classnames';
 import { getItemsFromOrder } from "../../../../utils/getQuery";
 import styles from './styles.module.css';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 
 interface OrderProps{
@@ -23,19 +23,22 @@ interface OrderProps{
 }
 
 export default function Page({ params: { login, id } }: OrderProps) {
+    const loginState = useSelector((state: RootState) => state.login);
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
 
     const [ items, setItems ] = useState<IItemInOrderProps[]>();
 
     useEffect(() => {
-        getItemsFromOrder(id)
-            .then((data) => {
-                setItems(data);
-            })
-            .catch((error) => {
-                console.error(error);
-            })
+        if (loginState.isLogged){
+            getItemsFromOrder(id)
+                .then((data) => {
+                    setItems(data);
+                })
+                .catch((error) => {
+                    console.error(error);
+                })
+        }
     }, [id]);
     
     const handleLogOutClick = () => {

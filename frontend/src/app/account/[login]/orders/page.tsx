@@ -1,6 +1,6 @@
 'use client'
 
-import { AppDispatch, setIsLogged } from "../../../redux/store";
+import { AppDispatch, RootState, setIsLogged } from "../../../redux/store";
 import React, { useEffect, useState } from "react";
 
 import { DesktopWrapper } from "../../../components/DesktopWrapper";
@@ -11,7 +11,7 @@ import cn from 'classnames';
 import { getItemsListLength } from "../../../utils/text";
 import { getOrdersForCustomer } from "../../../utils/getQuery";
 import styles from './styles.module.css';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 
 interface AccountProps{
@@ -21,23 +21,27 @@ interface AccountProps{
 }
 
 export default function Page({ params: { login } }: AccountProps) {
+    const loginState = useSelector((state: RootState) => state.login);
+
     const [ orders, setOrders ] = useState<IOrderProps[]>([]);
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        getOrdersForCustomer(login)
-            .then(data => {
-                const sortedOrders = data.sort((a, b) => {
-                    if (a.status === 'Starting to Sparkle') return -1;
-                    if (b.status === 'Starting to Sparkle') return 1;
+        if (loginState.isLogged){
+            getOrdersForCustomer(login)
+                .then(data => {
+                    const sortedOrders = data.sort((a, b) => {
+                        if (a.status === 'Starting to Sparkle') return -1;
+                        if (b.status === 'Starting to Sparkle') return 1;
 
-                    return 0;
-                });
-                 
-                setOrders(sortedOrders);
-            })
-            .catch(error => console.error(error));
+                        return 0;
+                    });
+                    
+                    setOrders(sortedOrders);
+                })
+                .catch(error => console.error(error));
+        }
         }, [login]);
 
     const handleLogOutClick = () => {

@@ -12,8 +12,6 @@ import { getSellerOrClinicByLogin } from "../../../utils/getQuery";
 import styles from './styles.module.css';
 import { useRouter } from 'next/navigation';
 
-// import { useRouter } from 'next/navigation';
-
 interface AccountProps{
     params: {
         login: string;
@@ -26,20 +24,17 @@ export default function Page({ params: { login } }: AccountProps) {
     const router = useRouter();
     const businessState = useSelector((state: RootState) => state.business);
 
-    // const router = useRouter();
-
     useEffect(() => {
-        // if (!businessState.isLogged) {
-        //     router.push(`https://localhost:3000/business`);
-        // }
-        getSellerOrClinicByLogin(login, businessState.isSeller ? 'seller' : 'clinic')
-            .then(data => {
-                console.log(data);
-                setBusiness(data);
-                dispatch(setIdBusiness(data.id));
-            })
-            .catch(error => console.error(error));
-        }, [businessState.isSeller, dispatch, login]);
+        if (businessState.isLogged){
+            getSellerOrClinicByLogin(login, businessState.isSeller ? 'seller' : 'clinic')
+                .then(data => {
+                    console.log(data);
+                    setBusiness(data);
+                    dispatch(setIdBusiness(data.id));
+                })
+                .catch(error => console.error(error));
+        }
+    }, [businessState.isSeller, dispatch, login]);
 
     const handleLogOutClick = () => {
         dispatch(setIsLoggedBusiness(false));

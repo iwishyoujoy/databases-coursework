@@ -1,6 +1,6 @@
 'use client'
 
-import { AppDispatch, setIsLogged } from "../../../redux/store";
+import { AppDispatch, RootState, setIsLogged } from "../../../redux/store";
 import React, { useEffect, useState } from "react";
 import { getFavoritesByCustomer, getProductById } from "../../../utils/getQuery";
 
@@ -11,7 +11,7 @@ import Link from "next/link";
 import cn from 'classnames';
 import { getItemsListLength } from "../../../utils/text";
 import styles from './styles.module.css';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 
 interface AccountProps{
@@ -21,29 +21,33 @@ interface AccountProps{
 }
 
 export default function Page({ params: { login } }: AccountProps) {
+    const loginState = useSelector((state: RootState) => state.login);
+
     const [ favorites, setFavorites ] = useState<IProductProps[]>([]);
     const router = useRouter();
     const dispatch = useDispatch<AppDispatch>();
 
     useEffect(() => {
-        getFavoritesByCustomer(login)
-            .then(data => {
-                const promises = data.map((item) => {
-                    const newItemData = item.favoriteProductId;
+        if (loginState.isLogged){
+            getFavoritesByCustomer(login)
+                .then(data => {
+                    const promises = data.map((item) => {
+                        const newItemData = item.favoriteProductId;
 
-                   return getProductById(newItemData.item_id)
-                       .then(itemData => {
-                           return itemData;
-                       })
-                       .catch(error => console.error(error));
-                });
- 
-                Promise.all(promises)
-                   .then(products => {
-                       setFavorites(products);
-                   });
-            })
-            .catch(error => console.error(error));
+                    return getProductById(newItemData.item_id)
+                        .then(itemData => {
+                            return itemData;
+                        })
+                        .catch(error => console.error(error));
+                    });
+    
+                    Promise.all(promises)
+                    .then(products => {
+                        setFavorites(products);
+                    });
+                })
+                .catch(error => console.error(error));
+        }
     }, [favorites, login]);
 
     const handleLogOutClick = () => {
