@@ -1,7 +1,7 @@
 import { OrderStatus } from "./types";
 import axios from "axios";
 
-export const updateAmountForItemInOrder = (order_id: number, item_id: number, current_amount: number, status: OrderStatus) => {
+export const updateItemInOrder = (order_id: number, item_id: number, current_amount: number, status: OrderStatus) => {
     return (dispatch) => {
         return new Promise<void>((resolve, reject) => {
             axios.put('http://localhost:3100/api/item_in_order/update/', { 
@@ -12,21 +12,21 @@ export const updateAmountForItemInOrder = (order_id: number, item_id: number, cu
             })
             .then(response => {
                 if (response.status === 200) {
-                   dispatch({ type: 'UPDATE_AMOUNT_SUCCESS', payload: response.data });
+                   dispatch({ type: 'UPDATE_ITEM_IN_ORDER_SUCCESS', payload: response.data });
                    resolve();
                 } else {
-                   throw new Error('Failed to update amount');
+                   throw new Error('Failed to update item in order');
                 }
             })
             .catch(error => {
-                dispatch({ type: 'UPDATE_AMOUNT_FAILURE', payload: error.message });
+                dispatch({ type: 'UPDATE_ITEM_IN_ORDER_FAILURE', payload: error.message });
                 reject(error);
             });
         });
     };
  };
 
-export const placeOrderFromCart = (order_id: number, customer_id: number, customer_login: string, timestamp: string, status: OrderStatus) => {
+export const updateOrderStatus = (order_id: number, customer_id: number, customer_login: string, timestamp: string, status: OrderStatus) => {
     return (dispatch) => {
         return new Promise<void>((resolve, reject) => {
             axios.put(`http://localhost:3100/api/order/${order_id}`, { 
@@ -38,14 +38,14 @@ export const placeOrderFromCart = (order_id: number, customer_id: number, custom
             })
             .then(response => {
                 if (response.status === 200) {
-                   dispatch({ type: 'PLACE_ORDER_SUCCESS', payload: response.data });
+                   dispatch({ type: 'UPDATE_ORDER_SUCCESS', payload: response.data });
                    resolve();
                 } else {
-                   throw new Error('Failed to place and order');
+                   throw new Error('Failed to update the order');
                 }
             })
             .catch(error => {
-                dispatch({ type: 'PLACE_ORDER_FAILURE', payload: error.message });
+                dispatch({ type: 'UPDATE_ORDER_FAILURE', payload: error.message });
                 reject(error);
             });
         });

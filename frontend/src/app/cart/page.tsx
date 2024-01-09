@@ -5,7 +5,7 @@ import { IAppointmentProps, IItemInOrderProps, IOrderProps, IProcedureProps, IPr
 import React, { useEffect, useState } from "react";
 import { capitalizeFirstLetter, getItemsListLength, getItemsListLengthOnlyLength, roundAmount } from "../utils/text";
 import { getAppointmentById, getCheckForOrder, getCustomerData, getItemsFromOrder, getOrderById, getProcedureById, getProductById } from "../utils/getQuery";
-import { placeOrderFromCart, updateAmountForItemInOrder } from "../utils/putQuery";
+import { updateItemInOrder, updateOrderStatus } from "../utils/putQuery";
 import { useDispatch, useSelector } from "react-redux";
 
 import { DesktopWrapper } from "../components/DesktopWrapper";
@@ -164,7 +164,7 @@ export default function Page() {
 
     const increaseCount = (product: IProductWithAmountProps, count: number) => {
         if (product.amount_available > 0) {
-            dispatch(updateAmountForItemInOrder(cartState.orderId, product.id_item, count + 1, 'Starting to Sparkle'))
+            dispatch(updateItemInOrder(cartState.orderId, product.id_item, count + 1, 'Starting to Sparkle'))
                 .then(() => {
                     setRerenderFlag(rerenderFlag + 1);
                 })
@@ -173,7 +173,7 @@ export default function Page() {
 
     const decreaseCount = (product: IProductWithAmountProps, count: number) => {
         if (count > 1) {
-            dispatch(updateAmountForItemInOrder(cartState.orderId, product.id_item, count - 1, 'Starting to Sparkle'))
+            dispatch(updateItemInOrder(cartState.orderId, product.id_item, count - 1, 'Starting to Sparkle'))
                 .then(() => {
                     setRerenderFlag(rerenderFlag - 1);
                 })
@@ -182,7 +182,7 @@ export default function Page() {
 
     const handlePlaceOrderClick = () => {
         // console.log(cartState.orderId, customerId, loginState.login, cartState.timestamp, 'Glam in Progress');
-        dispatch(placeOrderFromCart(cartState.orderId, customerId, loginState.login, cartState.timestamp, 'Glam in Progress'))
+        dispatch(updateOrderStatus(cartState.orderId, customerId, loginState.login, cartState.timestamp, 'Glam in Progress'))
             .then(() => {
                 const now = new Date();
                 const year = now.getFullYear();
@@ -197,6 +197,10 @@ export default function Page() {
                     .then(() => {
                         router.push(`/account/${loginState.login}/orders`);
                     })
+
+                items.forEach((item) => {
+                    dispatch(updateItemInOrder(cartState.orderId, item.item_id, item.current_amount, 'Glam in Progress')); 
+                })
             })
     }
      
