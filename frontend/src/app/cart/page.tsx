@@ -107,19 +107,20 @@ export default function Page() {
                        .then(appointments => {
                             if (appointments){
                                 setAppointments(appointments);
-    
-                                const promisesProcedures = appointments.map((appointment) => {
-                                    return getProcedureById(appointment.procedure_id)
-                                        .then(itemData => {
-                                            return itemData;
-                                        })
-                                        .catch(error => console.error(error));
-                                });
-                
-                                Promise.all(promisesProcedures)
-                                .then(procedures => {
-                                    setProcedures(sortProcedures(procedures));
-                                });
+                                if (appointments.length > 0){
+                                    const promisesProcedures = appointments.map((appointment) => {
+                                        return getProcedureById(appointment.procedure_id)
+                                            .then(itemData => {
+                                                return itemData;
+                                            })
+                                            .catch(error => console.error(error));
+                                    });
+                    
+                                    Promise.all(promisesProcedures)
+                                    .then(procedures => {
+                                        setProcedures(sortProcedures(procedures));
+                                    });
+                                }
                             }
                         });
     
@@ -181,7 +182,6 @@ export default function Page() {
     }
 
     const handlePlaceOrderClick = () => {
-        // console.log(cartState.orderId, customerId, loginState.login, cartState.timestamp, 'Glam in Progress');
         dispatch(updateOrderStatus(cartState.orderId, customerId, loginState.login, cartState.timestamp, 'Glam in Progress'))
             .then(() => {
                 const now = new Date();
