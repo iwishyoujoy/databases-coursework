@@ -59,10 +59,10 @@ const NewProcedureModal = ({ isOpen, onClose, id }) => {
     return (
         <div className={styles.modalOverlay} onClick={onClose}>
             <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-                <h2 className={styles.modalTitle}>Add new product</h2>
+                <h2 className={styles.modalTitle}>Add new procedure</h2>
                 <input className={styles.modalInput} type="text" value={name} onChange={handleNameChange} placeholder="Name"/>
                 <input className={styles.modalInput} type="number" min="1" value={price} onChange={handlePriceChange} placeholder="Price"/>
-                <div className={styles.modalInputDescriptionPink}>Choose category for the product:</div>
+                <div className={styles.modalInputDescriptionPink}>Choose category for the procedure:</div>
                 {categories && <select className={cn(styles.selectModalContainer, styles.selectContainer)} onChange={(e) => setCategoryId(e.target.value)}>
                     {categories.map((category, key) => {
                         return <option className={styles.optionModal} value={category.id} key={key}>{capitalizeFirstLetter(category.name)}</option>

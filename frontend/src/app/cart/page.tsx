@@ -235,7 +235,7 @@ export default function Page() {
                                     </div>
                                     <div className={styles.lastContainer}>
                                         <Image className={styles.deleteButton} onClick={() => handleDeleteFromCartClick(product.id_item)} src={trash} alt='Delete' />
-                                        <div className={styles.productPrice}>{product.price} $</div>
+                                        <div className={styles.productPrice}>{roundAmount(product.price * product.amount)} $</div>
                                     </div>
                                 </div>
                             );
