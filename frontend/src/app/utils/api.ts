@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-import { IAppointmentProps, ICategoryProps, ICustomerProps, IItemInOrderProps, IOrderProps, IProcedureProps, IProductProps, IReviewProps, ISellerOrClinicProps } from './types'
+import { IAppointmentProps, ICategoryProps, ICustomerProps, IFavoriteItemProps, IItemInOrderProps, IOrderProps, IProcedureProps, IProductProps, IReviewProps, ISellerOrClinicProps } from './types'
 
 interface ICategoryQueryProps {
     id: number,
@@ -70,7 +70,7 @@ export const api = createApi({
         getOrdersForCustomer: builder.query<IOrderProps[], string>({
             query: (login) => `order/customer/${login}`
         }),
-        getFavoritesByCustomer: builder.query<IProductProps[], string>({
+        getFavoritesByCustomer: builder.query<IFavoriteItemProps[], string>({
             query: (login) => `favorite/all/${login}`
         }),
         getItemsFromOrder: builder.query<IItemInOrderProps[], number>({

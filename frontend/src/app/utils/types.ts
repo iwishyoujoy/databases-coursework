@@ -87,4 +87,11 @@ export interface IItemInOrderProps {
     status: OrderStatus;
 }
 
+export interface IFavoriteItemProps {
+    favoriteProductId: {
+        customer_id: number,
+        item_id: number,
+    }
+}
+
 export type OrderStatus = 'Starting to Sparkle' | 'Glam in Progress' | 'Glowing and Going' | 'Ready to Slay';
