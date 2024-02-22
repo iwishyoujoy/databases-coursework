@@ -1,8 +1,7 @@
 import { AppDispatch, RootState, productDeleted } from '../../../redux/store';
-import { IAppointmentProps, IProcedureProps, IProductProps } from '../../../utils/types';
+import { IProcedureProps, IProductProps } from '../../../utils/types';
 import { addItemToCart, addToFavorite } from '../../../utils/postQuery';
 import { deleteProcedureById, deleteProductById, removeFromFavorite } from '../../../utils/deleteQuery';
-import { getAppointmentsByProcedureId, getCustomerData } from '../../../utils/getQuery';
 import toast, { Toaster } from 'react-hot-toast';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
@@ -10,12 +9,12 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import addToCart from 'public/images/cart.svg';
-import axios from 'axios';
 import blackHeart from 'public/images/blackHeart.svg';
 import { capitalizeFirstLetter } from '../../../utils/text';
 import pinkHeart from 'public/images/heart.svg';
 import styles from './styles.module.css';
 import trash from 'public/images/trash.svg';
+import { useGetAppointmentsByProcedureIdQuery, useGetCustomerDataQuery, useGetFavoritesByCustomerQuery } from '../../../utils/api';
 
 interface ICardProps {
     item: IProductProps | IProcedureProps;
@@ -31,33 +30,32 @@ export const Card: React.FC<ICardProps> = (props) => {
 
     const dispatch = useDispatch<AppDispatch>();
 
-    const [ customerId, setCustomerId ] = useState();
-    const [isFavorite, setIsFavorite] = useState(false);
+    const [ customerId, setCustomerId ] = useState<number>();
+    const [ isFavorite, setIsFavorite] = useState<boolean>(false);
     const [ appointmentId, setAppointmentId ] = useState<number>();
+
+    const {data: customerData} = useGetCustomerDataQuery(loginState.login);
+    const {data: favoriteItemsData} = useGetFavoritesByCustomerQuery(loginState.login);
+    const {data: appointmentsData} = useGetAppointmentsByProcedureIdQuery((item as IProcedureProps).id, { skip: isProduct });
 
     useEffect(() => {
         if (loginState.isLogged){
-            getCustomerData(loginState.login)
-            .then(data => {
-                setCustomerId(data.id);
-                axios.get(`http://localhost:3100/api/favorite/all/${loginState.login}`)
-                    .then(response => {
-                        const favoriteItems = response.data.map(item => item.favoriteProductId.item_id);
-                        setIsFavorite(favoriteItems.includes((item as IProductProps).id_item));
-                    })
-                .catch(error => console.error(error));
-            })
-            .catch(error => console.error(error));
-
-            if (!isProduct){
-                getAppointmentsByProcedureId((item as IProcedureProps).id)
-                    .then(data => {
-                        setAppointmentId(data[0].item_id);
-                    })
-                    .catch(error => console.error(error));
+            if (isProduct){
+                if (customerData){
+                    setCustomerId(customerData.id);
+                }
+                if (favoriteItemsData){
+                    const favoriteItems = favoriteItemsData.map(item => item.favoriteProductId.item_id);
+                    setIsFavorite(favoriteItems.includes((item as IProductProps).id_item));
+                }
+            }
+            else{
+                if (appointmentsData){
+                    setAppointmentId(appointmentsData[0]?.item_id);
+                }
             }
         }
-        }, [isProduct, item, loginState.isLogged, loginState.login]);
+    }, [isProduct, customerData, favoriteItemsData, appointmentsData, loginState.isLogged]);
 
     const toggleFavorite = () => {
         if (!loginState.isLogged){

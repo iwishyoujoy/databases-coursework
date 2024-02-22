@@ -43,7 +43,7 @@ export const Categories: React.FC<ICategoriesProps> = ({ categoryType = 'product
         if (categoriesData){
             setCategories(categoriesData);
         }
-    }, [categoryType]);
+    }, [categoriesData, categoryState.productCategoryId, categoryState.procedureCategoryId]);
 
     return (
         <div className={styles.container}>

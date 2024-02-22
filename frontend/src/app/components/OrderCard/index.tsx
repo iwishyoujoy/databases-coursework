@@ -45,7 +45,7 @@ export const OrderCard: React.FC<IOrderCardProps> = (props) => {
                 }
             }
         }
-    }, [dispatch, login, order.customer_id, order.id, order.status, order.timestamp]);
+    }, [dispatch, checkForOrder, itemsFromOrder, login, order.customer_id, order.id, order.status, order.timestamp]);
 
     if (order.status === 'Starting to Sparkle'){
         dispatch(setOrderId(order.id));

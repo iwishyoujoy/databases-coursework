@@ -1,59 +1,52 @@
-import { getAllProcedures, getAllProducts, getProceduresbyCategory, getProductsbyCategory } from '../../utils/getQuery';
 import { useEffect, useState } from 'react';
 
 import { Card } from './CardContainerItem';
 import { RootState } from '../../redux/store';
-import axios from 'axios';
 import { getItemsListLength } from '../../utils/text';
 import styles from './styles.module.css';
 import { useSelector } from 'react-redux';
+import { useGetAllProceduresQuery, useGetAllProductsQuery, useGetProceduresbyCategoryQuery, useGetProductsbyCategoryQuery } from '../../utils/api';
 
 interface ICardContainerProps {
     categoryType?: 'productCategory' | 'procedureCategory';
 }
 
 export const CardContainer: React.FC<ICardContainerProps> = ({ categoryType = 'productCategory' }) => {
-   const [products, setProducts] = useState([]);
-   const categoryState = useSelector((state: RootState) => state.category);
+    const [products, setProducts] = useState([]);
+    const categoryState = useSelector((state: RootState) => state.category);
 
-   useEffect(() => {
+    const {data: productsData} = useGetAllProductsQuery()
+    const {data: proceduresData} = useGetAllProceduresQuery()
+    const {data: proceduresByCategory} = useGetProceduresbyCategoryQuery(categoryState.procedureCategoryId, { skip: 
+        categoryType !== 'procedureCategory' ||
+        (categoryType === 'procedureCategory' && categoryState.procedureCategoryId === -1)
+    })
+    const {data: productsByCategory} = useGetProductsbyCategoryQuery(categoryState.productCategoryId, { skip: 
+        categoryType !== 'productCategory' ||
+        (categoryType === 'productCategory' && categoryState.productCategoryId === -1)
+    })
+
+    useEffect(() => {
         if (categoryType === 'productCategory'){
-            if (categoryState.productCategoryId === -1){
-                getAllProducts()
-                    .then(data => {
-                        setProducts(data);
-                    })
-                    .catch(error => console.error(error));
+            if (categoryState.productCategoryId === -1 && productsData){
+                setProducts(productsData);
             }
-            else{
-                getProductsbyCategory(categoryState.productCategoryId)
-                    .then(data => {
-                        setProducts(data);
-                    })
-                    .catch(error => console.error(error));
+            else if (productsByCategory){
+                setProducts(productsByCategory);
             }
         }
-        else{
-            if (categoryState.procedureCategoryId === -1){
-                getAllProcedures()
-                    .then(data => {
-                        setProducts(data);
-                    })
-                    .catch(error => console.error(error));
+        else {
+            if (categoryState.procedureCategoryId === -1 && proceduresData){
+                setProducts(proceduresData);
             }
-            else{
-                getProceduresbyCategory(categoryState.procedureCategoryId)
-                    .then(data => {
-                        setProducts(data);
-                    })
-                    .catch(error => console.error(error));
+            else if (proceduresByCategory){
+                setProducts(proceduresByCategory);
             }
         }
-        
-   }, [categoryState.procedureCategoryId, categoryState.productCategoryId, categoryType]);
+    }, [productsData, proceduresData, proceduresByCategory, productsByCategory, categoryState.procedureCategoryId, categoryState.productCategoryId]);
 
-   return (
-       <div className={styles.container}>
+    return (
+        <div className={styles.container}>
             {products.length > 0 ? (
                 <>
                 <div className={styles.counter}>{getItemsListLength(products, 'item', 'items')}</div>
@@ -69,6 +62,6 @@ export const CardContainer: React.FC<ICardContainerProps> = ({ categoryType = 'p
                     <p className={styles.errorDescription}>Nothing was found, search for something else</p>
                 </div>
             )}
-       </div>
-   )
+        </div>
+    )
 }
