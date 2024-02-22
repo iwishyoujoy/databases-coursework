@@ -9,6 +9,7 @@ import cn from 'classnames';
 import styles from './styles.module.css';
 import { updateItemInOrder } from "../../utils/putQuery";
 import { useDispatch } from "react-redux";
+import { useGetAppointmentByIdQuery, useGetProcedureByIdQuery, useGetProductByIdQuery } from "../../utils/api";
 
 interface IItemInOrderCardProps {
     item: IItemInOrderProps;
@@ -30,68 +31,49 @@ export const ItemInOrderCard: React.FC<IItemInOrderCardProps> = (props) => {
     const [ price, setPrice ] = useState<number>();
     const [ dateTime, setDateTime ] = useState<string>();
 
-    useEffect(() => {
-        if (view === 'seller'){
-            setCurStatus(item.status);
-            getProductById(item.item_id)
-                .then((data) => {
-                    setName(data.name);
-                    setPhotoUrl(data.photo_url);
-                    setPrice(data.price);
-                })
-                .catch((error) => console.error(error));
-        }
-        else if (view === 'clinic'){
-            setCurStatus(item.status);
-            getAppointmentById(item.item_id)
-                .then((data) => {
-                    setDateTime(data.date_time);
-                    
-                    getProcedureById(data.procedure_id)
-                        .then((procedureData) => {
-                            setName(procedureData.name);
-                            setPhotoUrl(procedureData.photo_url);
-                            setPrice(procedureData.price);
-                        })
-                })
-        }
-        else {
-            if (item.type === 'product'){
-                setCurStatus(item.status);
-                getProductById(item.item_id)
-                    .then((data) => {
-                        setName(data.name);
-                        setPhotoUrl(data.photo_url);
-                        setPrice(data.price);
-                    })
-                    .catch((error) => console.error(error));
-            }
-            else{
-                setCurStatus(item.status);
-                getAppointmentById(item.item_id)
-                    .then((data) => {
-                        setDateTime(data.date_time);
-                        
-                        getProcedureById(data.procedure_id)
-                            .then((procedureData) => {
-                                setName(procedureData.name);
-                                setPhotoUrl(procedureData.photo_url);
-                                setPrice(procedureData.price);
-                            })
-                    })
-            }
-        }
-    }, [item.item_id, item.type, view]);
+    const { data: product } = useGetProductByIdQuery(item.item_id, { skip: item.type !== 'product' });
+    const { data: appointment } = useGetAppointmentByIdQuery(item.item_id, { skip: item.type !== 'appointment' });
+    const { data: procedure } = useGetProcedureByIdQuery(appointment?.procedure_id, { skip: item.type !== 'appointment'});
 
     useEffect(() => {
-        if (curStatus !== 'Glam in Progress'){
+        setCurStatus(item.status);
+    }, [item.status]);
+
+    useEffect(() => {
+        if (view === 'seller' && product) {
+            setName(product.name);
+            setPhotoUrl(product.photo_url);
+            setPrice(product.price);
+        } else if (view === 'clinic' && appointment && procedure) {
+            setDateTime(appointment.date_time);
+            setName(procedure.name);
+            setPhotoUrl(procedure.photo_url);
+            setPrice(procedure.price);
+        }
+        else{
+            if (item.type === 'appointment' && appointment && procedure){
+                setDateTime(appointment.date_time);
+                setName(procedure.name);
+                setPhotoUrl(procedure.photo_url);
+                setPrice(procedure.price);
+            }
+            else if (item.type === 'product' && product){
+                setName(product.name);
+                setPhotoUrl(product.photo_url);
+                setPrice(product.price);
+            }
+        }
+    }, [view, product, appointment, procedure]);
+
+    useEffect(() => {
+        if (curStatus !== 'Glam in Progress') {
             dispatch(updateItemInOrder(item.order_id, item.item_id, item.current_amount, curStatus));
         }
-    }, [curStatus])
+    }, [curStatus, dispatch, item]);
 
     const handleStatusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setCurStatus(event.target.value);
-    }
+        setCurStatus(event.target.value as OrderStatus);
+    };
 
     return (
         <div className={styles.cardContainer}>
