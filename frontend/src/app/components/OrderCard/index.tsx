@@ -10,6 +10,7 @@ import styles from './styles.module.css';
 import { updateOrderStatus } from "../../utils/putQuery";
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
+import { useGetCheckForOrderQuery, useGetItemsFromOrderQuery, useGetOrderByIdQuery } from "../../utils/api";
 
 interface IOrderCardProps {
     order: IOrderProps;
@@ -18,48 +19,40 @@ interface IOrderCardProps {
 
 export const OrderCard: React.FC<IOrderCardProps> = (props) => {
     const { order, login } = props;
-    const [ amount, setAmount ] = useState(0);
-    const [ items, setItems ] = useState<IItemInOrderProps[]>();
+    const [ amount, setAmount ] = useState<number>(0);
     const dispatch = useDispatch<AppDispatch>();
     const router = useRouter();
 
-    useEffect(() => {
-        getCheckForOrder(order.id)
-            .then(data => {
-                setAmount(data);
-            })
-            .catch(error => console.error(error));
+    const {data: checkForOrder} = useGetCheckForOrderQuery(order.id);
+    const {data: itemsFromOrder} = useGetItemsFromOrderQuery(order.id);
+    const {data: orderData} = useGetOrderByIdQuery(order.id);
 
-            getItemsFromOrder(order.id)
-            .then((data) => {
-                setItems(data);
-                
-                if (order.status !== 'Starting to Sparkle'){
-                    let newStatus: OrderStatus = 'Ready to Slay';
-                    if (data.some(item => item.status === 'Glam in Progress')) {
-                        newStatus = 'Glam in Progress';
-                    } else if (data.some(item => item.status === 'Glowing and Going')) {
-                        newStatus = 'Glowing and Going';
-                    }
-        
-                    if (newStatus !== order.status) {
-                        dispatch(updateOrderStatus(order.id, order.customer_id, login, order.timestamp, newStatus));
-                    }
+    useEffect(() => {
+        if (checkForOrder){
+            setAmount(checkForOrder);
+        }
+
+        if (itemsFromOrder){
+            if (order.status !== 'Starting to Sparkle'){
+                let newStatus: OrderStatus = 'Ready to Slay';
+                if (itemsFromOrder.some(item => item.status === 'Glam in Progress')) {
+                    newStatus = 'Glam in Progress';
+                } else if (itemsFromOrder.some(item => item.status === 'Glowing and Going')) {
+                    newStatus = 'Glowing and Going';
                 }
-                
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-        }, [dispatch, login, order.customer_id, order.id, order.status, order.timestamp]);
+    
+                if (newStatus !== order.status) {
+                    dispatch(updateOrderStatus(order.id, order.customer_id, login, order.timestamp, newStatus));
+                }
+            }
+        }
+    }, [dispatch, login, order.customer_id, order.id, order.status, order.timestamp]);
 
     if (order.status === 'Starting to Sparkle'){
         dispatch(setOrderId(order.id));
-        getOrderById(order.id)
-            .then((data) => {
-                dispatch(setTimestamp(data.timestamp));
-            })
-            .catch(error => console.error(error));
+        if (orderData){
+            dispatch(setTimestamp(orderData.timestamp));
+        }
     }
 
     const handleArrowClick = () => {
@@ -70,8 +63,6 @@ export const OrderCard: React.FC<IOrderCardProps> = (props) => {
             router.push(`http://localhost:3000/account/${login}/orders/${order.id}`);
         }
     }
-
-    
 
     return (
         <div className={styles.orderContainer}>
