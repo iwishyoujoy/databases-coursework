@@ -1,6 +1,7 @@
 import { PayloadAction, configureStore, createSlice } from '@reduxjs/toolkit';
 
 import { logger } from './middleware/logger';
+import { api } from '../utils/api';
 
 interface LoginState {
   isLogged: boolean;
@@ -161,6 +162,7 @@ const productSlice = createSlice({
 
 export const store = configureStore({
   reducer: {
+    [api.reducerPath]: api.reducer,
     login: loginSlice.reducer,
     business: businessSlice.reducer,
     category: categorySlice.reducer,
@@ -168,7 +170,7 @@ export const store = configureStore({
     product: productSlice.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(logger),
+    getDefaultMiddleware().concat([api.middleware, logger]),
   devTools: process.env.NODE_ENV !== 'production',
 });
 
