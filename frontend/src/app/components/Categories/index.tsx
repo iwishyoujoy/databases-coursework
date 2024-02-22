@@ -8,6 +8,7 @@ import cn from 'classnames';
 import { getAllCategories } from '../../utils/getQuery';
 import styles from './styles.module.css';
 import { useDispatch, useSelector } from 'react-redux';
+import { useGetAllCategoriesQuery } from '../../utils/api';
 
 interface ICategoriesProps {
     categoryType?: 'productCategory' | 'procedureCategory';
@@ -19,6 +20,8 @@ export const Categories: React.FC<ICategoriesProps> = ({ categoryType = 'product
 
     const dispatch = useDispatch<AppDispatch>();
     const [categories, setCategories] = useState([]);
+
+    const {data: categoriesData} = useGetAllCategoriesQuery(categoryType);
 
     const handleCategoryClick = (id: number) => {
         setSelectedCategoryId(id);
@@ -37,11 +40,9 @@ export const Categories: React.FC<ICategoriesProps> = ({ categoryType = 'product
         else {
             setSelectedCategoryId(categoryState.procedureCategoryId);
         }
-        getAllCategories(categoryType)
-            .then(data => {
-                setCategories(data);
-            })
-            .catch(error => console.error(error));
+        if (categoriesData){
+            setCategories(categoriesData);
+        }
     }, [categoryType]);
 
     return (
