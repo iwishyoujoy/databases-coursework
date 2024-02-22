@@ -14,7 +14,6 @@ import styles from './header.module.css';
 import { useSelector } from 'react-redux';
 
 export const Header = () => {
-    const loginState = useSelector((state: RootState) => state.login);
     const [selectedCategory, setSelectedCategory] = useState('Products');
 
     return (

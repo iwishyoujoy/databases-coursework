@@ -1,11 +1,9 @@
 import { IItemInOrderProps, OrderStatus } from "../../utils/types";
 import { capitalizeFirstLetter, roundAmount } from "../../utils/text";
-import { getAppointmentById, getProcedureById, getProductById } from "../../utils/getQuery";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { AppDispatch } from "../../redux/store";
 import Image from "next/image";
-import cn from 'classnames';
 import styles from './styles.module.css';
 import { updateItemInOrder } from "../../utils/putQuery";
 import { useDispatch } from "react-redux";

@@ -1,6 +1,5 @@
 import { AppDispatch, setOrderId, setTimestamp } from "../../redux/store";
-import { IItemInOrderProps, IOrderProps, OrderStatus } from "../../utils/types";
-import { getCheckForOrder, getItemsFromOrder, getOrderById } from "../../utils/getQuery";
+import { IOrderProps, OrderStatus } from "../../utils/types";
 import { useEffect, useState } from "react";
 
 import Image from "next/image";
