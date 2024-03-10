@@ -9,7 +9,8 @@ __Тема__ - интернет-магазин, где можно купить �
 ### Backend
  - Spring Boot
  - Gradle
- - Docker
+ - Docker Compose
+ - PostgreSQL
 
 ### Frontend
  - Next.js (на TypeScipt)
