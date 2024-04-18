@@ -42,7 +42,7 @@ __Залогиненный продавец/клиника:__
 
  ## Интерфейс
 
- См. файл interface_video.mov
+ [Видео интерфейса](https://drive.google.com/file/d/1IbBMW8W3lzr_dk2ePZbTOm4zIUMpuSbl/view?usp=sharing)
 
  ### Скриншоты
 
